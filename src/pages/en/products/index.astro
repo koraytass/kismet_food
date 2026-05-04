@@ -1,0 +1,97 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import ProductsPage from '@/components/pages/ProductsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+  productCategorySchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/products/';
+const title = 'Products | Kismet Foods — Coffee, Cocoa, Nuts, Spices & Raw Ingredients';
+const description =
+  'Kismet Foods global product portfolio: coffee & cocoa, spices & herbs, nuts & dried fruits, raw ingredients. Years of expertise, ethically sourced, fully traceable shipments.';
+
+const categories = [
+  {
+    slug: 'coffee-cocoa',
+    name: 'Coffee & Cocoa',
+    description:
+      'Specialty coffee from the Ethiopian highlands and fermented cocoa from Ghana and Côte d’Ivoire — supplied through direct-trade relationships.',
+    category: 'Coffee and Cocoa',
+    origin: ['Ethiopia', 'Colombia', 'Ghana', 'Côte d’Ivoire'],
+  },
+  {
+    slug: 'spices-herbs',
+    name: 'Spices & Herbs',
+    description:
+      'Lab-tested aromatic harvests from traditional spice routes; each batch verified for purity and flavor profile with full documentation.',
+    category: 'Spices and Herbs',
+    origin: ['Türkiye', 'India', 'Vietnam', 'Indonesia'],
+  },
+  {
+    slug: 'nuts-dried-fruits',
+    name: 'Nuts & Dried Fruits',
+    description:
+      'Anatolian-origin macadamia, cashews, almonds and naturally dried apricots — sorted with precision for size and moisture profile.',
+    category: 'Tree Nuts and Dried Fruits',
+    origin: ['Türkiye', 'Iran', 'Uzbekistan'],
+  },
+  {
+    slug: 'raw-ingredients',
+    name: 'Raw Ingredients',
+    description:
+      'Grains, legumes and bulk commodities for global manufacturing, backed by an ISO-aligned supply chain and strict quality controls.',
+    category: 'Raw Food Ingredients',
+    origin: ['Türkiye', 'Ukraine', 'Egypt'],
+  },
+];
+
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    hasPart: categories.map((c) => ({
+      name: c.name,
+      url: `${pathname}${c.slug}/`,
+    })),
+  }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Products', url: pathname },
+  ]),
+  ...categories.map((c) =>
+    productCategorySchema({
+      name: c.name,
+      description: c.description,
+      url: `${pathname}${c.slug}/`,
+      category: c.category,
+      origin: c.origin,
+    }),
+  ),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <ProductsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

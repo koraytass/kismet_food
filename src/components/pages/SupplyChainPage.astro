@@ -1,0 +1,526 @@
+---
+/**
+ * SupplyChainPage — Reusable section composition for /<locale>/supply-chain/.
+ * Called from 3 locale route files; all locale-specific content lives inline.
+ *
+ * Sections: Hero · Traceability · QC Protocol · Global Transit Map · Ports & Incoterms · Partnering Process · CTA
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stitchSrc } from '@/lib/stitch';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+/* --- Locale-scoped page copy --- */
+const copy = {
+  tr: {
+    eyebrow: 'LOJİSTİK UZMANLIĞI · YILLARA YAYILMIŞ BİRİKİM',
+    heroTitle: 'Her deniz milinde bütünlük.',
+    heroTitleItalic: 'Köken çiftliğinden fabrikanıza.',
+    heroLead:
+      'Uzak plantasyonlardan tesisinize kadar; dünyanın en hassas ham gıda maddeleri için on yılların biriktirdiği operasyonel uzmanlıkla kusursuz bir geçiş kürate ediyoruz.',
+    heroTag: 'İZLENEBİLİR · GÜVENLİ · KÜRESEL',
+    traceEyebrow: '01 — GÖRÜNÜRLÜK',
+    traceTitle: 'Uçtan uca izlenebilirlik.',
+    traceLead:
+      'Tescilli dijital kayıt sistemimiz her sevkiyatı her aşamada izler. Çiftlik menşei ile endüstriyel merkez arasındaki mesafeyi şeffaf, değiştirilemez verilerle kapatıyoruz.',
+    traceCards: [
+      {
+        t: 'QR kod takip',
+        d: 'Her sevkiyatı tarayarak parti kayıtlarına, hasat tarihlerine ve çiftçi menşei verisine anında erişin.',
+      },
+      {
+        t: 'Dijital sertifikalar',
+        d: 'Bitki sağlığı belgeleri, organik sertifikaları ve konşimentolara gerçek zamanlı erişim.',
+      },
+    ],
+    traceQuote: '“Gerçek kalite, kaynağını bilmekle başlar.”',
+    traceBatch: 'Blockchain doğrulamalı parti: #KF-8821',
+    qcEyebrow: '02 — DOĞRULAMA',
+    qcTitle: 'Kalite kontrol protokolü.',
+    qcBadges: ['SGS STANDARTLARI', 'BUREAU VERITAS', 'ISO 9001'],
+    qc: [
+      {
+        t: 'Laboratuvar testleri',
+        d: 'Pestisit kalıntı kontrolleri, nem analizi ve duyusal profilleme her partide sevkiyat öncesinde yapılır.',
+      },
+      {
+        t: 'Parti muhafazası',
+        d: 'İklim kontrollü transit ortamlar 7/24 izlenerek fermentasyon veya oksidasyon riski engellenir.',
+      },
+      {
+        t: 'Denetim şeffaflığı',
+        d: 'Adımıza sevk edilen her konteyner için üçüncü taraf denetim raporlarına açık erişim sağlanır.',
+      },
+    ],
+    portsEyebrow: '03 — TÜRK LİMANLARI',
+    portsTitle: 'Mersin · İzmir · İstanbul üzerinden dünyaya.',
+    portsLead:
+      'Üç ana Türk limanında yıllara yayılmış gümrükleme ve yükleme birikimimiz, hassas gıda yüklerinin AB, MENA ve Amerika rotalarında öncelikli geçişini sağlar.',
+    ports: [
+      {
+        t: 'Mersin',
+        d: 'Doğu Akdeniz çıkış kapımız. MENA ve Körfez yönünde en hızlı transit; gıda sınıfı konteyner depolama.',
+      },
+      {
+        t: 'İzmir (Alsancak)',
+        d: 'Kuruyemiş ve kuru meyve ihracatının merkezi; Avrupa limanlarına doğrudan Ro-Ro ve konteyner hatları.',
+      },
+      {
+        t: 'İstanbul (Ambarlı)',
+        d: 'Karadeniz ve Kuzey Avrupa için pivot nokta; hızlı aktarma, soğuk zincir kapasitesi.',
+      },
+    ],
+    incotermsEyebrow: 'TİCARET KOŞULLARI',
+    incotermsTitle: 'FOB · CIF · CFR · DDP',
+    incotermsLead:
+      'Tüm standart Incoterms 2020 teslim şekilleri. Forwarder ağımız, ticari sigorta, gümrük beyannamesi ve bitki sağlığı belgesini tek elden yönetir.',
+    networkEyebrow: '04 — AĞ',
+    networkTitle: 'Küresel transit ağı.',
+    networkLead:
+      'Tarımsal üretim merkezlerini büyük lojistik merkezlerine, optimize edilmiş rota verimliliğiyle bağlıyoruz.',
+    networkHubs: [
+      { t: 'İstanbul', d: 'EMEA için 3–5 gün transit' },
+      { t: 'Rotterdam', d: 'Kuzey Avrupa için 1–2 gün' },
+      { t: 'Santos', d: 'LATAM kahve & şeker hub’ı' },
+      { t: 'Addis Ababa', d: 'Afrika menşe tedarik kapısı' },
+    ],
+    processEyebrow: '05 — ORTAKLIK',
+    processTitle: 'B2B ortaklık süreci.',
+    processLead:
+      'Tedarik akışımız hız ve netlik için tasarlandı. Üretim ihtiyaçlarınız için yüksek hacimli ham madde güvence altına alan dört adım.',
+    processBtn: 'ORTAKLIĞI BAŞLAT',
+    process: [
+      { n: '01', t: 'Talep & spesifikasyon', d: 'Detaylı teknik spesifikasyon ve hacim gereksinimlerinizi inceleme için iletin.' },
+      { n: '02', t: 'Numune analizi', d: 'Mevcut partilerden fiziksel numuneleri kendi laboratuvar doğrulamanız için kuryeliyoruz.' },
+      { n: '03', t: 'Sözleşme kilitleme', d: 'FOB, CIF veya DDP koşullarıyla şeffaf fiyatlandırma; çok yıllı ölçeklenebilirlik.' },
+      { n: '04', t: 'Küresel teslimat', d: 'Canlı dijital takip ile son teslim noktasına kadar yönetilen lojistik icrası.' },
+    ],
+    ctaTitle: 'Tedarik zincirinizi uzman ellere emanet edin.',
+    ctaLead:
+      'İlk konteynerden yıllık hacim sözleşmelerine kadar — uzman lojistik kadromuz 24 saat içinde özel bir teklif hazırlar.',
+    ctaBtn: 'Teklif Talep Et',
+  },
+  en: {
+    eyebrow: 'LOGISTICS EXPERTISE · DECADES OF ACCUMULATED PRACTICE',
+    heroTitle: 'Integrity in every nautical mile.',
+    heroTitleItalic: 'From origin farm to your facility.',
+    heroLead:
+      'From remote plantations to your facility, we curate a seamless passage for the world’s most delicate raw ingredients — backed by decades of accumulated operational expertise.',
+    heroTag: 'TRACEABLE · SECURE · GLOBAL',
+    traceEyebrow: '01 — VISIBILITY',
+    traceTitle: 'End-to-end traceability.',
+    traceLead:
+      'Our proprietary digital ledger tracks every shipment at every stage, bridging farm-gate origins to industrial hubs with immutable transparency.',
+    traceCards: [
+      {
+        t: 'QR code tracking',
+        d: 'Scan any shipment to access batch records, harvest dates, and farmer-origin data instantly.',
+      },
+      {
+        t: 'Digital certificates',
+        d: 'Real-time access to phytosanitary documents, organic certifications, and bills of lading.',
+      },
+    ],
+    traceQuote: '"True quality begins with knowing the source."',
+    traceBatch: 'Blockchain-verified batch: #KF-8821',
+    qcEyebrow: '02 — VERIFICATION',
+    qcTitle: 'Quality control protocol.',
+    qcBadges: ['SGS STANDARDS', 'BUREAU VERITAS', 'ISO 9001'],
+    qc: [
+      {
+        t: 'Laboratory testing',
+        d: 'Pesticide-residue checks, moisture analysis and sensory profiling on every batch before dispatch.',
+      },
+      {
+        t: 'Batch preservation',
+        d: 'Climate-controlled transit environments monitored 24/7 to prevent fermentation or oxidation.',
+      },
+      {
+        t: 'Audit transparency',
+        d: 'Open access to third-party audit reports for every container dispatched under our name.',
+      },
+    ],
+    portsEyebrow: '03 — TURKISH PORTS',
+    portsTitle: 'To the world via Mersin, Izmir and Istanbul.',
+    portsLead:
+      'Years of accumulated customs-clearance and loading experience at Türkiye’s three principal ports secure priority transit for sensitive food cargo on EU, MENA and American routes.',
+    ports: [
+      {
+        t: 'Mersin',
+        d: 'Our Eastern Mediterranean gateway. Fastest transit toward MENA and the Gulf; food-grade container storage.',
+      },
+      {
+        t: 'Izmir (Alsancak)',
+        d: 'The hub of tree-nut and dried-fruit export; direct Ro-Ro and container lanes to European ports.',
+      },
+      {
+        t: 'Istanbul (Ambarlı)',
+        d: 'Pivot point for the Black Sea and Northern Europe; fast transhipment and cold-chain capacity.',
+      },
+    ],
+    incotermsEyebrow: 'TRADE TERMS',
+    incotermsTitle: 'FOB · CIF · CFR · DDP',
+    incotermsLead:
+      'All standard Incoterms 2020 delivery terms. Our forwarder network handles cargo insurance, customs declarations and phytosanitary paperwork under a single desk.',
+    networkEyebrow: '04 — NETWORK',
+    networkTitle: 'Global transit network.',
+    networkLead:
+      'We connect agricultural heartlands to major logistics hubs with optimized route efficiency.',
+    networkHubs: [
+      { t: 'Istanbul', d: '3–5 day transit to EMEA' },
+      { t: 'Rotterdam', d: '1–2 days to Northern Europe' },
+      { t: 'Santos', d: 'LATAM coffee & sugar hub' },
+      { t: 'Addis Ababa', d: 'African-origin sourcing gateway' },
+    ],
+    processEyebrow: '05 — ONBOARDING',
+    processTitle: 'B2B partnering process.',
+    processLead:
+      'Our procurement flow is designed for speed and clarity. Four steps to secure high-volume raw materials for your manufacturing needs.',
+    processBtn: 'START PARTNERSHIP',
+    process: [
+      { n: '01', t: 'Inquiry & spec', d: 'Submit your detailed technical specifications and volume requirements for review.' },
+      { n: '02', t: 'Sample analysis', d: 'We courier physical samples from current batches for your in-house lab verification.' },
+      { n: '03', t: 'Contract locking', d: 'Transparent pricing under FOB, CIF or DDP terms with multi-year scalability.' },
+      { n: '04', t: 'Global delivery', d: 'Managed logistics execution with live digital tracking until final-gate arrival.' },
+    ],
+    ctaTitle: 'Entrust your supply chain to expert hands.',
+    ctaLead:
+      'From a first container to annual-volume contracts — our logistics specialists prepare a tailored proposal within 24 hours.',
+    ctaBtn: 'Request a Quote',
+  },
+  ar: {
+    eyebrow: 'خبرة لوجستية · تراكم عقود من الممارسة',
+    heroTitle: 'نزاهة في كل ميل بحري.',
+    heroTitleItalic: 'من مزرعة المنشأ إلى منشأتك.',
+    heroLead:
+      'من المزارع النائية إلى منشأتك، نُدير مروراً سلساً لأكثر المكونات الخام حساسية في العالم — مدعومين بعقود من الخبرة التشغيلية المتراكمة.',
+    heroTag: 'قابلية التتبع · الأمان · الانتشار العالمي',
+    traceEyebrow: '01 — الرؤية',
+    traceTitle: 'تتبع شامل من المصدر إلى الوجهة.',
+    traceLead:
+      'يتتبع سجلنا الرقمي الخاص كل شحنة في كل مرحلة، ليربط بين منشأ المزرعة والمراكز الصناعية بشفافية غير قابلة للتغيير.',
+    traceCards: [
+      {
+        t: 'تتبع برمز QR',
+        d: 'امسح أي شحنة للوصول الفوري إلى سجلات الدفعة وتواريخ الحصاد وبيانات المزارع المصدر.',
+      },
+      {
+        t: 'شهادات رقمية',
+        d: 'وصول فوري إلى شهادات الصحة النباتية والشهادات العضوية وبوالص الشحن.',
+      },
+    ],
+    traceQuote: '"الجودة الحقيقية تبدأ بمعرفة المصدر."',
+    traceBatch: 'دفعة موثّقة على البلوكتشين: #KF-8821',
+    qcEyebrow: '02 — التحقق',
+    qcTitle: 'بروتوكول مراقبة الجودة.',
+    qcBadges: ['معايير SGS', 'بيرو فيريتاس', 'ISO 9001'],
+    qc: [
+      {
+        t: 'الاختبارات المخبرية',
+        d: 'فحوصات بقايا المبيدات وتحليل الرطوبة والتقييم الحسي لكل دفعة قبل الشحن.',
+      },
+      {
+        t: 'حفظ الدفعة',
+        d: 'بيئات نقل متحكم بمناخها مراقبة على مدار الساعة لمنع التخمر أو الأكسدة.',
+      },
+      {
+        t: 'شفافية التدقيق',
+        d: 'وصول مفتوح إلى تقارير التدقيق من طرف ثالث لكل حاوية تُشحن باسمنا.',
+      },
+    ],
+    portsEyebrow: '03 — الموانئ التركية',
+    portsTitle: 'إلى العالم عبر مرسين وإزمير وإسطنبول.',
+    portsLead:
+      'سنوات متراكمة من خبرة التخليص الجمركي والتحميل في الموانئ التركية الرئيسية الثلاثة تضمن مرور الشحنات الغذائية الحساسة بأولوية عبر مسارات الاتحاد الأوروبي والشرق الأوسط وشمال أفريقيا والأمريكتين.',
+    ports: [
+      {
+        t: 'مرسين',
+        d: 'بوابتنا إلى شرق المتوسط. أسرع نقل نحو منطقة الشرق الأوسط وشمال أفريقيا والخليج؛ تخزين حاويات بمعايير غذائية.',
+      },
+      {
+        t: 'إزمير (ألسنجاك)',
+        d: 'محور تصدير المكسرات والفواكه المجففة؛ خطوط Ro-Ro وحاويات مباشرة إلى الموانئ الأوروبية.',
+      },
+      {
+        t: 'إسطنبول (أمبارلي)',
+        d: 'نقطة محورية للبحر الأسود وشمال أوروبا؛ مناولة سريعة وقدرة على سلسلة التبريد.',
+      },
+    ],
+    incotermsEyebrow: 'شروط التجارة',
+    incotermsTitle: 'FOB · CIF · CFR · DDP',
+    incotermsLead:
+      'جميع شروط التسليم القياسية Incoterms 2020. تتولى شبكة وكلائنا تأمين الشحن والإقرارات الجمركية وشهادات الصحة النباتية من جهة واحدة.',
+    networkEyebrow: '04 — الشبكة',
+    networkTitle: 'شبكة النقل العالمية.',
+    networkLead:
+      'نربط مناطق الإنتاج الزراعي بالمراكز اللوجستية الكبرى بمسارات محسّنة الكفاءة.',
+    networkHubs: [
+      { t: 'إسطنبول', d: 'نقل 3–5 أيام إلى EMEA' },
+      { t: 'روتردام', d: '1–2 يوم إلى شمال أوروبا' },
+      { t: 'سانتوس', d: 'محور قهوة وسكر أمريكا اللاتينية' },
+      { t: 'أديس أبابا', d: 'بوابة التوريد الأفريقي' },
+    ],
+    processEyebrow: '05 — الانضمام',
+    processTitle: 'عملية الشراكة B2B.',
+    processLead:
+      'صُمّم تدفق التوريد لدينا للسرعة والوضوح. أربع خطوات لتأمين مواد خام بكميات كبيرة لاحتياجات تصنيعكم.',
+    processBtn: 'ابدأ الشراكة',
+    process: [
+      { n: '01', t: 'الاستفسار والمواصفات', d: 'أرسل مواصفاتك التقنية التفصيلية ومتطلبات الكميات للمراجعة.' },
+      { n: '02', t: 'تحليل العينات', d: 'نرسل عينات فعلية من الدفعات الحالية للتحقق في مختبركم الداخلي.' },
+      { n: '03', t: 'إبرام العقد', d: 'تسعير شفاف بشروط FOB أو CIF أو DDP مع قابلية التوسع لسنوات.' },
+      { n: '04', t: 'التسليم العالمي', d: 'تنفيذ لوجستي مُدار مع تتبع رقمي مباشر حتى وصول البوابة النهائية.' },
+    ],
+    ctaTitle: 'اعهد بسلسلة التوريد إلى أيدٍ خبيرة.',
+    ctaLead:
+      'من الحاوية الأولى إلى عقود الأحجام السنوية — يُعدّ متخصصو اللوجستيات لدينا عرضاً مخصصاً خلال 24 ساعة.',
+    ctaBtn: 'اطلب عرض سعر',
+  },
+}[locale];
+
+const contactHref = localePath('/contact/', locale);
+
+/* Images from Stitch */
+const heroImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuAi4qyh-uwjVk1oxWsWiIalodfXPFLtX4i1XEB5ersF4U4R1gKy5AZjknsoMsQSXhdirQcmqEErolU96gfaWCjtAKqXIULOAZTyy_K5K6H7u8Io3u0uW5K3OVCdQarZt-YzQTSFDadVe4HuVRJCrS24iSQit9F-LehdyPKRjOlBjY6avgADQ03d7NZbLOVXTP9RHCI1nr9WCDoUjT7jXQIVOGCRgAmU8Wro5rSC85w6CyeltVhXxE7649ZqJ2ccyLuXm2f_8f7DOUw',
+);
+const traceImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBOFP2egpj6ydP6SHiUeKhvUwYZX1oCD81sI_kP0jC0fMmQe2_YaNd91uDxpkY6UI4XW26lRiHzf4abtgXgVaKGbNx1RgSDexvx-6kY4UVHWM66W6Yun8S0sR3L5TFSmtAiXgpZ7nWU9WNsThkgiCam5HENhPUvEA2Q_32xGDZcoppy9PsfXRUtoVosPt0aOt9CCQvHgGnSq8S2s3WWC0p-X0ARLDvXBXaumGFDFp9g9RIYgbr_mPfDk6RdooBh-tVgwNH78CJPq3g',
+);
+const mapImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuChGMrjtybDbi72e693OPMsRv8n9GacieQE2JWmKfBIjBwQrU7-vZ0oPWehCF_GMso10Kg3fUij1IlrV9SWkbAT_oH5Bw9SY5QDrCQ93A_9MBIP7su-00JL-SGmxzixdIQm3reAxvlDZQgPhvwmwY0lN_h0kvFk0Zhq770B0UUZfN_wOYsjpTnKVyUM2yvAMr5s5dFn5Gc_VXTKfQJTeYo4djr9wrsXamkzk6K3LsuCfBf579FiVqbMVzvRGrmqgvHLUHhYGIPC49A',
+);
+
+const qcIcons = [
+  'M9.5 3A6.5 6.5 0 0 0 3 9.5c0 3.59 2.91 6.5 6.5 6.5 1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 0 0 9.5 3Zm0 2A4.5 4.5 0 0 1 14 9.5 4.5 4.5 0 0 1 9.5 14 4.5 4.5 0 0 1 5 9.5 4.5 4.5 0 0 1 9.5 5Z',
+  'M12 3 4 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-8-3Zm-1 6h2v4h-2V9Zm0 6h2v2h-2v-2Z',
+  'M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-9 14-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9Z',
+];
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<Breadcrumb
+  locale={locale}
+  items={[{ name: tr.nav.supply }]}
+/>
+
+<main id="main" class="bg-surface">
+  {/* Hero */}
+  <section class="relative overflow-hidden bg-surface-low">
+    <div class="absolute inset-0 z-0">
+      <img
+        src={heroImg}
+        alt=""
+        width="1920"
+        height="1080"
+        class="h-full w-full object-cover opacity-70"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent"></div>
+    </div>
+    <div class="relative z-10 mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32 lg:py-40">
+      <div class="max-w-2xl">
+        <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
+        <h1 class="serif-display mb-8 text-4xl font-bold leading-tight text-on-surface md:text-5xl lg:text-7xl">
+          {copy.heroTitle}<br />
+          <span class="italic font-normal text-teal-dark">{copy.heroTitleItalic}</span>
+        </h1>
+        <p class="mb-10 max-w-xl text-lg leading-relaxed text-on-surface-muted md:text-xl">
+          {copy.heroLead}
+        </p>
+        <div class="flex items-center gap-4">
+          <span class="h-px w-12 bg-outline"></span>
+          <p class="eyebrow text-on-surface">{copy.heroTag}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Traceability */}
+  <section class="px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <span class="eyebrow mb-4 block text-teal-dark">{copy.traceEyebrow}</span>
+        <h2 class="serif-display mb-6 text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+          {copy.traceTitle}
+        </h2>
+        <p class="mb-10 max-w-xl text-lg leading-relaxed text-on-surface-muted">
+          {copy.traceLead}
+        </p>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {copy.traceCards.map((c) => (
+            <article class="rounded-lg bg-surface-low p-6">
+              <h3 class="serif-display mb-2 text-lg font-bold text-on-surface">{c.t}</h3>
+              <p class="text-sm leading-relaxed text-on-surface-muted">{c.d}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+      <div class="relative">
+        <img
+          src={traceImg}
+          alt=""
+          width="1000"
+          height="1250"
+          class="shadow-editorial aspect-[4/5] w-full rounded-lg object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="shadow-editorial absolute -bottom-8 -start-6 max-w-xs rounded-lg bg-teal p-8 text-white md:-start-12 md:-bottom-12">
+          <p class="serif-display mb-2 text-xl italic leading-snug md:text-2xl">
+            {copy.traceQuote}
+          </p>
+          <p class="eyebrow text-[10px] text-white/80">{copy.traceBatch}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* QC Protocol */}
+  <section class="bg-surface-low px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+        <div class="max-w-2xl">
+          <span class="eyebrow mb-4 block text-orange-dark">{copy.qcEyebrow}</span>
+          <h2 class="serif-display text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+            {copy.qcTitle}
+          </h2>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          {copy.qcBadges.map((b) => (
+            <span class="flex items-center gap-2 rounded-full border border-outline/30 bg-surface-lowest px-5 py-2 text-[11px] font-semibold uppercase tracking-widest text-on-surface">
+              <span class="h-2 w-2 rounded-full bg-orange"></span>
+              {b}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-outline/20 md:grid-cols-3">
+        {copy.qc.map((item, i) => (
+          <article class="bg-surface p-10 transition-colors hover:bg-surface-mid">
+            <svg class="mb-6 h-10 w-10 text-teal-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d={qcIcons[i]} />
+            </svg>
+            <h3 class="serif-display mb-3 text-xl font-bold text-on-surface md:text-2xl">{item.t}</h3>
+            <p class="leading-relaxed text-on-surface-muted">{item.d}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Turkish Ports */}
+  <section class="px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12 max-w-3xl">
+        <span class="eyebrow mb-4 block text-teal-dark">{copy.portsEyebrow}</span>
+        <h2 class="serif-display mb-6 text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+          {copy.portsTitle}
+        </h2>
+        <p class="text-lg leading-relaxed text-on-surface-muted">{copy.portsLead}</p>
+      </div>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {copy.ports.map((p) => (
+          <article class="rounded-lg border border-outline/20 bg-surface-lowest p-8">
+            <h3 class="serif-display mb-3 text-2xl font-bold text-teal-dark">{p.t}</h3>
+            <p class="leading-relaxed text-on-surface-muted">{p.d}</p>
+          </article>
+        ))}
+      </div>
+      <div class="mt-10 rounded-lg bg-surface-mid p-8 md:p-10">
+        <span class="eyebrow mb-2 block text-orange-dark">{copy.incotermsEyebrow}</span>
+        <h3 class="serif-display mb-3 text-2xl font-bold text-on-surface md:text-3xl">{copy.incotermsTitle}</h3>
+        <p class="max-w-3xl leading-relaxed text-on-surface-muted">{copy.incotermsLead}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* Global Transit Network */}
+  <section class="bg-surface-deep px-4 py-20 text-white md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12 text-center">
+        <span class="eyebrow mb-4 block text-orange">{copy.networkEyebrow}</span>
+        <h2 class="serif-display mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+          {copy.networkTitle}
+        </h2>
+        <p class="mx-auto max-w-2xl text-white/70">{copy.networkLead}</p>
+      </div>
+      <div class="relative overflow-hidden rounded-xl border border-white/10 bg-white/5">
+        <img
+          src={mapImg}
+          alt=""
+          width="1800"
+          height="900"
+          class="aspect-video w-full object-cover opacity-30"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="absolute inset-0 grid grid-cols-2 gap-6 p-6 md:grid-cols-4 md:gap-8 md:p-10">
+          {copy.networkHubs.map((h, i) => (
+            <div class={['rounded-lg border-s backdrop-blur-sm bg-black/20 p-4', i % 2 === 0 ? 'border-teal/60' : 'border-orange/60'].join(' ')}>
+              <span class="serif-display block text-xl font-bold text-white md:text-2xl">{h.t}</span>
+              <p class="mt-2 text-[11px] uppercase tracking-widest text-white/60">{h.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Partnering Process */}
+  <section class="bg-surface px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-3 md:gap-16">
+      <div>
+        <span class="eyebrow mb-4 block text-orange-dark">{copy.processEyebrow}</span>
+        <h2 class="serif-display mb-6 text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+          {copy.processTitle}
+        </h2>
+        <p class="mb-8 leading-relaxed text-on-surface-muted">{copy.processLead}</p>
+        <a href={contactHref} class="group inline-flex items-center gap-4">
+          <span class="text-xs font-bold uppercase tracking-widest text-on-surface">{copy.processBtn}</span>
+          <span class="h-[2px] w-10 bg-orange transition-all duration-300 group-hover:w-16"></span>
+        </a>
+      </div>
+      <ol class="md:col-span-2 grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12">
+        {copy.process.map((p) => (
+          <li class="flex gap-6">
+            <span class="serif-display text-4xl italic font-bold text-outline/40">{p.n}</span>
+            <div>
+              <h3 class="serif-display mb-3 text-xl font-bold text-on-surface">{p.t}</h3>
+              <p class="text-sm leading-relaxed text-on-surface-muted">{p.d}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="cta-gradient px-4 py-20 text-white md:px-8">
+    <div class="mx-auto max-w-4xl text-center">
+      <h2 class="serif-display mb-4 text-3xl font-bold md:text-4xl">{copy.ctaTitle}</h2>
+      <p class="mb-8 text-lg leading-relaxed text-white/85">{copy.ctaLead}</p>
+      <a
+        href={contactHref}
+        class="inline-block rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
+      >
+        {copy.ctaBtn}
+      </a>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />

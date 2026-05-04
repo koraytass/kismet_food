@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#5c403a",
+                    "on-tertiary-container": "#452c27",
+                    "on-surface": "#1a1c1c",
+                    "on-secondary-fixed-variant": "#7c2e04",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#3c4949",
+                    "primary-container": "#00acaf",
+                    "primary-fixed": "#76f6f8",
+                    "surface-container": "#eeeeed",
+                    "tertiary-fixed-dim": "#e5beb5",
+                    "on-primary-fixed": "#002020",
+                    "surface-bright": "#faf9f8",
+                    "primary-fixed-dim": "#56d9dc",
+                    "on-primary-container": "#00393a",
+                    "inverse-primary": "#56d9dc",
+                    "secondary": "#9b451c",
+                    "secondary-fixed": "#ffdbcd",
+                    "inverse-surface": "#2f3130",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#faf9f8",
+                    "on-primary-fixed-variant": "#004f51",
+                    "surface-container-low": "#f4f3f2",
+                    "on-secondary-fixed": "#360f00",
+                    "surface-container-highest": "#e3e2e1",
+                    "on-tertiary-fixed": "#2b1611",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#00696b",
+                    "surface-dim": "#dadad9",
+                    "secondary-fixed-dim": "#ffb597",
+                    "error-container": "#ffdad6",
+                    "outline": "#6c7a7a",
+                    "secondary-container": "#fe9162",
+                    "inverse-on-surface": "#f1f0f0",
+                    "tertiary-container": "#b6938b",
+                    "on-background": "#1a1c1c",
+                    "background": "#faf9f8",
+                    "surface-variant": "#e3e2e1",
+                    "on-secondary-container": "#752900",
+                    "on-primary": "#ffffff",
+                    "primary": "#00696b",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdad2",
+                    "tertiary": "#755750",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e9e8e7",
+                    "outline-variant": "#bbc9c9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-nav {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      body {
+        font-family: 'Manrope', sans-serif;
+        background-color: #faf9f8;
+      }
+      h1, h2, h3 {
+        font-family: 'Noto Serif', serif;
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#faf9f8]/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif font-bold tracking-tight text-[#1a1c1c]">KISMET FOODS</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">About</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Products</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Origins</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Sustainability</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Insights</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Contact</a>
+</div>
+<div class="flex items-center space-x-6">
+<span class="text-xs font-bold tracking-widest text-on-surface-variant uppercase cursor-pointer hover:text-primary transition-colors">TR/EN/AR</span>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-lg text-sm font-bold tracking-wide shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
+                    Request Quote
+                </button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative min-h-[921px] flex items-center pt-20 overflow-hidden bg-surface">
+<div class="max-w-screen-2xl mx-auto px-8 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+<div class="md:col-span-7 z-10">
+<p class="font-label text-sm font-extrabold tracking-[0.2em] text-secondary uppercase mb-6">OPPORTUNITY AT SCALE</p>
+<h1 class="text-6xl md:text-8xl font-bold tracking-tight leading-[0.95] text-on-surface mb-8">
+                    Join the Global <br/><span class="italic text-primary">Curator</span> Team
+                </h1>
+<p class="text-xl text-on-surface-variant max-w-xl leading-relaxed mb-10 font-body">
+                    We bridge the gap between the world's most pristine raw materials and the people who value them most. Become part of a legacy that honors the earth and empowers the global trade ecosystem.
+                </p>
+<div class="flex items-center space-x-8">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-lg font-bold text-sm tracking-widest uppercase hover:bg-primary-container transition-colors">
+                        View Openings
+                    </button>
+<a class="group flex items-center space-x-3 text-sm font-bold tracking-widest uppercase text-on-surface" href="#culture">
+<span>Our Philosophy</span>
+<div class="h-[1px] w-8 bg-secondary group-hover:w-12 transition-all"></div>
+</a>
+</div>
+</div>
+<div class="md:col-span-5 relative h-full">
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="Professional diverse team in a bright modern office with large windows, working collaboratively at a wooden table with laptops" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-4PV3BhKzXQzQzlzb8-natQdElLaEjBmysqlETBt6UuPk652_MIl4HrlJf95Jnlv4UqOJMwTzv368CRAxx6r0EQSl9zl-LGlHAZdKTkzY5B8RXjfvk9T9UVvLp2qtqVh8HMqp7UY_h9xCUFvXHKqolA51fn2Gs3S15X9jfRsHICL28utdSZIBVPYGq7wDWGOwkTs_vI2Z4aGuVaQ8yVc7ELxPUF9-nVqJwiGYUwUZAjFRLdr0gRqTNj6bkW7qVOEhY87VZrm_nAw"/>
+</div>
+<!-- Editorial Overlap Decor -->
+<div class="absolute -bottom-10 -left-16 w-64 h-80 bg-surface-container-low -z-10 rounded-xl hidden lg:block"></div>
+<div class="absolute top-1/2 -right-4 translate-y-[-50%] bg-white/80 backdrop-blur-md p-6 rounded-xl shadow-xl max-w-[200px] hidden lg:block">
+<p class="text-xs font-bold text-secondary mb-2 uppercase tracking-tighter">Global Footprint</p>
+<p class="text-2xl font-serif font-bold text-on-surface">42 Countries</p>
+<div class="mt-4 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4"></div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Our Culture Section -->
+<section class="py-32 bg-surface-container-low" id="culture">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+<div class="max-w-2xl">
+<p class="font-label text-sm font-extrabold tracking-[0.2em] text-secondary uppercase mb-4">OUR DNA</p>
+<h2 class="text-5xl font-bold text-on-surface leading-tight">Curated with Purpose, <br/>Driven by Excellence.</h2>
+</div>
+<p class="text-on-surface-variant max-w-sm font-body italic border-l-2 border-primary pl-6">
+                    "We don't just trade commodities; we curate the very essence of human taste and industry."
+                </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-1 px-1 bg-outline-variant/10">
+<!-- Professionalism -->
+<div class="bg-surface p-12 hover:bg-surface-container-lowest transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-8" data-icon="verified">verified</span>
+<h3 class="text-2xl font-bold mb-4">Professionalism</h3>
+<p class="text-on-surface-variant leading-relaxed mb-6">
+                        In global logistics, precision is our baseline. We operate with high-level transparency and ethical standards that set the industry benchmark.
+                    </p>
+<div class="text-xs font-bold tracking-widest text-primary uppercase opacity-0 group-hover:opacity-100 transition-opacity">Execution is Everything</div>
+</div>
+<!-- Curiosity -->
+<div class="bg-surface p-12 hover:bg-surface-container-lowest transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-8" data-icon="travel_explore">travel_explore</span>
+<h3 class="text-2xl font-bold mb-4">Curiosity</h3>
+<p class="text-on-surface-variant leading-relaxed mb-6">
+                        We seek the unknown. Whether it's a hidden valley of heirloom cocoa or a more efficient shipping route, curiosity drives our innovation.
+                    </p>
+<div class="text-xs font-bold tracking-widest text-primary uppercase opacity-0 group-hover:opacity-100 transition-opacity">Seek the Source</div>
+</div>
+<!-- Global Impact -->
+<div class="bg-surface p-12 hover:bg-surface-container-lowest transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-8" data-icon="public">public</span>
+<h3 class="text-2xl font-bold mb-4">Global Impact</h3>
+<p class="text-on-surface-variant leading-relaxed mb-6">
+                        Every decision we make ripples through the supply chain. We prioritize sustainable sourcing that empowers local farming communities worldwide.
+                    </p>
+<div class="text-xs font-bold tracking-widest text-primary uppercase opacity-0 group-hover:opacity-100 transition-opacity">Beyond Borders</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Life at Kismet: Bento Grid -->
+<section class="py-32 bg-surface">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[800px]">
+<!-- Main Visual -->
+<div class="md:col-span-8 md:row-span-2 relative rounded-xl overflow-hidden group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Candid shot of office life with a modern open-plan layout, plants, and natural light, capturing an authentic workplace atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA13pSnCihOl7yagnn0UcmxAHXOJizgNz_MxOXq0GQulKKo4Ggccegvfv-J5hRSTHlmd5W4nm_DUesmBiKjopXBi204rT7y1FzlMwnXxQ8PvIDowlDfR-oaf4H8W4QQKuAVJ94YXplLL91iGUSfbXo_kr6fq-Ewvr2CuD8jvu736IjvCa3No0VUwoCEcu6lO4tyifeWcppQt_Gw4Fe9XCEESgb1bgMOWQXofT8-PCt8gw3QqYndsnj_xN4bbhhCeRsewj3MD3BzufA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 to-transparent"></div>
+<div class="absolute bottom-10 left-10 text-white">
+<p class="font-label text-xs font-bold tracking-widest mb-2 opacity-80">LIFE AT KISMET</p>
+<h3 class="text-4xl font-bold">Collaborative Mastery</h3>
+</div>
+</div>
+<!-- Benefit Card 1 -->
+<div class="md:col-span-4 bg-secondary-container p-8 rounded-xl flex flex-col justify-between">
+<span class="material-symbols-outlined text-on-secondary-container text-4xl" data-icon="featured_seasonal">featured_seasonal_and_gifts</span>
+<div>
+<h4 class="text-xl font-bold text-on-secondary-container mb-2">Flexible Mobility</h4>
+<p class="text-on-secondary-container/80 text-sm">Opportunities for international travel and cross-continental rotations.</p>
+</div>
+</div>
+<!-- Benefit Card 2 -->
+<div class="md:col-span-4 bg-tertiary-container p-8 rounded-xl flex flex-col justify-between">
+<span class="material-symbols-outlined text-on-tertiary-container text-4xl" data-icon="workspace_premium">workspace_premium</span>
+<div>
+<h4 class="text-xl font-bold text-on-tertiary-container mb-2">Holistic Wellness</h4>
+<p class="text-on-tertiary-container/80 text-sm">Comprehensive global health coverage and mental wellness stipends.</p>
+</div>
+</div>
+<!-- Small Portrait -->
+<div class="md:col-span-4 rounded-xl overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A diverse group of young professionals laughing together in a sunlit lounge area, wearing casual business attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ0Krgd1qmF7bMomqa4FcphmQ2QPbI9RcIYhQz5uAgsSyroA5Yx7YQnqilHRqcDmObRWuSNB_MNnN5HTQ8Ke4dyEBWWQj18JFcTyFVvypZ-vv90Il53GcsekY7EfsBxKBdTWrK-M5190DKkpc0LLbdAqOzt2bUikUWv-EDwha0ixib_OzVLgvHJJ38H-N-MkCEdfRUQrbh8JPvELnMb5ssjmu1TqpwPBQaXjMU2S5ce5JKlAtuSEbK9qzaRFkwMo40SXzkjpTdCKA"/>
+</div>
+<!-- Growth Quote -->
+<div class="md:col-span-4 bg-surface-container-low p-10 rounded-xl border border-outline-variant/10 flex flex-col justify-center italic">
+<p class="text-lg text-on-surface-variant leading-relaxed">
+                        "The level of autonomy and the scale of the projects I handle at Kismet is unlike anywhere else in the trade industry."
+                    </p>
+<div class="mt-6 not-italic">
+<p class="font-bold text-on-surface">Elena V.</p>
+<p class="text-xs uppercase tracking-widest text-primary font-bold">Head of Origin Strategy</p>
+</div>
+</div>
+<!-- Secondary Visual -->
+<div class="md:col-span-4 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up of a team member examining raw coffee beans on a laboratory table, focused and professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBh5JVfVeYbua9zcrX0E7LkD1ozEiKrYjBYY-y8vn7yLuXhEFJz8TMRfKt0OmM5mGwb-sJ0JjW_UtcAKnbakTeaUYyvG77aF7WVyt2A26LxhapiFev3f-y_w9DeujlRrZvBtJRHEmzWoIZhfzi_EerXIJWKrWPehXahmuBivU1gOX5yn5VBsnoS4b9rO_YQ1cEVEAbVwJK37kjxudz2S45p929JrTbLvoZpQWYPdF19W8V0fVbuLmHBJx7hb07xL9rrsvUa55Uvs4s"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Open Roles Section -->
+<section class="py-32 bg-surface-container-lowest">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="text-center mb-24">
+<p class="font-label text-sm font-extrabold tracking-[0.2em] text-secondary uppercase mb-4">JOIN THE CURATION</p>
+<h2 class="text-5xl font-bold text-on-surface mb-6">Current Opportunities</h2>
+<div class="w-24 h-1 bg-primary mx-auto"></div>
+</div>
+<div class="space-y-4">
+<!-- Role Category: Logistics -->
+<div class="group border-b border-outline-variant/30 py-8 flex flex-col md:flex-row md:items-center justify-between hover:px-6 transition-all duration-300">
+<div class="flex items-center space-x-8">
+<span class="text-primary font-serif italic text-2xl w-8">01</span>
+<div>
+<h3 class="text-2xl font-bold text-on-surface">Logistics &amp; Supply Chain</h3>
+<p class="text-on-surface-variant text-sm mt-1">4 Open Roles • Global HQ &amp; Regional Hubs</p>
+</div>
+</div>
+<div class="flex items-center mt-6 md:mt-0 space-x-4">
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Fast Growing</span>
+<button class="bg-on-surface text-white px-6 py-3 rounded text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors">Apply Now</button>
+</div>
+</div>
+<!-- Role Category: Trade -->
+<div class="group border-b border-outline-variant/30 py-8 flex flex-col md:flex-row md:items-center justify-between hover:px-6 transition-all duration-300">
+<div class="flex items-center space-x-8">
+<span class="text-primary font-serif italic text-2xl w-8">02</span>
+<div>
+<h3 class="text-2xl font-bold text-on-surface">Trade &amp; Merchanting</h3>
+<p class="text-on-surface-variant text-sm mt-1">2 Open Roles • London, Dubai, Singapore</p>
+</div>
+</div>
+<div class="flex items-center mt-6 md:mt-0 space-x-4">
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Strategic</span>
+<button class="bg-on-surface text-white px-6 py-3 rounded text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors">Apply Now</button>
+</div>
+</div>
+<!-- Role Category: Quality -->
+<div class="group border-b border-outline-variant/30 py-8 flex flex-col md:flex-row md:items-center justify-between hover:px-6 transition-all duration-300">
+<div class="flex items-center space-x-8">
+<span class="text-primary font-serif italic text-2xl w-8">03</span>
+<div>
+<h3 class="text-2xl font-bold text-on-surface">Quality Control &amp; Labs</h3>
+<p class="text-on-surface-variant text-sm mt-1">3 Open Roles • Field-based &amp; Lab-based</p>
+</div>
+</div>
+<div class="flex items-center mt-6 md:mt-0 space-x-4">
+<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Essential</span>
+<button class="bg-on-surface text-white px-6 py-3 rounded text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors">Apply Now</button>
+</div>
+</div>
+<!-- Role Category: Admin -->
+<div class="group border-b border-outline-variant/30 py-8 flex flex-col md:flex-row md:items-center justify-between hover:px-6 transition-all duration-300">
+<div class="flex items-center space-x-8">
+<span class="text-primary font-serif italic text-2xl w-8">04</span>
+<div>
+<h3 class="text-2xl font-bold text-on-surface">Administration &amp; Legal</h3>
+<p class="text-on-surface-variant text-sm mt-1">1 Open Role • Istanbul HQ</p>
+</div>
+</div>
+<div class="flex items-center mt-6 md:mt-0 space-x-4">
+<button class="bg-on-surface text-white px-6 py-3 rounded text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors">Apply Now</button>
+</div>
+</div>
+</div>
+<div class="mt-20 text-center">
+<p class="text-on-surface-variant mb-6">Don't see a perfect fit? We're always looking for exceptional curators.</p>
+<a class="inline-block border-b-2 border-secondary pb-1 font-bold text-on-surface hover:text-secondary transition-colors" href="#">Send a Spontaneous Application</a>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-[#f4f3f2] dark:bg-[#121212] mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 w-full max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-xl font-serif text-[#1a1c1c] dark:text-[#faf9f8] mb-4">KISMET FOODS</div>
+<p class="text-[10px] font-bold tracking-[0.1em] text-[#1a1c1c]/60 dark:text-[#faf9f8]/60 uppercase">© 2024 KISMET FOODS. GLOBAL CURATORS OF RAW EXCELLENCE.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-[#1a1c1c]/60 dark:text-[#faf9f8]/60 text-[10px] font-bold uppercase tracking-[0.1em] hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Privacy Policy</a>
+<a class="text-[#1a1c1c]/60 dark:text-[#faf9f8]/60 text-[10px] font-bold uppercase tracking-[0.1em] hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Terms of Service</a>
+<a class="text-[#1a1c1c]/60 dark:text-[#faf9f8]/60 text-[10px] font-bold uppercase tracking-[0.1em] hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Supply Chain Ethics</a>
+<a class="text-[#1a1c1c]/60 dark:text-[#faf9f8]/60 text-[10px] font-bold uppercase tracking-[0.1em] hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Certifications</a>
+</div>
+</div>
+</footer>
+</body></html>

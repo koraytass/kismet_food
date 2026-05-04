@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import HeritagePage from '@/components/pages/HeritagePage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/heritage/';
+const title = 'إرثنا | كسمت فودز';
+const description =
+  'كسمت فودز وريث حديث لإرث تركيا التجاري الممتد على طريق الحرير منذ ألفي عام. سنوات متراكمة من الخبرة المتخصصة في القهوة والكاكاو والمكسرات والتوابل والمواد الغذائية الخام.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    keywords: [
+      'إرث طريق الحرير',
+      'تجارة الأغذية التركية',
+      'إرث كسمت فودز',
+      'خبرة تجارية متراكمة',
+      'توريد مباشر من المنشأ',
+    ],
+  }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'إرثنا', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <HeritagePage locale={locale} currentPath={pathname} />
+</BaseLayout>

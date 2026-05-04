@@ -1,0 +1,222 @@
+---
+/**
+ * HeroSection — Editorial display hero, magazine cover energy.
+ *
+ * Composition: full-width type stage. Headline is ENORMOUS (clamp
+ * 4rem → 12rem, fluid). Image sits as a tall vertical accent on the
+ * right but anchored to the headline baseline — they share a visual
+ * grid. Italic accent kelimesi rakamla aynı baseline'a oturur.
+ *
+ * Background: warm cream wash with soft teal/orange halo.
+ * Cursor-follow halo on lg+. Clip-path curtain reveal on the image.
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stockImages } from '@/lib/images';
+import Button from './Button.astro';
+import TextLink from './TextLink.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+const img = stockImages.hero;
+
+const productsHref = localePath('/products/', locale);
+const originsHref = localePath('/origins/', locale);
+
+/* Italicise the last word of the headline as the duo-tone accent */
+const headlineRaw = tr.hero.headline.replace(/[.!?]+\s*$/, '');
+const lastSpace = headlineRaw.lastIndexOf(' ');
+const headLead = lastSpace === -1 ? '' : headlineRaw.slice(0, lastSpace);
+const headAccent = lastSpace === -1 ? headlineRaw : headlineRaw.slice(lastSpace + 1);
+---
+
+<section class="hero relative isolate overflow-hidden bg-surface" data-hero>
+  {/* Cursor-follow halo (desktop only) */}
+  <div
+    aria-hidden="true"
+    class="hero-cursor-halo pointer-events-none absolute inset-0 -z-10 hidden opacity-0 transition-opacity duration-700 lg:block"
+    data-cursor-halo
+  ></div>
+
+  {/* Static ambient halo */}
+  <div
+    aria-hidden="true"
+    class="hero-ambient pointer-events-none absolute inset-x-0 top-0 -z-20 h-[120%]"
+  ></div>
+
+  <div class="relative mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1440px] flex-col px-5 pt-32 pb-20 sm:pt-40 sm:pb-24 md:px-8 md:pt-48 md:pb-28 lg:min-h-[calc(100vh-7rem)] lg:pt-56 lg:pb-32">
+
+    {/* Eyebrow row — full width */}
+    <div class="hero-eyebrow flex items-center gap-3 sm:gap-4">
+      <span class="hero-eyebrow__rule"></span>
+      <span class="eyebrow text-orange">{tr.hero.eyebrow}</span>
+    </div>
+
+    {/* Headline + image grid */}
+    <div class="mt-10 flex-1 grid grid-cols-1 items-end gap-10 sm:mt-14 lg:grid-cols-[1fr_auto] lg:gap-16">
+
+      {/* Type column */}
+      <div class="lg:max-w-[850px]">
+        <h1 class="hero-headline font-serif tracking-[-0.03em] text-on-surface">
+          <span class="hero-line hero-line--lead block font-semibold leading-[0.95]">{headLead}</span>
+          <span class="hero-line hero-line--accent mt-2 block font-light italic leading-[0.95] text-teal">
+            {headAccent}<span aria-hidden="true" class="hero-period text-orange">.</span>
+          </span>
+        </h1>
+
+        <p class="hero-lead mt-10 max-w-[36rem] text-base leading-[1.7] text-on-surface-muted sm:mt-12 sm:text-lg md:text-xl">
+          {tr.hero.subheadline}
+        </p>
+
+        <div class="hero-cta mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 sm:mt-12">
+          <Button href={productsHref} variant="primary">
+            {tr.hero.ctaPrimary}
+          </Button>
+          <TextLink href={originsHref}>{tr.hero.ctaSecondary}</TextLink>
+        </div>
+      </div>
+
+      {/* Image column — tall vertical accent, anchored to headline baseline */}
+      <div class="hero-image hidden lg:block">
+        <figure
+          class="hero-photo photo-grade photo-grade--warm relative overflow-hidden rounded-sm shadow-editorial"
+          data-hero-photo
+        >
+          <img
+            src={img.src}
+            alt={img.alt[locale]}
+            class="aspect-[3/4] w-[260px] object-cover xl:w-[320px]"
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+
+    {/* Mobile-only image — sits below CTA in flow */}
+    <div class="hero-image-mobile mt-12 lg:hidden">
+      <figure
+        class="hero-photo photo-grade photo-grade--warm relative ms-auto overflow-hidden rounded-sm shadow-editorial"
+        data-hero-photo
+      >
+        <img
+          src={img.src}
+          alt={img.alt[locale]}
+          class="aspect-[3/4] w-full max-w-[14rem] object-cover sm:max-w-[18rem] md:max-w-[22rem]"
+          fetchpriority="high"
+          loading="eager"
+          decoding="async"
+        />
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ───── Display headline — fluid clamp, magazine-cover scale ─────
+     ENORMOUS so it dominates. Mobile 3.5rem (56px), 1440px ~10rem (160px) */
+  .hero-headline {
+    font-size: clamp(3.25rem, 11vw, 10.5rem);
+  }
+
+  .hero-period {
+    display: inline-block;
+    margin-inline-start: 0.04em;
+  }
+
+  /* ───── Ambient halo (always-on backdrop) ───── */
+  .hero-ambient {
+    background:
+      radial-gradient(ellipse 60% 70% at 30% 30%, rgba(0, 172, 175, 0.10), transparent 65%),
+      radial-gradient(ellipse 50% 60% at 75% 80%, rgba(246, 139, 92, 0.10), transparent 65%);
+  }
+
+  /* ───── Cursor-follow halo (desktop only) ───── */
+  .hero-cursor-halo {
+    background: radial-gradient(550px circle at var(--mx, 50%) var(--my, 50%),
+                                rgba(0, 172, 175, 0.16) 0%,
+                                rgba(0, 172, 175, 0.05) 30%,
+                                transparent 70%);
+  }
+  .hero-cursor-halo.is-active { opacity: 1; }
+
+  /* ───── Eyebrow rule grow ───── */
+  .hero-eyebrow__rule {
+    display: inline-block;
+    width: 0;
+    height: 1.5px;
+    background: var(--color-orange);
+    animation: hero-rule-grow 800ms cubic-bezier(0.22, 0.72, 0.22, 1) 200ms forwards;
+  }
+  @keyframes hero-rule-grow { to { width: 3rem; } }
+
+  /* ───── Stagger entrance for type ───── */
+  .hero-eyebrow,
+  .hero-line--lead,
+  .hero-line--accent,
+  .hero-lead,
+  .hero-cta {
+    opacity: 0;
+    transform: translateY(32px);
+    animation: hero-rise 1100ms cubic-bezier(0.22, 0.72, 0.22, 1) forwards;
+  }
+  .hero-eyebrow      { animation-delay: 100ms; }
+  .hero-line--lead   { animation-delay: 280ms; }
+  .hero-line--accent { animation-delay: 460ms; }
+  .hero-lead         { animation-delay: 720ms; }
+  .hero-cta          { animation-delay: 940ms; }
+  @keyframes hero-rise { to { opacity: 1; transform: translateY(0); } }
+
+  /* ───── Image curtain reveal ───── */
+  .hero-photo {
+    clip-path: inset(100% 0 0 0);
+    animation: hero-curtain 1400ms cubic-bezier(0.7, 0, 0.18, 1) 460ms forwards;
+  }
+  @keyframes hero-curtain { to { clip-path: inset(0 0 0 0); } }
+  .hero-photo > img {
+    transform: scale(1.08);
+    animation: hero-photo-settle 2400ms cubic-bezier(0.22, 0.72, 0.22, 1) 460ms forwards;
+  }
+  @keyframes hero-photo-settle { to { transform: scale(1); } }
+
+  /* ───── Reduced motion ───── */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-eyebrow__rule { animation: none; width: 3rem; }
+    .hero-eyebrow,
+    .hero-line--lead, .hero-line--accent,
+    .hero-lead, .hero-cta,
+    .hero-photo, .hero-photo > img {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      clip-path: none;
+    }
+  }
+</style>
+
+<script>
+  // ───── Cursor-follow halo ─────
+  const heroEl = document.querySelector<HTMLElement>('[data-hero]');
+  const halo = document.querySelector<HTMLElement>('[data-cursor-halo]');
+  if (heroEl && halo && window.matchMedia('(pointer: fine)').matches) {
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      const rect = heroEl.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        halo.style.setProperty('--mx', `${mx}px`);
+        halo.style.setProperty('--my', `${my}px`);
+      });
+    };
+    heroEl.addEventListener('mouseenter', () => halo.classList.add('is-active'));
+    heroEl.addEventListener('mouseleave', () => halo.classList.remove('is-active'));
+    heroEl.addEventListener('mousemove', onMove);
+  }
+</script>

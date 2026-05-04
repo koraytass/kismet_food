@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SustainabilityPage from '@/components/pages/SustainabilityPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/sustainability/';
+const title = 'الاستدامة والأثر | كسمت فودز';
+const description =
+  'استدامة كسمت فودز: أكثر من 5000 مزارع في 12 دولة، شحن محايد بلاستيكياً، تغليف حيوي، وهدف صفر نفايات بحلول 2030 — خبرة عميقة مثبتة في كل فئة منتج.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'الاستدامة', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <SustainabilityPage locale={locale} currentPath={pathname} />
+</BaseLayout>

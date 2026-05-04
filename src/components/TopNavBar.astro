@@ -1,0 +1,59 @@
+---
+/**
+ * TopNavBar — Sticky glass navigation with language switcher + CTA.
+ * Uses editorial glass effect (backdrop-blur) over hero imagery.
+ */
+import type { Locale } from '@/i18n';
+import { t } from '@/i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+---
+
+<nav
+  aria-label="Primary"
+  class="glass fixed inset-x-0 top-0 z-50 border-b border-outline/15"
+>
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-8">
+    <a
+      href={`/${locale}/`}
+      class="font-serif text-2xl font-bold tracking-tight text-teal-dark"
+    >
+      Kismet <span class="text-orange">Foods</span>
+    </a>
+
+    <div class="hidden items-center gap-8 md:flex">
+      <a
+        href="#portfolio"
+        class="text-sm font-medium text-on-surface-muted transition-colors hover:text-teal"
+        >{tr.nav.products}</a
+      >
+      <a
+        href="#supply"
+        class="text-sm font-medium text-on-surface-muted transition-colors hover:text-teal"
+        >{tr.nav.supply}</a
+      >
+      <a
+        href="#sustainability"
+        class="text-sm font-medium text-on-surface-muted transition-colors hover:text-teal"
+        >{tr.nav.sustainability}</a
+      >
+    </div>
+
+    <div class="flex items-center gap-3">
+      <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
+      <a
+        href="#quote"
+        class="cta-gradient shadow-editorial rounded-md px-5 py-2.5 text-sm font-bold tracking-wide text-white transition-transform duration-150 active:scale-95"
+      >
+        {tr.nav.requestQuote}
+      </a>
+    </div>
+  </div>
+</nav>

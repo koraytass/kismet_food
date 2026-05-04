@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import OriginTurkiyePage from '@/components/pages/OriginTurkiyePage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  productCategorySchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/origins/turkiye/';
+const title = 'Menşe Odak: Türkiye | Kısmet Foods';
+const description =
+  'Türkiye menşeli Giresun fındığı, Antep fıstığı, Ege inciri ve Anadolu baharatları — İpek Yolu mirasıyla modern uzmanlığın buluştuğu, yılların birikimi tedarik.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description }),
+  productCategorySchema({
+    name: 'Giresun Fındığı',
+    description: 'Karadeniz Giresun bölgesinden yüksek yağ oranlı, ince kabuklu premium fındık.',
+    url: pathname,
+    category: 'Tree Nuts',
+    origin: ['Giresun, Türkiye'],
+  }),
+  productCategorySchema({
+    name: 'Antep Fıstığı',
+    description: 'Gaziantep bölgesinden derin yeşil iç, mor zarlı premium grade Antep fıstığı.',
+    url: pathname,
+    category: 'Tree Nuts',
+    origin: ['Gaziantep, Türkiye'],
+  }),
+  productCategorySchema({
+    name: 'Anadolu Baharatları',
+    description: 'Urfa isot, Antep pul biber, sumak ve mahlep — izlenebilir menşe, aroma bütünlüğü.',
+    url: pathname,
+    category: 'Spices',
+    origin: ['Anadolu, Türkiye'],
+  }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Menşelerimiz', url: '/tr/origins/' },
+    { name: 'Türkiye', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <OriginTurkiyePage locale={locale} currentPath={pathname} />
+</BaseLayout>

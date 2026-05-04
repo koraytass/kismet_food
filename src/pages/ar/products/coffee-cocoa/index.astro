@@ -1,0 +1,76 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import CoffeeCocoaPage from '@/components/pages/CoffeeCocoaPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+  productCategorySchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/products/coffee-cocoa/';
+const title = 'القهوة والكاكاو | كسمت فودز — توريد أرابيكا متخصصة وكاكاو مخمّر';
+const description =
+  'تقدم كسمت فودز سنوات من الخبرة في تجارة القهوة والكاكاو: أرابيكا سيدامو الإثيوبية، فوراستيرو الغانية، اختبارات مطابقة لـ ISO وعلاقات تجارة مباشرة.';
+
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    keywords: [
+      'حبوب قهوة خضراء',
+      'قهوة متخصصة',
+      'سيدامو الإثيوبية',
+      'كاكاو غانا',
+      'كاكاو فوراستيرو',
+      'تجارة مباشرة',
+      'كاكاو مخمّر',
+      'ISO 6673',
+    ],
+  }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'المنتجات', url: '/ar/products/' },
+    { name: 'القهوة والكاكاو', url: pathname },
+  ]),
+  productCategorySchema({
+    name: 'حبوب قهوة أرابيكا خضراء',
+    description:
+      'أرابيكا خضراء بدرجة متخصصة (80+ SCAA) من سيدامو الإثيوبية، محصودة على ارتفاع يزيد عن 1500 م. حموضة زهرية حمضية وقوام شبيه بالشاي.',
+    url: pathname,
+    category: 'Green Coffee Beans',
+    origin: ['Ethiopia', 'Colombia', 'Indonesia'],
+  }),
+  productCategorySchema({
+    name: 'حبوب كاكاو مخمّرة',
+    description:
+      'كاكاو فوراستيرو من غانا وساحل العاج. محتوى دهون 52%–56%، نكهات شوكولاتة عميقة، جودة ممتازة للإنتاج الصناعي والمتخصص.',
+    url: pathname,
+    category: 'Dried Cocoa Beans',
+    origin: ['Ghana', 'Côte d’Ivoire'],
+  }),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <CoffeeCocoaPage locale={locale} currentPath={pathname} />
+</BaseLayout>

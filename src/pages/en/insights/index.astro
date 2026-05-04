@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import InsightsPage from '@/components/pages/InsightsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/insights/';
+const title = 'Insights & Market Reports | Kismet Foods';
+const description =
+  'Kismet Foods market reports, origin stories, and trade news — shaped by years of accumulated practice and deep professional expertise across every commodity category we trade.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Insights', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <InsightsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

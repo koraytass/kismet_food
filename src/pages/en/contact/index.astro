@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import ContactPage from '@/components/pages/ContactPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  contactPageSchema,
+  localBusinessSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/contact/';
+const title = 'Contact & Quote | Kismet Foods';
+const description =
+  'Contact Kismet Foods Istanbul. Trade experts with years of accumulated practice and deep professional expertise across every commodity prepare your custom proposal within 24 hours.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  contactPageSchema({ locale, url: pathname, title, description }),
+  localBusinessSchema(locale),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Contact', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <ContactPage locale={locale} currentPath={pathname} />
+</BaseLayout>

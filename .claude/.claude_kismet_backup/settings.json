@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew install:*)",
+      "Bash(pdftoppm -v)",
+      "Bash(pdfinfo \"/Users/koray/Desktop/work/kismet/kısmet-foods-kurumsal-kimlik-v5 copy.pdf\")",
+      "Bash(pdftoppm -png -r 150 \"/Users/koray/Desktop/work/kismet/kısmet-foods-kurumsal-kimlik-v5 copy.pdf\" /tmp/kismet_pdf/page)",
+      "Bash(npm create:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/koray/Desktop/work/kismet/.claude"
+    ]
+  }
+}

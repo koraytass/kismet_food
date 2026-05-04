@@ -1,0 +1,30 @@
+---
+/**
+ * TextLink — inline editorial link with growing orange under-rule.
+ *
+ * Visual DNA: orange under-line that scales from 35% → 100% on hover
+ * (left → right; mirrored RTL). Optional arrow that nudges 3px on
+ * hover. Inherits color, so it composes with surrounding type tone.
+ */
+interface Props {
+  href: string;
+  arrow?: boolean;
+  class?: string;
+  rel?: string;
+  target?: string;
+  ariaLabel?: string;
+}
+
+const { href, arrow = true, class: extraClass = '', rel, target, ariaLabel } = Astro.props;
+---
+
+<a
+  href={href}
+  class={`txt-link ${extraClass}`.trim()}
+  rel={rel}
+  target={target}
+  aria-label={ariaLabel}
+>
+  <span><slot /></span>
+  {arrow && <span class="txt-link__arrow" aria-hidden="true">→</span>}
+</a>

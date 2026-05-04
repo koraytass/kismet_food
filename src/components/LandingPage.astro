@@ -1,0 +1,356 @@
+---
+/**
+ * LandingPage — continuous editorial canvas.
+ *
+ * Sections flow into each other through shared halos and overlapping
+ * imagery (image-bridge + halo-bridge), not hard color blocks.
+ * AmuletDivider used only as a single closing punctuation, not as a
+ * section delimiter.
+ *
+ * Reveal-on-scroll has directional bias (left/right alternating) and
+ * a faster ease for scroll-velocity-aware feel.
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stockImages } from '@/lib/images';
+import SiteHeader from './SiteHeader.astro';
+import HeroSection from './HeroSection.astro';
+import SiteFooter from './SiteFooter.astro';
+import AmuletDivider from './AmuletDivider.astro';
+import Button from './Button.astro';
+import TextLink from './TextLink.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+const productsHref = localePath('/products/', locale);
+const originsHref = localePath('/origins/', locale);
+const supplyHref = localePath('/supply-chain/', locale);
+const sustainabilityHref = localePath('/sustainability/', locale);
+const aboutHref = localePath('/about/', locale);
+const contactHref = localePath('/contact/', locale);
+
+const manifesto = {
+  tr: 'Tek standart. Üç dil. On dört menşe — bir küratör.',
+  en: 'One standard. Three languages. Fourteen origins — one curator.',
+  ar: 'معيار واحد · ثلاث لغات · أربعة عشر منشأ — قيّم واحد.',
+}[locale];
+
+const learnMore = {
+  tr: 'Devamını Gör',
+  en: 'Explore',
+  ar: 'استكشف',
+}[locale];
+
+const productCats = [
+  { key: 'coffee',                 img: stockImages.coffee,     copy: tr.portfolio.coffee },
+  { key: 'cocoa',                  img: stockImages.cocoa,      copy: tr.portfolio.cocoa  },
+  { key: 'nuts',                   img: stockImages.nuts,       copy: tr.portfolio.nuts   },
+  { key: 'spices',                 img: stockImages.spices,     copy: tr.portfolio.spices },
+  { key: 'industrial-ingredients', img: stockImages.supply,     copy: tr.portfolio.industrialIngredients },
+];
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<main class="bg-surface" data-canvas>
+  <HeroSection locale={locale} />
+
+  {/* ───── Bridge 1: Hero → Manifesto ─────
+       Soft halo bleed between hero bottom and manifesto top */}
+  <div aria-hidden="true" class="bridge bridge--halo"></div>
+
+  {/* Manifesto strip — single italic line with subtle parallax breath */}
+  <section class="relative px-5 py-14 sm:px-6 sm:py-20 md:py-28 lg:py-36" data-reveal data-reveal-bias="up">
+    <div
+      aria-hidden="true"
+      class="manifesto-glow pointer-events-none absolute inset-0 -z-10 opacity-60"
+    ></div>
+    <div class="mx-auto max-w-4xl text-center">
+      <p
+        class="serif-display text-[1.25rem] font-light italic leading-[1.4] text-on-surface-muted sm:text-[1.6rem] md:text-[2rem] lg:text-[2.5rem]"
+      >
+        <span class="manifesto-em-dash" aria-hidden="true">—</span>
+        <span>{manifesto}</span>
+        <span class="manifesto-em-dash" aria-hidden="true">—</span>
+      </p>
+    </div>
+  </section>
+
+  {/* ───── Bridge 2: Manifesto → Products ───── */}
+  <div aria-hidden="true" class="bridge bridge--rule"></div>
+
+  {/* Products teaser — slim editorial 2-col grid */}
+  <section class="relative px-5 pb-16 pt-4 sm:px-6 sm:pb-24 md:pb-32" id="portfolio">
+    <div class="mx-auto max-w-6xl">
+      <header class="mb-12 max-w-xl md:mb-16" data-reveal data-reveal-bias="left">
+        <span class="eyebrow text-orange">{tr.portfolio.eyebrow}</span>
+        <h2
+          class="serif-display mt-4 text-3xl font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-4xl md:text-[2.6rem]"
+        >
+          {tr.portfolio.headline}
+        </h2>
+      </header>
+
+      <ul class="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2 md:gap-y-12">
+        {productCats.map((c, i) => (
+          <li
+            class="group product-card"
+            style={`transition-delay: ${i * 70}ms`}
+            data-reveal
+            data-reveal-bias={i % 2 === 0 ? 'left' : 'right'}
+          >
+            <a href={productsHref} class="block">
+              <div class="grid grid-cols-[96px_1fr] items-start gap-4 sm:grid-cols-[120px_1fr] sm:gap-5 md:grid-cols-[140px_1fr] md:gap-6">
+                <figure class="product-card__photo photo-grade overflow-hidden rounded-sm">
+                  <img
+                    src={c.img.src}
+                    alt={c.img.alt[locale]}
+                    class="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+                <div>
+                  <span class="eyebrow text-[10px] text-on-surface-subtle">{c.copy.badge}</span>
+                  <h3
+                    class="serif-display mt-1.5 text-xl font-semibold leading-tight text-on-surface md:text-[1.6rem]"
+                  >
+                    {c.copy.title}
+                  </h3>
+                  <p class="mt-2 max-w-prose text-sm leading-[1.7] text-on-surface-muted">
+                    {c.copy.body}
+                  </p>
+                  <span class="txt-link mt-3 text-[11px] uppercase tracking-[0.18em] text-teal">
+                    <span>{c.copy.cta}</span>
+                    <span class="txt-link__arrow" aria-hidden="true">→</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-14 text-center" data-reveal data-reveal-bias="up">
+        <TextLink href={productsHref}>{tr.portfolio.viewAll}</TextLink>
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Bridge 3: Products → Origins ─────
+       Image-bridge: origins photo "leaks" upward into the gap */}
+  <div aria-hidden="true" class="bridge bridge--halo"></div>
+
+  {/* Origins teaser — image-bridge layout */}
+  <section class="relative px-5 py-16 sm:px-6 sm:py-24 md:py-32">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-12 md:gap-16">
+      <figure
+        class="origins-photo photo-grade photo-grade--cool order-1 overflow-hidden rounded-sm shadow-editorial md:order-2 md:col-span-5"
+        data-reveal
+        data-reveal-bias="right"
+      >
+        <img
+          src={stockImages.plantation.src}
+          alt={stockImages.plantation.alt[locale]}
+          class="aspect-[5/6] w-full max-w-[22rem] object-cover transition-transform duration-[1500ms] ease-out hover:scale-[1.04] md:max-w-none"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="order-2 md:order-1 md:col-span-7" data-reveal data-reveal-bias="left">
+        <span class="eyebrow text-orange">
+          {locale === 'tr' && 'Menşe Ağı'}
+          {locale === 'en' && 'Origin Network'}
+          {locale === 'ar' && 'شبكة المنشأ'}
+        </span>
+        <h2
+          class="serif-display mt-4 text-3xl font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-4xl md:text-[2.8rem] lg:text-[3.2rem]"
+        >
+          {locale === 'tr' && (
+            <>Etiyopya'dan Anadolu'ya — <span class="font-light italic text-teal">on dört menşe</span><span class="text-orange">.</span></>
+          )}
+          {locale === 'en' && (
+            <>From Ethiopia to Anatolia — <span class="font-light italic text-teal">fourteen origins</span><span class="text-orange">.</span></>
+          )}
+          {locale === 'ar' && (
+            <>من إثيوبيا إلى الأناضول — <span class="font-light italic text-teal">أربعة عشر منشأ</span><span class="text-orange">.</span></>
+          )}
+        </h2>
+        <p class="mt-6 max-w-[34rem] text-base leading-[1.7] text-on-surface-muted md:text-lg">
+          {locale === 'tr' && 'Her menşede saha uzmanı, her sevkiyatta tek standart. Etkileşimli haritamızla küresel ağı keşfet.'}
+          {locale === 'en' && 'A specialist on the ground at every origin, one standard on every shipment. Explore the global network on our interactive map.'}
+          {locale === 'ar' && 'متخصص في الميدان عند كل منشأ، ومعيار واحد في كل شحنة. استكشف الشبكة العالمية على خريطتنا التفاعلية.'}
+        </p>
+        <div class="mt-8">
+          <TextLink href={originsHref}>
+            {locale === 'tr' && 'Haritayı Keşfet'}
+            {locale === 'en' && 'Explore the Map'}
+            {locale === 'ar' && 'استكشف الخريطة'}
+          </TextLink>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ───── Bridge 4: Origins → Supply/Sustainability ───── */}
+  <div aria-hidden="true" class="bridge bridge--rule"></div>
+
+  {/* Supply + Sustainability — paired light teasers */}
+  <section class="relative px-5 py-16 sm:px-6 sm:py-20 md:py-28">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 gap-x-16 gap-y-14 md:grid-cols-2 md:gap-y-16">
+      <article data-reveal data-reveal-bias="left">
+        <span class="eyebrow text-orange">{tr.supply.eyebrow}</span>
+        <h3
+          class="serif-display mt-4 text-2xl font-semibold leading-[1.1] text-on-surface md:text-[2rem]"
+        >
+          {tr.supply.headline}
+        </h3>
+        <p class="mt-5 max-w-prose text-base leading-[1.7] text-on-surface-muted">
+          {tr.supply.body}
+        </p>
+        <div class="mt-6">
+          <TextLink href={supplyHref}>{learnMore}</TextLink>
+        </div>
+      </article>
+
+      <article data-reveal data-reveal-bias="right" style="transition-delay: 120ms">
+        <span class="eyebrow text-orange">{tr.sustainability.eyebrow}</span>
+        <h3
+          class="serif-display mt-4 text-2xl font-semibold leading-[1.1] text-on-surface md:text-[2rem]"
+        >
+          {tr.sustainability.headline}
+        </h3>
+        <p class="mt-5 max-w-prose text-base leading-[1.7] text-on-surface-muted">
+          {tr.sustainability.body}
+        </p>
+        <div class="mt-6">
+          <TextLink href={sustainabilityHref}>{learnMore}</TextLink>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  {/* ───── Final punctuation — single AmuletDivider ───── */}
+  <AmuletDivider />
+
+  {/* Closing — editorial CTA, no heavy form */}
+  <section class="relative px-5 pb-24 sm:px-6 sm:pb-32 md:pb-40">
+    <div
+      aria-hidden="true"
+      class="closing-glow pointer-events-none absolute inset-x-0 -bottom-32 -z-10 h-[400px] opacity-50"
+    ></div>
+    <div class="mx-auto max-w-3xl text-center" data-reveal data-reveal-bias="up">
+      <span class="eyebrow text-orange">Trade · Trust · Kismet</span>
+      <h2
+        class="serif-display mt-4 text-[2rem] font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-[2.5rem] md:text-[3rem]"
+      >
+        {locale === 'tr' && (
+          <>Bir kap kahveden bir konteyner kakaoya — <span class="font-light italic text-teal">başlayalım</span><span class="text-orange">.</span></>
+        )}
+        {locale === 'en' && (
+          <>From a single cup to a full container — <span class="font-light italic text-teal">let's begin</span><span class="text-orange">.</span></>
+        )}
+        {locale === 'ar' && (
+          <>من فنجان واحد إلى حاوية كاملة — <span class="font-light italic text-teal">لنبدأ</span><span class="text-orange">.</span></>
+        )}
+      </h2>
+      <p class="mx-auto mt-6 max-w-xl text-base leading-[1.7] text-on-surface-muted md:text-lg">
+        {locale === 'tr' && 'Ticaret ekibimiz 24 saat içinde özel menşe + lojistik teklifi hazırlar.'}
+        {locale === 'en' && 'Our trade team prepares a custom origin + logistics proposal within 24 hours.'}
+        {locale === 'ar' && 'يُعد فريقنا التجاري عرضاً مخصصاً للمنشأ واللوجستيات في غضون 24 ساعة.'}
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+        <Button href={contactHref} variant="primary">{tr.nav.contact}</Button>
+        <TextLink href={aboutHref}>{tr.nav.about}</TextLink>
+      </div>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />
+
+{/* ───── Section bridge styles + reveal system ───── */}
+<style>
+  /* Bridge — visually invisible breathing space between sections.
+     No color wash, no rule — just controlled silence. The "smoothness"
+     comes from rhythm + ambient halos behind sections, not lines.  */
+  .bridge { position: relative; height: 32px; pointer-events: none; }
+  @media (min-width: 768px) { .bridge { height: 48px; } }
+
+  /* Optional: ultra-subtle vertical fade for true continuous canvas.
+     Both variants are just spacing now (no visible chrome). */
+  .bridge--halo,
+  .bridge--rule { background: transparent; }
+
+  /* Manifesto background glow */
+  .manifesto-glow {
+    background:
+      radial-gradient(ellipse 60% 60% at 30% 30%, rgba(0, 172, 175, 0.08), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 70% 70%, rgba(246, 139, 92, 0.08), transparent 70%);
+    filter: blur(20px);
+  }
+  .manifesto-em-dash {
+    color: var(--color-orange);
+    margin-inline: 0.4em;
+    opacity: 0.7;
+  }
+
+  /* Closing section glow */
+  .closing-glow {
+    background: radial-gradient(ellipse 80% 100% at 50% 0%,
+                                rgba(0, 172, 175, 0.10) 0%,
+                                transparent 70%);
+    filter: blur(24px);
+  }
+
+  /* ───── Reveal-on-scroll system with directional bias ───── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition:
+      opacity 900ms cubic-bezier(0.22, 0.72, 0.22, 1),
+      transform 900ms cubic-bezier(0.22, 0.72, 0.22, 1);
+  }
+  [data-reveal][data-reveal-bias='left']  { transform: translate3d(-22px, 18px, 0); }
+  [data-reveal][data-reveal-bias='right'] { transform: translate3d(22px, 18px, 0); }
+  [data-reveal][data-reveal-bias='up']    { transform: translate3d(0, 28px, 0); }
+
+  [data-reveal].is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
+
+  /* Origins photo gets a slow gentle ken-burns on visibility */
+  .origins-photo > img { will-change: transform; }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .origins-photo > img { transition: none !important; }
+  }
+</style>
+
+<script>
+  // ───── Reveal-on-scroll with rootMargin tuned to feel scroll-velocity-aware ─────
+  const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  if (items.length) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -10% 0px', threshold: 0.08 },
+      );
+      items.forEach((el) => io.observe(el));
+    } else {
+      items.forEach((el) => el.classList.add('is-visible'));
+    }
+  }
+</script>

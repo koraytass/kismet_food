@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import CareersPage from '@/components/pages/CareersPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/careers/';
+const title = 'Kariyer | Kısmet Foods';
+const description =
+  'Kısmet Foods kariyer sayfası. Yılların birikimiyle şekillenen ekibimize katılın: her ürün grubunda profesyonel uzmanlık, kıtalar arası mobilite ve anlamlı bir ticaret zanaatı.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description, keywords: ['kariyer', 'iş ilanı', 'küresel ticaret'] }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Kariyer', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <CareersPage locale={locale} currentPath={pathname} />
+</BaseLayout>

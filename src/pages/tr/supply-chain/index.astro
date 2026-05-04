@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SupplyChainPage from '@/components/pages/SupplyChainPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  serviceSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/supply-chain/';
+const title = 'Tedarik Zinciri & Lojistik | Kısmet Foods';
+const description =
+  'Kısmet Foods tedarik zinciri ve lojistik: Mersin, İzmir ve İstanbul limanları üzerinden uçtan uca izlenebilirlik, SGS/Bureau Veritas kalite kontrol, FOB/CIF/DDP Incoterms — yıllara yayılmış operasyonel uzmanlık.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    keywords: [
+      'tedarik zinciri',
+      'lojistik',
+      'Mersin limanı',
+      'İzmir limanı',
+      'İstanbul limanı',
+      'Incoterms 2020',
+      'SGS kalite kontrol',
+      'izlenebilirlik',
+    ],
+  }),
+  serviceSchema({
+    name: 'Küresel gıda tedarik zinciri ve lojistik',
+    description:
+      'Uçtan uca izlenebilirlik, Türkiye ana limanlarında (Mersin, İzmir, İstanbul) profesyonel yükleme, SGS ve Bureau Veritas sertifikalı kalite kontrol, FOB/CIF/CFR/DDP Incoterms ile küresel teslim.',
+    url: pathname,
+    serviceType: 'Food supply chain and logistics management',
+    areaServed: [
+      'European Union',
+      'Middle East and North Africa',
+      'North America',
+      'Asia Pacific',
+    ],
+  }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Tedarik Zinciri', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <SupplyChainPage locale={locale} currentPath={pathname} />
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import InsightsPage from '@/components/pages/InsightsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/insights/';
+const title = 'رؤى وتقارير السوق | كسمت فودز';
+const description =
+  'تقارير السوق وقصص المنشأ وأخبار التجارة من كسمت فودز — تشكّلت بفضل سنوات من الممارسة المتراكمة والخبرة الاحترافية العميقة في كل فئة منتج نتاجر بها.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'رؤى السوق', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <InsightsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

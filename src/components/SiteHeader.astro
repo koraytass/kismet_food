@@ -1,0 +1,379 @@
+---
+/**
+ * SiteHeader — Ledger pattern.
+ *
+ * Slim 56px sticky band. Logo left (alternates teal ↔ orange every 6 s).
+ * Right: language switcher + "Menu" trigger that opens a full-screen
+ * editorial overlay — large italic serif nav items, with a small image
+ * preview that swaps on hover (Aesop / Bottega / Loewe playbook).
+ *
+ * On scroll past 48 px the band tightens (background lift + soft shadow).
+ *
+ * Pure logo colors only: #00acaf (teal), #f68b5c (orange).
+ * Self-hosted brand assets from /public/logos/.
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stockImages } from '@/lib/images';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+/* Nav items + preview image per item — image swaps on hover in the
+   overlay. Each preview key maps to a stockImages entry. */
+const navItems = [
+  { href: localePath('/about/', locale),         label: tr.nav.about,          previewKey: 'plantation' },
+  { href: localePath('/products/', locale),      label: tr.nav.products,       previewKey: 'spices'     },
+  { href: localePath('/origins/', locale),       label: tr.nav.origins,        previewKey: 'farmer'     },
+  { href: localePath('/supply-chain/', locale),  label: tr.nav.supply,         previewKey: 'supply'     },
+  { href: localePath('/sustainability/', locale),label: tr.nav.sustainability, previewKey: 'plantation' },
+  { href: localePath('/contact/', locale),       label: tr.nav.contact,        previewKey: 'coffee'     },
+] as const;
+
+/* Resolve preview images upfront so the overlay can swap them client-side. */
+const previewImages: Record<string, { src: string; alt: string }> = {};
+for (const item of navItems) {
+  const stock = stockImages[item.previewKey as keyof typeof stockImages];
+  if (stock) {
+    previewImages[item.previewKey] = {
+      src: stock.src,
+      alt: stock.alt[locale],
+    };
+  }
+}
+
+const menuLabel = locale === 'tr' ? 'Menü' : locale === 'ar' ? 'القائمة' : 'Menu';
+const closeLabel = locale === 'tr' ? 'Kapat' : locale === 'ar' ? 'إغلاق' : 'Close';
+const contactLabel = locale === 'tr' ? 'İletişime Geç' : locale === 'ar' ? 'تواصل معنا' : 'Get in touch';
+---
+
+<header
+  aria-label="Primary"
+  class="site-header fixed inset-x-0 top-0 z-50"
+  data-site-header
+>
+  <div class="site-header__bar mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all duration-300 sm:px-6 md:px-8">
+    {/* Brand — logo with teal ↔ orange color dance */}
+    <a
+      href={localePath('/', locale)}
+      aria-label="Kismet Foods"
+      class="brand-link group inline-flex items-center"
+    >
+      <span class="brand-stack relative inline-block">
+        <img
+          src="/logos/logo-teal.svg"
+          alt="Kismet Foods"
+          width="240"
+          height="178"
+          class="brand-img brand-img--teal h-14 w-auto transition-[height] duration-500 sm:h-16 md:h-20 lg:h-24"
+        />
+        <img
+          src="/logos/logo-orange.svg"
+          alt=""
+          aria-hidden="true"
+          width="240"
+          height="178"
+          class="brand-img brand-img--orange absolute left-0 top-0 h-14 w-auto transition-[height] duration-500 sm:h-16 md:h-20 lg:h-24"
+        />
+      </span>
+    </a>
+
+    {/* Right: language switcher + Menu trigger */}
+    <div class="flex items-center gap-3 md:gap-5">
+      <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
+      <button
+        type="button"
+        class="menu-trigger group relative inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.28em] text-on-surface transition-colors hover:text-orange focus-visible:text-orange focus:outline-none"
+        aria-label={menuLabel}
+        aria-expanded="false"
+        data-menu-open
+      >
+        <span class="menu-trigger__lines" aria-hidden="true">
+          <span class="menu-trigger__line"></span>
+          <span class="menu-trigger__line"></span>
+        </span>
+        <span class="hidden sm:inline">{menuLabel}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{/* ────────── FULL-SCREEN OVERLAY NAV ────────── */}
+<div
+  id="site-nav-overlay"
+  class="nav-overlay fixed inset-0 z-[60] pointer-events-none"
+  aria-hidden="true"
+>
+  {/* Curtain — animates from below on open */}
+  <div class="nav-overlay__curtain absolute inset-0 bg-surface"></div>
+
+  <div class="nav-overlay__content relative grid h-full grid-cols-1 lg:grid-cols-12">
+    {/* Top bar inside overlay — close trigger */}
+    <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-4 px-4 py-4 sm:px-6 md:px-8 md:py-5">
+      <a
+        href={localePath('/', locale)}
+        aria-label="Kismet Foods"
+        class="inline-flex items-center"
+        data-menu-link
+      >
+        <img src="/logos/logo-teal.svg" alt="Kismet Foods" width="200" height="148" class="h-9 w-auto md:h-11" />
+      </a>
+      <button
+        type="button"
+        class="inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.28em] text-on-surface transition-colors hover:text-orange"
+        aria-label={closeLabel}
+        data-menu-close
+      >
+        <span aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span>{closeLabel}</span>
+      </button>
+    </div>
+
+    {/* Left — large italic serif nav */}
+    <nav
+      class="relative z-10 flex flex-col justify-center px-5 pt-24 pb-12 sm:px-8 md:px-14 md:pt-28 lg:col-span-7 lg:px-16 lg:py-0"
+      aria-label="Primary navigation"
+    >
+      <ul class="space-y-3 md:space-y-4 lg:space-y-5">
+        {navItems.map((item, i) => (
+          <li class="nav-item" style={`--idx: ${i}`}>
+            <a
+              href={item.href}
+              data-menu-link
+              data-preview={item.previewKey}
+              class="nav-link group inline-flex items-baseline gap-4 text-[2.25rem] font-semibold leading-[1.05] tracking-tight text-on-surface transition-colors duration-300 hover:text-teal focus-visible:text-teal focus:outline-none sm:text-5xl md:text-6xl lg:text-[5.5rem]"
+            >
+              <span class="nav-link__num font-sans text-[10px] font-bold tracking-[0.28em] text-on-surface-subtle md:text-[11px]">
+                0{i + 1}
+              </span>
+              <span class="nav-link__label serif-display italic">
+                {item.label}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      {/* Footer — contact + locale */}
+      <div class="mt-12 flex flex-col items-start gap-4 border-t border-outline/30 pt-6 text-xs text-on-surface-subtle sm:flex-row sm:items-center sm:gap-6 md:mt-16 md:pt-8 md:text-sm">
+        <a
+          href={localePath('/contact/', locale)}
+          data-menu-link
+          class="inline-flex items-baseline gap-2 font-bold uppercase tracking-[0.22em] text-orange transition-colors hover:text-on-surface"
+        >
+          <span>{contactLabel}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <span aria-hidden="true" class="hidden text-outline sm:inline">·</span>
+        <span class="font-sans text-[11px] uppercase tracking-[0.32em]">commercial@kismetfoods.com</span>
+      </div>
+    </nav>
+
+    {/* Right — preview image stack (lg+ only) */}
+    <aside class="relative hidden overflow-hidden bg-surface-low lg:col-span-5 lg:block">
+      <div class="absolute inset-0">
+        {Object.entries(previewImages).map(([key, img], i) => (
+          <figure
+            class="nav-preview absolute inset-0 transition-opacity duration-500"
+            data-preview-img={key}
+            style={i === 0 ? 'opacity:1' : 'opacity:0'}
+          >
+            <img
+              src={img.src}
+              alt={img.alt}
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-gradient-to-tr from-surface/30 to-transparent"></div>
+          </figure>
+        ))}
+      </div>
+      {/* Soft accent halo */}
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full"
+        style="background: radial-gradient(closest-side, rgba(0,172,175,0.18), transparent 70%);"
+      ></div>
+    </aside>
+  </div>
+</div>
+
+<style>
+  /* ───── Sticky band ───── */
+  .site-header {
+    background: rgba(250, 249, 248, 0.7);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    border-bottom: 1px solid transparent;
+    transition: background-color 320ms ease, border-color 320ms ease, box-shadow 320ms ease;
+  }
+  .site-header__bar { padding-block: 18px; }
+
+  .site-header[data-scrolled='true'] {
+    background: rgba(250, 249, 248, 0.95);
+    border-bottom-color: rgba(187, 201, 201, 0.25);
+    box-shadow: 0 8px 24px -16px rgba(26, 28, 28, 0.08);
+  }
+  .site-header[data-scrolled='true'] .site-header__bar { padding-block: 12px; }
+  .site-header[data-scrolled='true'] .brand-img { height: 3.5rem !important; } /* h-14 — logo only slightly shrinks */
+  @media (min-width: 1024px) {
+    .site-header[data-scrolled='true'] .brand-img { height: 4.5rem !important; } /* lg shrinks to h-18 */
+  }
+
+  /* ───── Brand color dance (teal ↔ orange every 6 s) ───── */
+  .brand-stack { overflow: hidden; isolation: isolate; }
+  .brand-img--teal   { animation: brand-flip-teal   6s ease-in-out infinite; }
+  .brand-img--orange { opacity: 0; animation: brand-flip-orange 6s ease-in-out infinite; }
+  @keyframes brand-flip-teal   { 0%, 45% { opacity: 1; } 55%, 100% { opacity: 0; } }
+  @keyframes brand-flip-orange { 0%, 45% { opacity: 0; } 55%, 100% { opacity: 1; } }
+
+  /* ───── Menu trigger (hamburger to X morph) ───── */
+  .menu-trigger__lines {
+    position: relative;
+    display: inline-block;
+    width: 22px;
+    height: 12px;
+  }
+  .menu-trigger__line {
+    position: absolute;
+    inset-inline: 0;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 360ms cubic-bezier(0.22, 0.72, 0.22, 1), top 240ms;
+  }
+  .menu-trigger__line:nth-child(1) { top: 2px; }
+  .menu-trigger__line:nth-child(2) { top: 8px; }
+  .menu-trigger.is-open .menu-trigger__line:nth-child(1) { top: 5px; transform: rotate(45deg); }
+  .menu-trigger.is-open .menu-trigger__line:nth-child(2) { top: 5px; transform: rotate(-45deg); }
+
+  /* ───── Overlay ───── */
+  .nav-overlay { visibility: hidden; }
+  .nav-overlay.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .nav-overlay__curtain {
+    transform: translateY(100%);
+    transition: transform 720ms cubic-bezier(0.7, 0, 0.18, 1);
+  }
+  .nav-overlay.is-open .nav-overlay__curtain { transform: translateY(0); }
+
+  .nav-overlay__content > * { opacity: 0; transform: translateY(20px); transition: opacity 600ms ease 200ms, transform 600ms cubic-bezier(0.22, 0.72, 0.22, 1) 200ms; }
+  .nav-overlay.is-open .nav-overlay__content > * { opacity: 1; transform: translateY(0); }
+
+  /* Nav items stagger */
+  .nav-item {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms cubic-bezier(0.22, 0.72, 0.22, 1),
+      transform 700ms cubic-bezier(0.22, 0.72, 0.22, 1);
+    transition-delay: calc(360ms + var(--idx, 0) * 60ms);
+  }
+  .nav-overlay.is-open .nav-item { opacity: 1; transform: translateY(0); }
+
+  /* Editorial italic accent on hover — letter swing-in */
+  .nav-link__label {
+    display: inline-block;
+    transform-origin: left center;
+    transition: transform 320ms cubic-bezier(0.22, 0.72, 0.22, 1);
+  }
+  .nav-link:hover .nav-link__label,
+  .nav-link:focus-visible .nav-link__label {
+    transform: translateX(8px);
+  }
+  [dir='rtl'] .nav-link__label { transform-origin: right center; }
+  [dir='rtl'] .nav-link:hover .nav-link__label,
+  [dir='rtl'] .nav-link:focus-visible .nav-link__label {
+    transform: translateX(-8px);
+  }
+
+  /* Body scroll lock when overlay open */
+  :global(body.nav-open) { overflow: hidden; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand-img--teal, .brand-img--orange { animation: none; }
+    .brand-img--teal { opacity: 1; }
+    .brand-img--orange { opacity: 0; }
+    .nav-overlay__curtain,
+    .nav-overlay__content > *,
+    .nav-item,
+    .nav-link__label,
+    .menu-trigger__line { transition: none; }
+  }
+</style>
+
+<script>
+  // ───── Sticky band scroll-state ─────
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  if (header) {
+    const setScrolled = () => {
+      if (window.scrollY > 48) header.dataset.scrolled = 'true';
+      else delete header.dataset.scrolled;
+    };
+    setScrolled();
+    window.addEventListener('scroll', setScrolled, { passive: true });
+  }
+
+  // ───── Overlay open/close ─────
+  const overlay = document.getElementById('site-nav-overlay');
+  const trigger = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+
+  function openMenu() {
+    if (!overlay || !trigger) return;
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    trigger.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('nav-open');
+  }
+  function closeMenu() {
+    if (!overlay || !trigger) return;
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    trigger.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('nav-open');
+  }
+
+  trigger?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+
+  // Close when clicking any internal link inside the overlay
+  document.querySelectorAll<HTMLAnchorElement>('[data-menu-link]').forEach((a) => {
+    a.addEventListener('click', () => setTimeout(closeMenu, 120));
+  });
+
+  // Esc closes
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay?.classList.contains('is-open')) closeMenu();
+  });
+
+  // ───── Preview swap on hover ─────
+  const previews = document.querySelectorAll<HTMLElement>('[data-preview-img]');
+  document.querySelectorAll<HTMLAnchorElement>('[data-preview]').forEach((link) => {
+    const key = link.dataset.preview;
+    link.addEventListener('mouseenter', () => {
+      previews.forEach((p) => {
+        p.style.opacity = p.dataset.previewImg === key ? '1' : '0';
+      });
+    });
+    link.addEventListener('focus', () => {
+      previews.forEach((p) => {
+        p.style.opacity = p.dataset.previewImg === key ? '1' : '0';
+      });
+    });
+  });
+</script>

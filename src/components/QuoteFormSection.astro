@@ -1,0 +1,147 @@
+---
+/**
+ * QuoteFormSection — Two-column card: contact info + inquiry form.
+ * Form is progressive-enhanced: a Formspree/custom endpoint can be
+ * plugged in later. Current state is decorative + mailto fallback.
+ */
+import type { Locale } from '@/i18n';
+import { t } from '@/i18n';
+import { brand } from '@/lib/brand';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+---
+
+<section id="quote" class="bg-surface py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 md:px-8">
+    <div
+      class="shadow-editorial flex flex-col overflow-hidden rounded-3xl bg-surface-lowest lg:flex-row"
+    >
+      {/* Contact panel */}
+      <div class="cta-gradient relative flex flex-col justify-between overflow-hidden p-12 text-white lg:w-2/5">
+        <div
+          class="absolute end-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/2 rounded-full bg-teal/20"
+          aria-hidden="true"
+        ></div>
+        <div class="relative z-10">
+          <h2 class="serif-display mb-6 text-4xl font-bold">
+            {tr.quote.headline}
+          </h2>
+          <p class="mb-10 leading-relaxed text-white/85">
+            {tr.quote.body}
+          </p>
+        </div>
+        <div class="relative z-10 space-y-5">
+          <div class="flex items-center">
+            <svg class="me-4 h-5 w-5 opacity-80" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M3 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4Zm3 1a1 1 0 0 0-1 1v.8l5 3.125L15 6.8V6a1 1 0 0 0-1-1H6Zm9 3.7-4.47 2.794a1 1 0 0 1-1.06 0L5 8.7V15a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8.7Z"></path>
+            </svg>
+            <a href="mailto:trade@kismetfoods.com" class="text-sm font-medium hover:underline">
+              trade@kismetfoods.com
+            </a>
+          </div>
+          <div class="flex items-start">
+            <svg class="me-4 mt-1 h-5 w-5 opacity-80" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+              <div class="text-sm font-medium text-white/95">{brand.address.street}</div>
+              <div class="text-sm text-white/75">
+                {brand.address.postalCode} {brand.address.district} — {brand.address.city}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Form */}
+      <div class="p-10 lg:w-3/5 lg:p-12">
+        <form
+          action="mailto:trade@kismetfoods.com"
+          method="post"
+          enctype="text/plain"
+          class="grid grid-cols-1 gap-6 md:grid-cols-2"
+        >
+          <div class="col-span-1">
+            <label class="eyebrow mb-2 block text-on-surface-subtle" for="q-name">
+              {tr.quote.nameLabel}
+            </label>
+            <input
+              id="q-name"
+              name="name"
+              type="text"
+              required
+              placeholder={tr.quote.namePlaceholder}
+              class="w-full rounded-md border-none bg-surface-low px-4 py-3 text-on-surface focus:ring-2 focus:ring-teal focus:outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="eyebrow mb-2 block text-on-surface-subtle" for="q-email">
+              {tr.quote.emailLabel}
+            </label>
+            <input
+              id="q-email"
+              name="email"
+              type="email"
+              required
+              placeholder={tr.quote.emailPlaceholder}
+              class="w-full rounded-md border-none bg-surface-low px-4 py-3 text-on-surface focus:ring-2 focus:ring-teal focus:outline-none"
+            />
+          </div>
+          <div class="col-span-1">
+            <label class="eyebrow mb-2 block text-on-surface-subtle" for="q-commodity">
+              {tr.quote.commodityLabel}
+            </label>
+            <select
+              id="q-commodity"
+              name="commodity"
+              class="w-full rounded-md border-none bg-surface-low px-4 py-3 text-on-surface focus:ring-2 focus:ring-teal focus:outline-none"
+            >
+              <option>{tr.categories.coffee}</option>
+              <option>{tr.categories.nuts}</option>
+              <option>{tr.categories.spices}</option>
+              <option>{tr.categories.ingredients}</option>
+            </select>
+          </div>
+          <div class="col-span-1">
+            <label class="eyebrow mb-2 block text-on-surface-subtle" for="q-qty">
+              {tr.quote.quantityLabel}
+            </label>
+            <input
+              id="q-qty"
+              name="quantity"
+              type="number"
+              min="1"
+              placeholder={tr.quote.quantityPlaceholder}
+              class="w-full rounded-md border-none bg-surface-low px-4 py-3 text-on-surface focus:ring-2 focus:ring-teal focus:outline-none"
+            />
+          </div>
+          <div class="col-span-1 md:col-span-2">
+            <label class="eyebrow mb-2 block text-on-surface-subtle" for="q-msg">
+              {tr.quote.messageLabel}
+            </label>
+            <textarea
+              id="q-msg"
+              name="message"
+              rows="4"
+              placeholder={tr.quote.messagePlaceholder}
+              class="w-full rounded-md border-none bg-surface-low px-4 py-3 text-on-surface focus:ring-2 focus:ring-teal focus:outline-none"
+            ></textarea>
+          </div>
+          <div class="col-span-1 md:col-span-2">
+            <button
+              type="submit"
+              class="w-full rounded-xl bg-orange py-4 font-bold uppercase tracking-[0.2em] text-white shadow-xl shadow-orange/20 transition-colors hover:bg-orange-dark"
+            >
+              {tr.quote.submit}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SoonPage from '@/components/pages/SoonPage.astro';
+import { organizationSchema, webSiteSchema } from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/soon/';
+const title = 'قريباً · Coming Soon · Yakında Burada | Kismet Foods';
+const description =
+  'كسمت فودز — أجود المواد الخام في العالم، قريباً هنا. صفحة تشويقية ثلاثية اللغات.';
+const jsonLd = [organizationSchema(locale), webSiteSchema()];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+      noindex={true}
+    />
+  </Fragment>
+
+  <SoonPage />
+</BaseLayout>

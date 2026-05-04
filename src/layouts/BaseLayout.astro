@@ -1,0 +1,70 @@
+---
+/**
+ * BaseLayout - Root layout for all pages.
+ *
+ * Handles:
+ * - HTML lang/dir attributes (RTL for Arabic)
+ * - Self-hosted font loading (no third-party requests)
+ * - Global CSS import
+ * - SEO head injection via slot
+ * - Consistent page structure
+ *
+ * Usage:
+ * <BaseLayout locale="tr">
+ *   <Fragment slot="head">
+ *     <SEOHead ... />
+ *   </Fragment>
+ *   <main>Page content</main>
+ * </BaseLayout>
+ */
+import { localeConfig, type Locale } from '@/i18n';
+import { colors } from '@/lib/brand';
+import '@/styles/global.css';
+
+// Self-hosted fonts via fontsource — no third-party requests (KVKK/GDPR safe)
+import '@fontsource-variable/source-serif-4';
+import '@fontsource-variable/source-sans-3';
+import '@fontsource-variable/noto-sans-arabic';
+
+interface Props {
+  locale: Locale;
+  class?: string;
+  themeColor?: string;
+}
+
+const { locale, class: bodyClass, themeColor } = Astro.props;
+const { dir, hreflang } = localeConfig[locale];
+---
+
+<!doctype html>
+<html lang={hreflang} dir={dir} class={bodyClass}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    {/* Favicon — alternates teal ↔ orange via JS every 3 s */}
+    <link id="favicon" rel="icon" type="image/svg+xml" href="/favicon-teal.svg" />
+    <script is:inline>
+      (function () {
+        const link = document.getElementById('favicon');
+        if (!link) return;
+        const srcs = ['/favicon-teal.svg', '/favicon-orange.svg'];
+        let i = 0;
+        setInterval(() => {
+          i = (i + 1) % srcs.length;
+          link.href = srcs[i];
+        }, 3000);
+      })();
+    </script>
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content={themeColor ?? colors.teal} />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    {/* SEO head slot - inject SEOHead component here */}
+    <slot name="head" />
+  </head>
+  <body class:list={['flex min-h-dvh flex-col', bodyClass]}>
+    <slot />
+  </body>
+</html>

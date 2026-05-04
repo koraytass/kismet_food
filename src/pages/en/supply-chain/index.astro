@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SupplyChainPage from '@/components/pages/SupplyChainPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  serviceSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/supply-chain/';
+const title = 'Supply Chain & Logistics | Kismet Foods';
+const description =
+  'Kismet Foods supply chain and logistics: end-to-end traceability via Mersin, Izmir and Istanbul ports, SGS and Bureau Veritas quality control, FOB/CIF/DDP Incoterms — decades of operational expertise.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    keywords: [
+      'supply chain',
+      'logistics',
+      'Mersin port',
+      'Izmir port',
+      'Istanbul port',
+      'Incoterms 2020',
+      'SGS quality control',
+      'traceability',
+    ],
+  }),
+  serviceSchema({
+    name: 'Global food supply chain and logistics',
+    description:
+      'End-to-end traceability, professional loading at Türkiye’s principal ports (Mersin, Izmir, Istanbul), SGS and Bureau Veritas certified quality control, global delivery under FOB/CIF/CFR/DDP Incoterms.',
+    url: pathname,
+    serviceType: 'Food supply chain and logistics management',
+    areaServed: [
+      'European Union',
+      'Middle East and North Africa',
+      'North America',
+      'Asia Pacific',
+    ],
+  }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Supply Chain', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <SupplyChainPage locale={locale} currentPath={pathname} />
+</BaseLayout>

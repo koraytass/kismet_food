@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import CareersPage from '@/components/pages/CareersPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/careers/';
+const title = 'Careers | Kismet Foods';
+const description =
+  'Careers at Kismet Foods. Join a team shaped by years of accumulated trade practice with deep professional expertise across every commodity — cross-continental mobility and real craft.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description, keywords: ['careers', 'jobs', 'global trade'] }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Careers', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <CareersPage locale={locale} currentPath={pathname} />
+</BaseLayout>

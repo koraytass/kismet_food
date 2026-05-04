@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import ContactPage from '@/components/pages/ContactPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  contactPageSchema,
+  localBusinessSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/contact/';
+const title = 'تواصل | كسمت فودز';
+const description =
+  'تواصل مع كسمت فودز إسطنبول. خبراؤنا التجاريون بسنوات من الخبرة المتراكمة وعمق احترافي في كل فئة منتج يعدّون عرضكم المخصص خلال 24 ساعة.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  contactPageSchema({ locale, url: pathname, title, description }),
+  localBusinessSchema(locale),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'تواصل', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <ContactPage locale={locale} currentPath={pathname} />
+</BaseLayout>

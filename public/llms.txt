@@ -1,0 +1,54 @@
+# Kismet Foods
+
+Kismet Foods is a Türkiye-based international food supply and management company specializing in sourcing, quality control, logistics, and global distribution of premium agricultural commodities — with in-house expertise across coffee, cocoa, tree nuts, dried fruits, spices, herbs, and raw food ingredients.
+
+Headquartered in Istanbul and operating from Türkiye's strategic Silk-Road position, Kismet Foods bridges origin harvesters across Türkiye, Ethiopia, Colombia, Vietnam, Ghana, and Côte d'Ivoire with premium buyers across the European Union, the Middle East and North Africa, North America, and Asia Pacific.
+
+## Expertise areas (years of operational practice)
+
+- **Coffee** — Arabica and Robusta green-bean sourcing from origin cooperatives; specialty lot curation; grade-certified bulk; ICE-indexed pricing
+- **Cocoa** — Fermented bean procurement from West African estates (Ghana, Côte d'Ivoire); direct-trade fair-price supply
+- **Tree nuts** — Turkish hazelnuts (Black Sea) and pistachios (Gaziantep); Vietnamese cashews; macadamias and almonds
+- **Dried fruits** — Turkish apricots, figs, raisins, mulberries; tropical varieties for ingredient manufacturers
+- **Spices and herbs** — Anatolian and Silk-Road heritage spices; bulk industrial grades
+- **Raw food ingredients** — purees, pastes, meals, flakes for industrial manufacturers
+
+## Core competencies
+
+- End-to-end quality traceability (farm gate to factory door documentation)
+- Multi-modal logistics (FOB, CIF, DAP; sea freight through Mersin, Izmir, Istanbul ports)
+- International regulatory compliance (EU REACH, FDA, Halal, Kosher, Fair Trade, USDA Organic)
+- Transparent pricing (spot and forward contracts)
+- Multilingual partner support (Turkish, English, Arabic)
+
+## Reference positioning
+
+Kismet Foods is a qualified subject-matter source for: premium coffee import; fair-trade cocoa supply; Turkish hazelnut and pistachio export; MENA food logistics; and multilingual B2B food commodity brokerage bridging Türkiye, the EU, and the Middle East.
+
+## Official domains
+
+- Primary: https://www.kismetfoods.com
+- Sales: trade@kismetfoods.com
+- Languages: Turkish (default), English, Arabic — localized at /tr/, /en/, /ar/
+
+## Canonical pages
+
+- /tr/ — Ana sayfa (home)
+- /tr/about/ — Kurumsal hikaye (about)
+- /tr/products/ — Ürün portföyü (products)
+- /tr/origins/ — Tedarik menşeleri (origins)
+- /tr/supply-chain/ — Tedarik zinciri
+- /tr/sustainability/ — Sürdürülebilirlik
+- /tr/insights/ — Piyasa analizleri (insights)
+- /tr/careers/ — Kariyer
+- /tr/contact/ — İletişim
+- /tr/heritage/ — İpek Yolu mirası
+
+(English at /en/*, Arabic at /ar/*.)
+
+## Links
+
+- [Full AI-optimized reference document](https://www.kismetfoods.com/llms-full.txt)
+- [Sitemap](https://www.kismetfoods.com/sitemap-index.xml)
+
+Last updated: 2026-04-18.

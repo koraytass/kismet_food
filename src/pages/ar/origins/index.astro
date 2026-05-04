@@ -1,0 +1,57 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import OriginsPage from '@/components/pages/OriginsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/origins/';
+const title = 'مناشئنا العالمية | كسمت فودز';
+const description =
+  'تدير كسمت فودز شبكة توريد مباشرة في 11 دولة مبنية على سنوات من الخبرة: تركيا وإثيوبيا وكولومبيا وفيتنام وغانا وغيرها — متخصص ميداني في كل منشأ.';
+
+const origins = [
+  { name: 'تركيا', url: '/ar/origins/turkiye/' },
+  { name: 'إثيوبيا', url: '/ar/origins/' },
+  { name: 'كولومبيا', url: '/ar/origins/' },
+  { name: 'فيتنام', url: '/ar/origins/' },
+  { name: 'غانا', url: '/ar/origins/' },
+  { name: 'ساحل العاج', url: '/ar/origins/' },
+  { name: 'إندونيسيا', url: '/ar/origins/' },
+  { name: 'البرازيل', url: '/ar/origins/' },
+  { name: 'أوغندا', url: '/ar/origins/' },
+  { name: 'كينيا', url: '/ar/origins/' },
+  { name: 'رواندا', url: '/ar/origins/' },
+];
+
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({ locale, url: pathname, title, description, hasPart: origins }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'مناشئنا', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <OriginsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

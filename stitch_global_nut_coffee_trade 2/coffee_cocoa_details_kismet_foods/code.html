@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00696b",
+                        "secondary": "#9b451c",
+                        "on-primary-fixed": "#002020",
+                        "tertiary-container": "#b6938b",
+                        "outline-variant": "#bbc9c9",
+                        "on-secondary-fixed-variant": "#7c2e04",
+                        "tertiary-fixed": "#ffdad2",
+                        "primary-fixed": "#76f6f8",
+                        "on-surface": "#1a1c1c",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e3e2e1",
+                        "surface-tint": "#00696b",
+                        "secondary-fixed": "#ffdbcd",
+                        "on-secondary-container": "#752900",
+                        "surface-container-highest": "#e3e2e1",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeed",
+                        "surface-dim": "#dadad9",
+                        "on-background": "#1a1c1c",
+                        "inverse-primary": "#56d9dc",
+                        "inverse-surface": "#2f3130",
+                        "surface": "#faf9f8",
+                        "tertiary-fixed-dim": "#e5beb5",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb597",
+                        "secondary-container": "#fe9162",
+                        "on-tertiary-container": "#452c27",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#00393a",
+                        "on-error": "#ffffff",
+                        "tertiary": "#755750",
+                        "surface-container-high": "#e9e8e7",
+                        "on-surface-variant": "#3c4949",
+                        "background": "#faf9f8",
+                        "surface-container-low": "#f4f3f2",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#004f51",
+                        "inverse-on-surface": "#f1f0f0",
+                        "surface-bright": "#faf9f8",
+                        "primary-fixed-dim": "#56d9dc",
+                        "primary-container": "#00acaf",
+                        "on-secondary": "#ffffff",
+                        "outline": "#6c7a7a",
+                        "on-tertiary-fixed": "#2b1611",
+                        "on-tertiary-fixed-variant": "#5c403a",
+                        "on-secondary-fixed": "#360f00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, .serif-font { font-family: 'Noto Serif', serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md docked full-width top-0 sticky z-50 tonal shift via stone-100 dark:stone-900">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 py-4">
+<a class="text-2xl font-serif font-bold text-stone-900 dark:text-stone-50" href="/">Kismet Foods</a>
+<nav class="hidden md:flex space-x-8">
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">About</a>
+<a class="text-teal-600 dark:text-teal-400 border-b-2 border-teal-500 pb-1 tracking-widest uppercase text-xs" href="#">Products</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Origins</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Sustainability</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Insights</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Contact</a>
+</nav>
+<div class="flex items-center space-x-4">
+<button class="material-symbols-outlined text-stone-600 dark:text-stone-400 p-2 hover:bg-stone-200/50 dark:hover:bg-stone-800/50 rounded-md">language</button>
+<button class="bg-primary text-on-primary px-5 py-2.5 text-xs font-bold tracking-widest uppercase rounded-md transition-all duration-300 active:scale-95">Request Quote</button>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section: Editorial Header -->
+<section class="relative h-[819px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img alt="Premium coffee beans" class="w-full h-full object-cover" data-alt="Close-up of high-quality raw Arabica coffee beans and cocoa pods on a rustic wooden table with warm, cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzM87wgmRExkIMYFcflVoNFpu3ticDrX925FUtC9vANCpG1-pi4jbBj0w277S4lCqg1cZkWaktReKNgGjJnFaNd-cEs1shJhs6GJAGX72fJ1aTkbvhx0m6AX924WEhaVfyfPfiOOP-db9Z3UpMYX13PU719Orv68UoYGesUdIoNZtb5wSA9BxuPasGp6utUiE61N_6LDhZCUEnH4E5wFDpFGnFHeBhz9uN1sD1jPXYnXHA3Hm8j2rPD3viqY1RtVmNoAYeyIXEbXM"/>
+<div class="absolute inset-0 bg-stone-950/40"></div>
+</div>
+<div class="relative z-10 max-w-7xl mx-auto px-8 w-full">
+<p class="label-md text-secondary-fixed font-bold tracking-[0.2em] uppercase mb-4">Product Category</p>
+<h1 class="text-7xl md:text-9xl text-white font-bold leading-none tracking-tighter mb-8 max-w-4xl">Coffee &amp; Cocoa.</h1>
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<p class="text-stone-100 text-lg max-w-xl font-light leading-relaxed">
+                        Ethically sourced, precision-graded raw materials from the world's most prestigious equatorial belts. We bridge the gap between small-hold farmers and global manufacturing.
+                    </p>
+<div class="bg-surface/10 backdrop-blur-xl p-6 border border-white/10 rounded-xl">
+<div class="flex items-center gap-4 mb-2">
+<span class="material-symbols-outlined text-secondary-container">verified</span>
+<span class="text-white font-semibold">Quality Verified</span>
+</div>
+<p class="text-stone-300 text-sm">Every batch undergoes rigorous lab testing for moisture, density, and flavor profiles.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Origin Highlights: Asymmetric Bento Grid -->
+<section class="py-24 max-w-7xl mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+<div>
+<span class="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-2 block">Curation: Origin Select</span>
+<h2 class="text-5xl font-bold">The Heritage of Terroir</h2>
+</div>
+<p class="text-on-surface-variant max-w-md">Our global network ensures access to limited-run harvests and industrial staples across two continents.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Ethiopia Card -->
+<div class="md:col-span-7 group relative overflow-hidden rounded-xl bg-surface-container-low min-h-[500px] flex flex-col justify-end p-10">
+<div class="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+<img alt="Ethiopian Highlands" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60" data-alt="Lush green coffee plantation in the misty Ethiopian highlands during sunrise with soft rays of light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcpsQPAmhytr3P2-xYxvq8IqF79zcNg8luxtYsGGhKFMWQYPnrMJ992qhHJFNm42ROrz7kF7LnCSg-cLyQhdlOPAMepA28Qzje_fQMQ4nVOjKDXwYBe_BRw3GhHd-n6gyrqwCBdGYsAFymdZVZy9ib_rkcc0_8Dlhg223uVj9tX2OFr_iCg_53IytDe5Jn5YeUw139AA6FgMMtB4xOBvBpmU1Vp9hMED6x-Yc6hdAuDu4nlLBcMMetvN1qtPgYdgUTv-RUs8-NXtk"/>
+</div>
+<div class="relative z-10">
+<span class="inline-block px-3 py-1 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest mb-4">Heirloom Arabica</span>
+<h3 class="text-4xl font-bold mb-4 text-on-surface">Ethiopian Sidamo</h3>
+<p class="text-on-surface-variant max-w-md mb-6">Known for its floral, citrusy acidity and tea-like body. Harvested at 1,500+ meters above sea level.</p>
+<a class="inline-flex items-center gap-2 font-bold text-primary group/link" href="#">
+                            Explore Profile <span class="material-symbols-outlined group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Ghana Card -->
+<div class="md:col-span-5 group relative overflow-hidden rounded-xl bg-surface-container-low min-h-[500px] flex flex-col p-10">
+<div class="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
+<img alt="Ghanaian Cocoa" class="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Sun-dried cocoa beans lying on wooden trays in Ghana, golden hour lighting and warm tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlDBh9dNgyNN5RfhWJ72m3CeMYxwptf_KQHwvciz_rzcKs-3heWZ8tfUWanqR0WtaVlENMuPbGRvObVxbLTtPdlGzn0yHy4nyJZHLVtazhwGQktyUum9Jnz1OWyCsBHnBfxDTtjVOdYnTAUMQC8u2QXk65KZOv_fLXXrIEgYg60oSrF7f8flqT9iGw6iTPwsCHywCX5Gf2Z7zNNtEzr7G-oRY0Bt01-jtCc64RRkHEGaJ2L9o_QadaWI_C9Va2CkqzN46Dywgt9OU"/>
+</div>
+<div class="relative z-10 mt-auto">
+<span class="inline-block px-3 py-1 bg-primary text-white text-[10px] font-bold uppercase tracking-widest mb-4">Bulk &amp; Specialty</span>
+<h3 class="text-4xl font-bold mb-4">Ghanaian Forastero</h3>
+<p class="text-on-surface-variant mb-6">The gold standard for industrial cocoa. Deep chocolate base notes with exceptional fat content for premium butter extraction.</p>
+<a class="inline-flex items-center gap-2 font-bold text-secondary group/link" href="#">
+                            Technical Specs <span class="material-symbols-outlined group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Quality Grades: Layered Section -->
+<section class="bg-surface-container-low py-24">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div class="relative">
+<div class="absolute -top-10 -left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<h2 class="text-5xl font-bold mb-8 relative">Precision <br/>Grading Standards</h2>
+<p class="text-on-surface-variant text-lg mb-10 leading-relaxed">We provide full transparency on bean classification, ensuring your production line receives exactly what it requires—from artisan micro-lots to high-volume industrial batches.</p>
+<div class="space-y-6">
+<div class="flex gap-6 p-6 bg-surface rounded-xl border-l-4 border-secondary shadow-sm">
+<span class="material-symbols-outlined text-secondary text-4xl" data-weight="fill">workspace_premium</span>
+<div>
+<h4 class="font-bold text-xl mb-1">Specialty Grade (80+ SCAA)</h4>
+<p class="text-sm text-on-surface-variant">Zero primary defects. Hand-sorted for roast uniformity and complex sensory profiles.</p>
+</div>
+</div>
+<div class="flex gap-6 p-6 bg-surface rounded-xl border-l-4 border-primary shadow-sm">
+<span class="material-symbols-outlined text-primary text-4xl" data-weight="fill">factory</span>
+<div>
+<h4 class="font-bold text-xl mb-1">Industrial &amp; Commercial</h4>
+<p class="text-sm text-on-surface-variant">High-efficiency processing for large-scale extraction, soluble production, and mass-market blending.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative grid grid-cols-2 gap-4">
+<img alt="Lab testing" class="rounded-xl mt-12" data-alt="Scientist in a modern laboratory analyzing coffee bean quality with precision equipment and white lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDae3f_xKlgWkFmF3dr0TCuccbzU0N_l0KvK55LeLw2NVFCY_pxZ8WpzXNrWA2N2e_nXRgQWdkgrLdjj9pYCaorvQCPrVIpo3-CqNCsItiDghhUMR4YrxgUC-NtsZ4wj2C9BapOh7lxUMazmbbvkxkcnoGLq6xWBKhXbp68IedfAXDSvWUmu_ozDSTL7WMhQLC-zGFPB_UIUm--SorENlLEldiKZLRKsmZ9KJw4rP_SrKufUN2P_OYpJG2kJTGy1b-E5FUYchwFBSk"/>
+<img alt="Roasting" class="rounded-xl" data-alt="Artisanal coffee roasting process with sparks and glowing heat, focus on the moving beans" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdE7YBuen3dpZn5vfqQvDtDsRQXAiF1DNQJ9_iS_oDbURsEp-4PvyHPb1WrsYXAKhlHJej0j75ZziMAwJrkltvOXIYOnK0IfVYk1O4qar0GjSP1wUwywDhS7Wem0Cgwvy8Q9d58eeJfQ2iYbHyruKWzJSd-_Dd4XBoI9sWZazQqr4LbJjzspIGnekmUJksDKnVHfzg05EYvLQ9Fe_vGap0okQ0TWhy2pvXOTQVHADaZZ8BcoAlPfwGliuzTW4UHBZQTBIhmtyZ2OY"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Spec Sheet: Data-Rich Table -->
+<section class="py-24 max-w-7xl mx-auto px-8">
+<div class="mb-12">
+<span class="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-2 block">Technical Documentation</span>
+<h2 class="text-5xl font-bold">Standard Specifications</h2>
+</div>
+<div class="overflow-hidden bg-surface rounded-xl border border-outline-variant/30">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container">
+<th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Metric</th>
+<th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Coffee (Green Arabica)</th>
+<th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Cocoa (Dried Beans)</th>
+<th class="px-8 py-6 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Testing Method</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6 font-bold">Moisture Content</td>
+<td class="px-8 py-6 text-on-surface-variant">9.0% – 12.0%</td>
+<td class="px-8 py-6 text-on-surface-variant">6.5% – 7.5%</td>
+<td class="px-8 py-6 text-xs text-secondary italic">ISO 6673 / 2291</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6 font-bold">Screen Size / Bean Count</td>
+<td class="px-8 py-6 text-on-surface-variant">Screen 15+ (90% min)</td>
+<td class="px-8 py-6 text-on-surface-variant">90 – 100 beans / 100g</td>
+<td class="px-8 py-6 text-xs text-secondary italic">Manual Sorting</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6 font-bold">Defect Tolerance</td>
+<td class="px-8 py-6 text-on-surface-variant">&lt; 5 Secondary Defects</td>
+<td class="px-8 py-6 text-on-surface-variant">&lt; 3% Slaty / Moldy</td>
+<td class="px-8 py-6 text-xs text-secondary italic">Visual Analysis</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6 font-bold">Caffeine/Fat Content</td>
+<td class="px-8 py-6 text-on-surface-variant">1.2% – 1.5%</td>
+<td class="px-8 py-6 text-on-surface-variant">52% – 56% (Fat)</td>
+<td class="px-8 py-6 text-xs text-secondary italic">HPLC / Soxhlet</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="mt-6 text-xs text-on-surface-variant italic">*Custom specifications available upon request for proprietary blends.</p>
+</section>
+<!-- Sourcing Map -->
+<section class="py-24 bg-on-surface text-surface overflow-hidden">
+<div class="max-w-7xl mx-auto px-8 relative">
+<div class="flex flex-col md:flex-row gap-16 items-center">
+<div class="w-full md:w-1/2">
+<span class="text-xs font-bold tracking-[0.2em] uppercase text-primary-fixed mb-2 block">Global Presence</span>
+<h2 class="text-5xl font-bold mb-6">Equatorial Supply Chain</h2>
+<p class="text-stone-400 mb-8">Our procurement offices are strategically located in the 'Coffee Belt' to ensure boots-on-the-ground quality control and direct relationships with farming cooperatives.</p>
+<ul class="space-y-4">
+<li class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>East Africa Hub: Addis Ababa, Ethiopia</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>West Africa Hub: Accra, Ghana</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span>Processing Logistics: Rotterdam, Netherlands</span>
+</li>
+</ul>
+</div>
+<div class="w-full md:w-1/2 relative aspect-video bg-stone-900 rounded-2xl overflow-hidden border border-white/5">
+<img alt="Map snippet" class="w-full h-full object-cover opacity-40 mix-blend-luminosity" data-alt="Abstract world map with glowing nodes connecting Ethiopia, Ghana, and Europe, high-tech aesthetic" data-location="Global" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSW8XBZyul4h-cYzx-aK4DfcMX6KK-fWTZlkExNH03urZSZRhjwzIwOWeMmUQAXMPmzrWrC1tZ8dHIiruCW5DHnO8GIthuXSHn1ujUWWJxAj4dLDDhq76hFXQl1LM7eWkuHkPXLz1etb7IEe888CptXtb9y_a3e3f_a1D-EE0pyHj6fXTpBBo1ktS1gTPDGmF3drYl2eB5vWNgOHzCdRZFg8uexuaD0G-h68zfnUbmrcAyf8xIzpdz2VoN2dJw_vKUMjViyENn9e0"/>
+<!-- Simulated pulses -->
+<div class="absolute top-[55%] left-[55%] w-4 h-4 bg-primary-container rounded-full animate-ping"></div>
+<div class="absolute top-[60%] left-[45%] w-4 h-4 bg-primary-container rounded-full animate-ping"></div>
+<div class="absolute top-[35%] left-[48%] w-4 h-4 bg-secondary-container rounded-full animate-ping"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Request Quote Form -->
+<section class="py-24 bg-surface-container">
+<div class="max-w-4xl mx-auto px-8">
+<div class="bg-surface p-12 rounded-2xl shadow-xl">
+<div class="text-center mb-12">
+<h2 class="text-4xl font-bold mb-4">Request Quote for Category</h2>
+<p class="text-on-surface-variant">Our trade desk will provide a customized pricing matrix based on your volume requirements and shipping destination.</p>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary transition-all" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Company Email</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary transition-all" placeholder="procurement@firm.com" type="email"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Product Interest</label>
+<select class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary transition-all">
+<option>Arabica Coffee (Green)</option>
+<option>Robusta Coffee (Green)</option>
+<option>Cocoa Beans (Dried)</option>
+<option>Mixed Commodity Shipment</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Estimated Volume (Tons)</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary transition-all" placeholder="e.g. 20" type="number"/>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Additional Requirements</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-primary transition-all" placeholder="Specific origin requirements, certifications (Rainforest Alliance, Organic), or logistics constraints..." rows="4"></textarea>
+</div>
+<div class="md:col-span-2">
+<button class="w-full bg-primary text-on-primary py-5 rounded-lg font-bold uppercase tracking-widest hover:bg-primary/90 transition-all active:scale-[0.98]">
+                                Submit Quote Request
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-stone-100 dark:bg-stone-900 full-width py-16 tonal shift from base surface to surface-container-low">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto px-8">
+<div class="space-y-6">
+<a class="text-xl font-serif font-bold text-stone-800 dark:text-stone-100" href="#">Kismet Foods</a>
+<p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">Bridging the gap between the world's finest producers and global industrial markets with transparency and precision.</p>
+</div>
+<div>
+<h4 class="Noto Serif text-xl mb-6">Product Catalog</h4>
+<ul class="space-y-3 text-sm">
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Arabica Green Coffee</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Robusta Selections</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Cocoa Beans</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Cashews &amp; Spices</a></li>
+</ul>
+</div>
+<div>
+<h4 class="Noto Serif text-xl mb-6">Trade &amp; Compliance</h4>
+<ul class="space-y-3 text-sm">
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Origin Maps</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Sustainability Report</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Certifications</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="Noto Serif text-xl mb-6">Global Contact</h4>
+<p class="text-stone-500 dark:text-stone-400 text-sm">
+                    Headquarters: Rotterdam, NL<br/>
+                    Trading: London, UK<br/>
+<br/>
+<span class="text-teal-600 dark:text-teal-400 font-semibold">trade@kismetfoods.com</span>
+</p>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-8 mt-16 pt-8 border-t border-stone-200 dark:border-stone-800 flex justify-between items-center">
+<p class="text-stone-500 dark:text-stone-400 text-sm uppercase tracking-tighter">© 2024 Kismet Foods. Global Trade, Local Expertise.</p>
+<div class="flex gap-4">
+<button class="material-symbols-outlined text-stone-400">public</button>
+<button class="material-symbols-outlined text-stone-400">shield</button>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+
+# Explicitly allow AI answer engines to index content.
+# See /llms.txt and /llms-full.txt for AI-discovery info.
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://www.kismetfoods.com/sitemap-index.xml

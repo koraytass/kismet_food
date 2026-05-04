@@ -1,0 +1,485 @@
+---
+/**
+ * PrivacyPage — Reusable section composition for /<locale>/privacy/.
+ * Privacy Policy + Terms of Service in a single, long-form document.
+ *
+ * Sections: Hero · TOC sidebar · Document body (8 sections) · Legal contact
+ */
+import type { Locale } from '@/i18n';
+import { t } from '@/i18n';
+import { stitchSrc } from '@/lib/stitch';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+/* --- Locale-scoped page copy --- */
+const copy = {
+  tr: {
+    eyebrow: 'HUKUKİ BİLGİLENDİRME',
+    heroTitle: 'Gizlilik Politikası & Kullanım Şartları',
+    heroLead:
+      'Kısmet Foods, küresel hasadımızın kalitesini koruduğumuz titizlikle verilerinizin bütünlüğünü de korur. Bu belge, yıllara yayılmış profesyonel bir ticaret uygulamasının parçası olarak GDPR, KVKK ve uluslararası ticaret standartlarına uygun şekilde hazırlanmıştır.',
+    updated: 'Son güncelleme: 17 Nisan 2026',
+    tocTitle: 'İçindekiler',
+    toc: [
+      { id: 'philosophy', label: 'Veri Felsefemiz' },
+      { id: 'collect', label: 'Topladığımız Bilgiler' },
+      { id: 'use', label: 'Bilgileri Nasıl Kullanırız' },
+      { id: 'sharing', label: 'Paylaşım ve Transferler' },
+      { id: 'rights', label: 'Haklarınız (GDPR/KVKK)' },
+      { id: 'retention', label: 'Veri Saklama' },
+      { id: 'cookies', label: 'Çerezler' },
+      { id: 'terms', label: 'Kullanım Şartları' },
+      { id: 'contact', label: 'Veri Sorumlusu İletişim' },
+    ],
+    legalAsideTitle: 'Hukuki talepler',
+    legalAsideBody:
+      'Uyumluluk veya veri işleme ile ilgili sorularınız için doğrudan veri sorumlumuza yazabilirsiniz.',
+    legalEmail: 'privacy@kismetfoods.com',
+    securityTitle: 'Küresel Güvenlik Standartları',
+    securityBody:
+      'Veri merkezlerimiz, bölgesel egemenlik uyumunu korurken düşük gecikmeli erişim sağlamak için dünya çapına dağılmıştır. Bu mimari, baharat ve çekirdek tedarik ekiplerimizin bölgesel uzmanlığıyla örtüşür.',
+    retentionTitle: 'Veri Saklama Süreleri',
+    retentionBody:
+      'Ticari kayıtları Türk Ticaret Kanunu uyarınca 10 yıl, pazarlama iletişim verilerini ise açık onayınız geçerli olduğu sürece saklarız. Süre dolduğunda veriler güvenli şekilde silinir veya anonimleştirilir.',
+    sections: [
+      {
+        id: 'philosophy',
+        n: '01',
+        h: 'Veri Felsefemiz',
+        p: [
+          'Küresel hammadde ticaretinin modern bir küratörü olarak Kısmet Foods ("biz", "bize", "bizim"), şeffaflığın güvenin temeli olduğunu anlar. Bu Gizlilik Politikası, küresel ticaret platformumuzu ve hizmetlerimizi kullanırken verilerinizi nasıl topladığımızı, kullandığımızı ve işlediğimizi açıklar.',
+          'Veri minimizasyonuna öncelik veriyoruz: yalnızca uluslararası lojistiği, sürdürülebilirlik raporlamasını ve premium müşteri ilişkilerini yürütmek için kesinlikle gerekli olan bilgileri topluyoruz.',
+        ],
+      },
+      {
+        id: 'collect',
+        n: '02',
+        h: 'Topladığımız Bilgiler',
+        p: [
+          'Kimlik ve ticari bilgiler: Şirket adı, vergi numarası, temsilci iletişim bilgileri ve uluslararası sevkiyat için gerekli ticari belgeler.',
+          'Lojistik üst verileri: IP adresleri, teslim limanı tercihleri ve rota optimizasyonu için teklif talebi sürecinde bırakılan dijital ayak izleri.',
+          'İletişim verileri: E-posta içeriği, telefon görüşmesi notları ve tedarik sözleşmesi yazışmaları.',
+        ],
+      },
+      {
+        id: 'use',
+        n: '03',
+        h: 'Bilgileri Nasıl Kullanırız',
+        p: [
+          'Hizmet yürütme: Toplu siparişleri işlemek ve menşe lojistik ortaklarıyla koordinasyon sağlamak.',
+          'Uyum takibi: Tüm ticari hareketlerin uluslararası hukuka ve sürdürülebilirlik standartlarımıza uygun olmasını sağlamak.',
+          'Pazar zekâsı: Size menşe hasat döngüleri ve fiyat dalgalanmaları hakkında kişiselleştirilmiş içgörüler sunmak.',
+        ],
+      },
+      {
+        id: 'sharing',
+        n: '04',
+        h: 'Paylaşım ve Transferler',
+        p: [
+          'Kısmet Foods kişisel veya ticari verilerinizi satmaz. Bilgileriniz yalnızca ticari siparişlerinizi yürütmek için gerekli olan titizlikle seçilmiş 3PL lojistik sağlayıcılar ve gümrük kurumlarıyla paylaşılır.',
+          'Küresel ofislerimiz ve menşe ortaklarımız arasındaki tüm veri transferlerinde endüstri standardı şifreleme (TLS 1.3) kullanırız.',
+        ],
+      },
+      {
+        id: 'rights',
+        n: '05',
+        h: 'Haklarınız (GDPR/KVKK)',
+        p: [
+          'AB GDPR ve Türkiye KVKK kapsamında veri sahibi olarak şu haklara sahipsiniz: erişim, düzeltme, silme, işlemeyi sınırlama, veri taşınabilirliği ve otomatik karar verme süreçlerine itiraz.',
+          'Bu haklardan herhangi birini kullanmak için privacy@kismetfoods.com adresine e-posta gönderebilirsiniz. Talebinizi 30 gün içinde yanıtlarız.',
+        ],
+      },
+      {
+        id: 'retention',
+        n: '06',
+        h: 'Veri Saklama',
+        p: [
+          'Ticari kayıtları Türk Ticaret Kanunu uyarınca 10 yıl boyunca saklarız. Pazarlama iletişim verileri, açık onayınız geçerli olduğu süre boyunca saklanır ve onayınızı her an geri çekebilirsiniz.',
+          'Saklama süresi sona erdiğinde, veriler güvenli imha prosedürleri çerçevesinde silinir veya istatistiksel amaçlarla geri döndürülemez biçimde anonimleştirilir.',
+        ],
+      },
+      {
+        id: 'cookies',
+        n: '07',
+        h: 'Çerezler',
+        p: [
+          'Web sitemiz yalnızca temel çerezleri (dil tercihi, oturum durumu) ve anonimleştirilmiş analitik çerezleri kullanır. Pazarlama veya üçüncü taraf izleme çerezi kullanmıyoruz.',
+          'Tarayıcı ayarlarınızdan çerezleri her zaman devre dışı bırakabilirsiniz; bu durumda web sitesinin bazı bölümleri sınırlı şekilde çalışabilir.',
+        ],
+      },
+      {
+        id: 'terms',
+        n: '08',
+        h: 'Kullanım Şartları',
+        p: [
+          'Kısmet Foods web sitesi ve hizmetleri, kullanıcıların yasa dışı, zarar verici veya şirketin ticari itibarına aykırı amaçlarla kullanılamaz. Tüm ticari teklifler, imzalanmış bir sözleşme olmadan bağlayıcı değildir.',
+          'İçerik (metin, görseller, logolar) Kısmet Foods Gıda Tedarik Yönetimi A.Ş.’nin fikri mülkiyetindedir. Yazılı izin olmadan çoğaltılamaz.',
+          'Hizmetlerimizle ilgili uyuşmazlıklar, Türkiye Cumhuriyeti yasalarına tabidir ve İstanbul mahkemeleri yetkili kılınmıştır.',
+        ],
+      },
+      {
+        id: 'contact',
+        n: '09',
+        h: 'Veri Sorumlusu İletişim',
+        p: [
+          'Gizlilik uygulamalarımız veya bu politikanın herhangi bir bölümü hakkında sorularınız için privacy@kismetfoods.com adresine yazınız.',
+          'Yasal posta adresi: Caddebostan Mah. Dr. Abdülkadir Noyan Sk No: 12/9, 34728 Kadıköy / İstanbul, Türkiye.',
+        ],
+      },
+    ],
+  },
+  en: {
+    eyebrow: 'LEGAL DOCUMENTATION',
+    heroTitle: 'Privacy Policy & Terms of Service',
+    heroLead:
+      'Kismet Foods protects the integrity of your data as diligently as we protect the quality of our global harvest. This document reflects the professional discipline of our multi-year trade practice and aligns with GDPR, KVKK, and international trade standards.',
+    updated: 'Last updated: 17 April 2026',
+    tocTitle: 'Contents',
+    toc: [
+      { id: 'philosophy', label: 'Data Philosophy' },
+      { id: 'collect', label: 'Information We Collect' },
+      { id: 'use', label: 'How We Use Information' },
+      { id: 'sharing', label: 'Sharing & Transfers' },
+      { id: 'rights', label: 'Your Rights (GDPR/KVKK)' },
+      { id: 'retention', label: 'Data Retention' },
+      { id: 'cookies', label: 'Cookies' },
+      { id: 'terms', label: 'Terms of Service' },
+      { id: 'contact', label: 'Contact for Data' },
+    ],
+    legalAsideTitle: 'Legal inquiries',
+    legalAsideBody:
+      'For compliance or data-handling questions, you may write directly to our data protection officer.',
+    legalEmail: 'privacy@kismetfoods.com',
+    securityTitle: 'Global Security Standards',
+    securityBody:
+      'Our data centers are positioned globally to ensure low-latency access while maintaining regional sovereignty compliance, matching the regional expertise of our spice and bean sourcing teams.',
+    retentionTitle: 'Data Retention Periods',
+    retentionBody:
+      'We retain commercial records for 10 years as required by the Turkish Commercial Code, and marketing communications data only while your explicit consent remains valid. Once the retention period expires, data is securely deleted or anonymized.',
+    sections: [
+      {
+        id: 'philosophy',
+        n: '01',
+        h: 'Data Philosophy',
+        p: [
+          'As a modern curator of global commodities, Kismet Foods ("we", "us", "our") understands that transparency is the foundation of trust. This Privacy Policy describes how we collect, use, and handle your information when you use our trade platform and services.',
+          'We prioritize data minimization: we gather only the information strictly necessary to facilitate international logistics, sustainability reporting, and premium client relations.',
+        ],
+      },
+      {
+        id: 'collect',
+        n: '02',
+        h: 'Information We Collect',
+        p: [
+          'Identity and business information: company name, tax identification, representative contact details, and trade credentials required for international shipping.',
+          'Logistics metadata: IP addresses, port-of-entry preferences, and digital footprints left during the quote-request process to optimize routing.',
+          'Correspondence: email content, call notes, and supply-contract communications.',
+        ],
+      },
+      {
+        id: 'use',
+        n: '03',
+        h: 'How We Use Information',
+        p: [
+          'Service orchestration: to process bulk orders and coordinate with origin-specific logistics partners.',
+          'Compliance monitoring: to ensure all trade movements align with international law and our own sustainability standards.',
+          'Market intelligence: to provide you with personalized insights into origin harvest cycles and price fluctuations.',
+        ],
+      },
+      {
+        id: 'sharing',
+        n: '04',
+        h: 'Sharing & Transfers',
+        p: [
+          'Kismet Foods does not sell your personal or business data. Information is shared only with vetted third-party logistics (3PL) providers and customs agencies necessary to execute your trade orders.',
+          'We use industry-standard encryption protocols (TLS 1.3) for all data transfers between our global offices and origin partners.',
+        ],
+      },
+      {
+        id: 'rights',
+        n: '05',
+        h: 'Your Rights (GDPR/KVKK)',
+        p: [
+          'Under EU GDPR and Türkiye KVKK, as a data subject you have the rights of access, rectification, erasure, restriction of processing, data portability, and objection to automated decision-making.',
+          'To exercise any of these rights, email privacy@kismetfoods.com. We respond within 30 days.',
+        ],
+      },
+      {
+        id: 'retention',
+        n: '06',
+        h: 'Data Retention',
+        p: [
+          'We retain commercial records for 10 years as required by the Turkish Commercial Code. Marketing communications data is retained only while your explicit consent remains valid, and consent may be withdrawn at any time.',
+          'Once the retention period expires, data is either securely deleted under documented disposal procedures, or irreversibly anonymized for statistical purposes.',
+        ],
+      },
+      {
+        id: 'cookies',
+        n: '07',
+        h: 'Cookies',
+        p: [
+          'Our website uses only essential cookies (language preference, session state) and anonymized analytics cookies. We do not use marketing or third-party tracking cookies.',
+          'You can disable cookies in your browser settings at any time; some parts of the site may then function in a limited way.',
+        ],
+      },
+      {
+        id: 'terms',
+        n: '08',
+        h: 'Terms of Service',
+        p: [
+          'The Kismet Foods website and services may not be used for unlawful, harmful, or reputation-damaging purposes. Commercial proposals are not binding without a signed contract.',
+          'All content (text, images, logos) is the intellectual property of Kismet Foods Gıda Tedarik Yönetimi A.Ş. and may not be reproduced without written permission.',
+          'Disputes arising from our services are governed by the laws of the Republic of Türkiye, with exclusive jurisdiction granted to the courts of İstanbul.',
+        ],
+      },
+      {
+        id: 'contact',
+        n: '09',
+        h: 'Contact for Data',
+        p: [
+          'For questions about our privacy practices or any section of this policy, write to privacy@kismetfoods.com.',
+          'Registered mailing address: Caddebostan Mah. Dr. Abdülkadir Noyan Sk No: 12/9, 34728 Kadıköy / İstanbul, Türkiye.',
+        ],
+      },
+    ],
+  },
+  ar: {
+    eyebrow: 'التوثيق القانوني',
+    heroTitle: 'سياسة الخصوصية وشروط الخدمة',
+    heroLead:
+      'كسمت فودز تحمي نزاهة بياناتكم بالدقة ذاتها التي نحمي بها جودة حصادنا العالمي. يعكس هذا المستند الانضباط المهني لسنوات ممارستنا التجارية، ويتوافق مع GDPR وKVKK ومعايير التجارة الدولية.',
+    updated: 'آخر تحديث: 17 أبريل 2026',
+    tocTitle: 'المحتويات',
+    toc: [
+      { id: 'philosophy', label: 'فلسفة البيانات' },
+      { id: 'collect', label: 'المعلومات التي نجمعها' },
+      { id: 'use', label: 'كيف نستخدم المعلومات' },
+      { id: 'sharing', label: 'المشاركة والنقل' },
+      { id: 'rights', label: 'حقوقكم (GDPR/KVKK)' },
+      { id: 'retention', label: 'الاحتفاظ بالبيانات' },
+      { id: 'cookies', label: 'ملفات تعريف الارتباط' },
+      { id: 'terms', label: 'شروط الخدمة' },
+      { id: 'contact', label: 'التواصل بشأن البيانات' },
+    ],
+    legalAsideTitle: 'الاستفسارات القانونية',
+    legalAsideBody:
+      'لأسئلة الامتثال أو معالجة البيانات، يمكنكم مراسلة مسؤول حماية البيانات مباشرةً.',
+    legalEmail: 'privacy@kismetfoods.com',
+    securityTitle: 'معايير الأمان العالمية',
+    securityBody:
+      'تنتشر مراكز بياناتنا عالمياً لضمان وصول منخفض الكمون مع الحفاظ على الامتثال للسيادة الإقليمية، بما يتوافق مع الخبرة الإقليمية لفرق توريد التوابل والبن لدينا.',
+    retentionTitle: 'مدد الاحتفاظ بالبيانات',
+    retentionBody:
+      'نحتفظ بالسجلات التجارية لمدة 10 سنوات وفق قانون التجارة التركي، وببيانات التواصل التسويقي طالما بقيت موافقتكم الصريحة سارية. عند انتهاء المدة تُحذف البيانات بأمان أو تُجهَّل الهوية.',
+    sections: [
+      {
+        id: 'philosophy',
+        n: '01',
+        h: 'فلسفة البيانات',
+        p: [
+          'بوصفنا قيّماً حديثاً على السلع العالمية، تدرك كسمت فودز أن الشفافية أساس الثقة. تصف سياسة الخصوصية هذه كيفية جمع معلوماتكم واستخدامها ومعالجتها عند استخدام منصة التجارة والخدمات لدينا.',
+          'نولي الأولوية لتقليل البيانات: نجمع فقط المعلومات الضرورية تماماً لتسهيل اللوجستيات الدولية وتقارير الاستدامة وعلاقات العملاء المميزة.',
+        ],
+      },
+      {
+        id: 'collect',
+        n: '02',
+        h: 'المعلومات التي نجمعها',
+        p: [
+          'معلومات الهوية والعمل: اسم الشركة، الرقم الضريبي، بيانات الاتصال بالممثل، والمستندات التجارية المطلوبة للشحن الدولي.',
+          'بيانات وصفية لوجستية: عناوين IP، تفضيلات ميناء الوصول، والبصمات الرقمية المتروكة أثناء عملية طلب عرض السعر لتحسين المسار.',
+          'المراسلات: محتوى البريد الإلكتروني، ملاحظات المكالمات، ومراسلات عقود التوريد.',
+        ],
+      },
+      {
+        id: 'use',
+        n: '03',
+        h: 'كيف نستخدم المعلومات',
+        p: [
+          'تنسيق الخدمة: معالجة الطلبات بالجملة والتنسيق مع شركاء اللوجستيات في بلد المنشأ.',
+          'مراقبة الامتثال: ضمان توافق جميع الحركات التجارية مع القانون الدولي ومعاييرنا في الاستدامة.',
+          'ذكاء السوق: تزويدكم برؤى مخصصة حول دورات الحصاد في المنشأ وتقلبات الأسعار.',
+        ],
+      },
+      {
+        id: 'sharing',
+        n: '04',
+        h: 'المشاركة والنقل',
+        p: [
+          'كسمت فودز لا تبيع بياناتكم الشخصية أو التجارية. تتم مشاركة المعلومات فقط مع مزودي الخدمات اللوجستية الخارجيين (3PL) المعتمدين ووكالات الجمارك اللازمة لتنفيذ طلباتكم.',
+          'نستخدم بروتوكولات تشفير معيارية (TLS 1.3) لجميع عمليات نقل البيانات بين مكاتبنا العالمية وشركاء المنشأ.',
+        ],
+      },
+      {
+        id: 'rights',
+        n: '05',
+        h: 'حقوقكم (GDPR/KVKK)',
+        p: [
+          'بموجب لائحة GDPR الأوروبية وقانون KVKK التركي، تملكون بوصفكم أصحاب بيانات الحق في الوصول والتصحيح والمحو وتقييد المعالجة ونقل البيانات والاعتراض على القرارات الآلية.',
+          'لممارسة أي من هذه الحقوق راسلوا privacy@kismetfoods.com. سنرد خلال 30 يوماً.',
+        ],
+      },
+      {
+        id: 'retention',
+        n: '06',
+        h: 'الاحتفاظ بالبيانات',
+        p: [
+          'نحتفظ بالسجلات التجارية لمدة 10 سنوات وفقاً لقانون التجارة التركي. تُحفظ بيانات التواصل التسويقي فقط طالما بقيت موافقتكم الصريحة سارية، ويمكنكم سحب هذه الموافقة في أي وقت.',
+          'عند انتهاء مدة الاحتفاظ، تُحذف البيانات وفق إجراءات إتلاف موثقة، أو تُجهّل الهوية بشكل لا يمكن عكسه للأغراض الإحصائية.',
+        ],
+      },
+      {
+        id: 'cookies',
+        n: '07',
+        h: 'ملفات تعريف الارتباط',
+        p: [
+          'يستخدم موقعنا ملفات تعريف ارتباط أساسية فقط (تفضيل اللغة، حالة الجلسة) وتحليلات مجهّلة الهوية. لا نستخدم ملفات تعريف ارتباط تسويقية أو تتبعاً من أطراف ثالثة.',
+          'يمكنكم تعطيل ملفات تعريف الارتباط من إعدادات المتصفح في أي وقت؛ وقد تعمل بعض أجزاء الموقع حينها بشكل محدود.',
+        ],
+      },
+      {
+        id: 'terms',
+        n: '08',
+        h: 'شروط الخدمة',
+        p: [
+          'لا يجوز استخدام موقع كسمت فودز وخدماتها لأغراض غير قانونية أو ضارة أو تمس بسمعة الشركة. لا تُعد العروض التجارية ملزمة دون توقيع عقد رسمي.',
+          'جميع المحتويات (النصوص والصور والشعارات) ملكية فكرية لشركة كسمت فودز لإدارة توريد الأغذية ولا يمكن إعادة إنتاجها دون إذن خطي.',
+          'تخضع النزاعات الناشئة عن خدماتنا لقوانين جمهورية تركيا، وتكون محاكم إسطنبول هي الجهة المختصة حصرياً.',
+        ],
+      },
+      {
+        id: 'contact',
+        n: '09',
+        h: 'التواصل بشأن البيانات',
+        p: [
+          'للاستفسار عن ممارسات الخصوصية أو أي قسم من هذه السياسة، راسلوا privacy@kismetfoods.com.',
+          'العنوان البريدي الرسمي: Caddebostan Mah. Dr. Abdülkadir Noyan Sk No: 12/9, 34728 قاضي كوي / إسطنبول، تركيا.',
+        ],
+      },
+    ],
+  },
+}[locale];
+
+/* Stitch image — vintage world map / logistics vignette */
+const mapImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBqyVYJ7xtJdhigrYDAmNgu5hmfOzFO5QEfWlLC8mNwea-txFcJFrXFCfk0IBN31FqwVSg5S5xWVxE4rrRAbSe04pWODoo1N-GMpaBHu5xSbyNSFHVABL4ev-C78tYtq7Up72avbgnLYG_R25p_fPwJW-plCW5Taf3XpEMx_RVzAySDoTONsS43ljvkjw6W7amtOdPi2OQ7C6ZbKwsu-xWhtFRtR6Kc8aUCnURjGuIUk-fAk3fWMvwn5kluP9bcxg565HdD8SX04d8',
+);
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<Breadcrumb
+  locale={locale}
+  items={[{ name: copy.heroTitle }]}
+/>
+
+<main id="main" class="bg-surface">
+  {/* Hero */}
+  <section class="px-4 pb-12 pt-8 md:px-8 md:pt-12">
+    <div class="mx-auto max-w-4xl">
+      <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
+      <h1 class="serif-display mb-8 text-4xl font-bold leading-tight text-on-surface md:text-5xl lg:text-6xl">
+        {copy.heroTitle}
+      </h1>
+      <p class="mb-6 text-lg leading-relaxed text-on-surface-muted md:text-xl">
+        {copy.heroLead}
+      </p>
+      <p class="eyebrow text-on-surface-subtle">{copy.updated}</p>
+    </div>
+  </section>
+
+  {/* Body */}
+  <section class="px-4 pb-24 md:px-8">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-12 md:gap-16">
+      {/* Sidebar TOC */}
+      <aside class="md:col-span-3">
+        <div class="md:sticky md:top-28 space-y-10">
+          <nav aria-label={copy.tocTitle}>
+            <h2 class="eyebrow mb-4 text-orange-dark">{copy.tocTitle}</h2>
+            <ul class="space-y-3">
+              {copy.toc.map((item) => (
+                <li>
+                  <a
+                    href={`#${item.id}`}
+                    class="block text-sm text-on-surface-muted hover:text-teal-dark"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div class="rounded-lg bg-surface-low p-6">
+            <h3 class="eyebrow mb-3 text-on-surface-subtle">{copy.legalAsideTitle}</h3>
+            <p class="mb-4 text-sm leading-relaxed text-on-surface-muted">
+              {copy.legalAsideBody}
+            </p>
+            <a
+              href={`mailto:${copy.legalEmail}`}
+              class="text-sm font-bold text-teal-dark underline-offset-4 hover:underline"
+            >
+              {copy.legalEmail}
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      {/* Document body */}
+      <article class="md:col-span-9 max-w-3xl">
+        <div class="space-y-14">
+          {copy.sections.map((s, i) => (
+            <>
+              <section id={s.id} class="scroll-mt-32">
+                <div class="mb-6 flex items-baseline gap-4">
+                  <span class="serif-display text-2xl italic text-orange-dark">{s.n}</span>
+                  <h2 class="serif-display text-2xl font-bold text-on-surface md:text-3xl">{s.h}</h2>
+                </div>
+                <div class="space-y-5 leading-relaxed text-on-surface-muted">
+                  {s.p.map((para) => <p>{para}</p>)}
+                </div>
+              </section>
+
+              {/* Decorative asymmetric image + aside, between "How We Use" (03) and "Sharing" (04) */}
+              {s.id === 'use' && (
+                <div class="relative py-6">
+                  <div class="grid grid-cols-1 items-center gap-10 md:grid-cols-[1fr_1fr]">
+                    <div class="shadow-editorial overflow-hidden rounded-xl">
+                      <img
+                        src={mapImg}
+                        alt=""
+                        class="h-64 w-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        width="800"
+                        height="500"
+                      />
+                    </div>
+                    <div>
+                      <h3 class="serif-display mb-3 text-2xl italic text-on-surface">
+                        {copy.securityTitle}
+                      </h3>
+                      <p class="text-sm leading-relaxed text-on-surface-muted">
+                        {copy.securityBody}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          ))}
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />

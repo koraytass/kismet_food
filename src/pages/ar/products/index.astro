@@ -1,0 +1,97 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import ProductsPage from '@/components/pages/ProductsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+  productCategorySchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/products/';
+const title = 'المنتجات | كسمت فودز — قهوة وكاكاو ومكسرات وتوابل ومواد خام';
+const description =
+  'محفظة منتجات كسمت فودز العالمية: القهوة والكاكاو، التوابل والأعشاب، المكسرات والفواكه المجففة، المواد الخام. سنوات من الخبرة وتوريد أخلاقي وشحنات بتتبع كامل.';
+
+const categories = [
+  {
+    slug: 'coffee-cocoa',
+    name: 'القهوة والكاكاو',
+    description:
+      'قهوة متخصصة من مرتفعات إثيوبيا وكاكاو مخمّر من غانا وساحل العاج — عبر علاقات تجارة مباشرة.',
+    category: 'Coffee and Cocoa',
+    origin: ['Ethiopia', 'Colombia', 'Ghana', 'Côte d’Ivoire'],
+  },
+  {
+    slug: 'spices-herbs',
+    name: 'التوابل والأعشاب',
+    description:
+      'حصاد عطري مختبَر من طرق التوابل التقليدية؛ كل دفعة موثقة للنقاء ومذاق النكهة.',
+    category: 'Spices and Herbs',
+    origin: ['Türkiye', 'India', 'Vietnam', 'Indonesia'],
+  },
+  {
+    slug: 'nuts-dried-fruits',
+    name: 'المكسرات والفواكه المجففة',
+    description:
+      'مكاداميا وكاجو ولوز من الأناضول ومشمش مجفف طبيعيًا — مفرَزة بدقة للحجم ومحتوى الرطوبة.',
+    category: 'Tree Nuts and Dried Fruits',
+    origin: ['Türkiye', 'Iran', 'Uzbekistan'],
+  },
+  {
+    slug: 'raw-ingredients',
+    name: 'المواد الخام',
+    description:
+      'حبوب وبقوليات وسلع بالجملة للتصنيع العالمي، مدعومة بسلسلة إمداد متوافقة مع ISO ومعايير جودة صارمة.',
+    category: 'Raw Food Ingredients',
+    origin: ['Türkiye', 'Ukraine', 'Egypt'],
+  },
+];
+
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    hasPart: categories.map((c) => ({
+      name: c.name,
+      url: `${pathname}${c.slug}/`,
+    })),
+  }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'المنتجات', url: pathname },
+  ]),
+  ...categories.map((c) =>
+    productCategorySchema({
+      name: c.name,
+      description: c.description,
+      url: `${pathname}${c.slug}/`,
+      category: c.category,
+      origin: c.origin,
+    }),
+  ),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <ProductsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

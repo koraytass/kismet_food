@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SoonPage from '@/components/pages/SoonPage.astro';
+import { organizationSchema, webSiteSchema } from '@/lib/schema';
+
+/* Trilingual single-page under-construction teaser.
+ * All 3 locale routes (/tr/soon/, /en/soon/, /ar/soon/) render the same
+ * trilingual content — the URL is just a share-friendly handle. */
+const locale = 'tr';
+const pathname = '/tr/soon/';
+const title = 'Yakında Burada · Coming Soon · قريباً | Kismet Foods';
+const description =
+  'Kismet Foods — the world\'s finest raw commodities, arriving here soon. Dünyanın en özel ham maddeleri, yakında burada. أجود المواد الخام قريباً هنا.';
+const jsonLd = [organizationSchema(locale), webSiteSchema()];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      ogImage="/og/kismet-soon.jpg"
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <SoonPage />
+</BaseLayout>

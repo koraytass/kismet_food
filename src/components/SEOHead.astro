@@ -1,0 +1,111 @@
+---
+/**
+ * SEOHead - Reusable SEO meta tags, Open Graph, Twitter Cards, JSON-LD, and hreflang.
+ *
+ * Usage:
+ * <SEOHead
+ *   title="Page Title"
+ *   description="Page description"
+ *   locale="tr"
+ *   pathname="/tr/"
+ *   ogImage="/og/default.png"
+ *   type="website"
+ *   jsonLd={...}
+ * />
+ */
+import { localeConfig, getAlternateLinks, defaultLocale, type Locale } from '@/i18n';
+import { brand } from '@/lib/brand';
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+  pathname: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string | null;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  locale,
+  pathname,
+  ogTitle,
+  ogDescription,
+  ogImage = null,
+  type = 'website',
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const site = brand.url;
+const canonicalUrl = `${site}${pathname}`;
+const ogImageUrl = ogImage ? (ogImage.startsWith('http') ? ogImage : `${site}${ogImage}`) : null;
+const { hreflang } = localeConfig[locale];
+const alternateLinks = getAlternateLinks(pathname);
+
+// Safely serialize JSON-LD to prevent XSS
+const jsonLdString = jsonLd
+  ? JSON.stringify(jsonLd).replace(/</g, '\\u003c').replace(/>/g, '\\u003e')
+  : null;
+---
+
+{/* Primary Meta Tags */}
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+
+{/* Language */}
+<meta http-equiv="content-language" content={hreflang} />
+
+{/* Hreflang alternate links */}
+{
+  alternateLinks.map(({ locale: altLocale, href }) => (
+    <link rel="alternate" hreflang={localeConfig[altLocale].hreflang} href={`${site}${href}`} />
+  ))
+}
+<link rel="alternate" hreflang="x-default" href={`${site}/${defaultLocale}/`} />
+
+{/* Open Graph */}
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={ogTitle ?? title} />
+<meta property="og:description" content={ogDescription ?? description} />
+{
+  ogImageUrl && (
+    <>
+      <meta property="og:image" content={ogImageUrl} />
+      <meta property="og:image:secure_url" content={ogImageUrl} />
+      <meta property="og:image:type" content="image/jpeg" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={ogTitle ?? title} />
+    </>
+  )
+}
+<meta property="og:locale" content={hreflang.replace('-', '_')} />
+<meta property="og:site_name" content={brand.name} />
+{
+  alternateLinks
+    .filter(({ locale: altLocale }) => altLocale !== locale)
+    .map(({ locale: altLocale }) => (
+      <meta
+        property="og:locale:alternate"
+        content={localeConfig[altLocale].hreflang.replace('-', '_')}
+      />
+    ))
+}
+
+{/* Twitter Card */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={ogTitle ?? title} />
+<meta name="twitter:description" content={ogDescription ?? description} />
+{ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+{/* JSON-LD Structured Data - XSS-safe serialization */}
+{jsonLdString && <script is:inline type="application/ld+json" set:html={jsonLdString} />}

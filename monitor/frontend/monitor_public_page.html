@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor — Live Market Intelligence</title>
+<meta name="description" content="Live commodity intelligence for Arabica, Robusta, Black Pepper, Cashew and Almond. Real-time buy/sell/wait signals for Turkey and West Asia importers.">
+<!--
+═══════════════════════════════════════════════════════
+  MONITOR — Public Market Intelligence Page
+  For web designer: read the INSTALL NOTES below
+═══════════════════════════════════════════════════════
+
+  HOW TO INSTALL
+  ──────────────
+  1. Save this file as a page on your website.
+     e.g. /monitor   or   /market-intelligence
+
+  2. Add a navigation link to it from your main menu.
+     That is all. No npm. No build step. No server config.
+
+  3. Find the two lines below marked ← CHANGE THIS
+     and update them with the Railway backend URL
+     and dashboard password your developer will provide.
+
+  CUSTOMISATION
+  ─────────────
+  - Brand colors: edit the CSS variables inside :root {}
+  - Logo text: search "MONITOR" and replace
+  - Footer text: edit the .page-footer section
+
+═══════════════════════════════════════════════════════
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --cream:     #faf8f3;
+  --cream2:    #f3f0e8;
+  --cream3:    #ede9df;
+  --ink:       #1a1915;
+  --ink2:      #3d3c35;
+  --ink3:      #7a7868;
+  --ink4:      #b0ae9f;
+  --forest:    #1e4a3a;
+  --forest2:   #2d6b54;
+  --forest3:   #3d8c6e;
+  --forest-lt: #e8f2ee;
+  --amber:     #b5620a;
+  --amber-lt:  #fef3e2;
+  --red:       #8a2020;
+  --red-lt:    #fdeaea;
+  --gold:      #8a6c1a;
+  --gold-lt:   #fdf6e0;
+  --border:    #dedad0;
+  --border2:   #cac6ba;
+  --mono:      'DM Mono', monospace;
+  --serif:     'Playfair Display', Georgia, serif;
+  --sans:      'DM Sans', system-ui, sans-serif;
+  --shadow:    0 1px 3px rgba(26,25,21,.08), 0 4px 16px rgba(26,25,21,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--cream2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* TOPBAR */
+.topbar{background:var(--forest);padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:50;}
+.topbar-brand{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.22em;color:#a8d4c0;display:flex;align-items:center;gap:10px;}
+.topbar-pulse{width:7px;height:7px;border-radius:50%;background:#5ec49a;animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.topbar-tag{font-family:var(--serif);font-style:italic;font-size:12px;color:rgba(255,255,255,.35);}
+.topbar-right{display:flex;align-items:center;gap:20px;}
+.topbar-clock{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);}
+
+/* HERO */
+.hero{background:var(--forest);padding:clamp(32px,5vw,64px) clamp(16px,4vw,48px) clamp(24px,4vw,48px);}
+.hero-label{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.2em;color:#5ec49a;margin-bottom:12px;}
+.hero-title{font-family:var(--serif);font-size:clamp(26px,5vw,46px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:12px;max-width:680px;}
+.hero-title em{font-style:italic;color:#a8d4c0;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.55);max-width:560px;line-height:1.7;margin-bottom:28px;}
+.pills{display:flex;flex-wrap:wrap;gap:8px;}
+.pill{font-family:var(--mono);font-size:10px;letter-spacing:.1em;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:4px 12px;cursor:pointer;transition:all .15s;}
+.pill.active{border-color:#5ec49a;color:#5ec49a;}
+
+/* MACRO STRIP */
+.macro-strip{background:var(--cream2);border-bottom:1px solid var(--border);padding:10px clamp(16px,4vw,48px);display:flex;overflow-x:auto;gap:0;}
+.macro-item{display:flex;flex-direction:column;padding:6px 20px 6px 0;border-right:1px solid var(--border);margin-right:20px;flex-shrink:0;min-width:90px;}
+.macro-item:last-child{border-right:none;}
+.macro-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--ink4);margin-bottom:2px;}
+.macro-val{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink);}
+.macro-val.up{color:var(--red);}
+.macro-val.dn{color:var(--forest2);}
+.macro-sub{font-size:10px;color:var(--ink4);margin-top:1px;}
+
+/* MAIN */
+.main{padding:clamp(24px,3vw,48px) clamp(16px,4vw,48px);max-width:1280px;margin:0 auto;}
+
+/* COMMODITY NAV */
+.c-nav{display:flex;gap:0;border:1px solid var(--border);margin-bottom:28px;overflow-x:auto;background:white;box-shadow:var(--shadow);}
+.c-tab{flex:1;min-width:120px;padding:14px 12px;cursor:pointer;border-right:1px solid var(--border);transition:background .15s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.c-tab:last-child{border-right:none;}
+.c-tab:hover{background:var(--cream2);}
+.c-tab.active{background:var(--forest);}
+.c-tab-name{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;color:var(--ink3);transition:color .15s;}
+.c-tab.active .c-tab-name{color:#a8d4c0;}
+.c-tab-dis{font-family:var(--mono);font-size:19px;font-weight:300;color:var(--ink2);line-height:1;}
+.c-tab.active .c-tab-dis{color:white;}
+.c-tab-lv{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 6px;font-weight:500;}
+.lv-critical{background:var(--red-lt);color:var(--red);}
+.lv-high{background:var(--amber-lt);color:var(--amber);}
+.lv-medium{background:var(--gold-lt);color:var(--gold);}
+.lv-low{background:var(--forest-lt);color:var(--forest2);}
+.c-tab.active .lv-critical,.c-tab.active .lv-high,.c-tab.active .lv-medium,.c-tab.active .lv-low{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);}
+
+/* CONTENT GRID */
+.cg{display:grid;grid-template-columns:1fr 340px;gap:24px;}
+@media(max-width:900px){.cg{grid-template-columns:1fr;}}
+
+/* VERDICT CARD */
+.verdict-card{border:1px solid var(--border);background:white;box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden;}
+.vcard-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.vcard-commodity{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.vcard-commodity em{font-style:italic;color:var(--ink3);font-size:15px;}
+.vcard-updated{font-family:var(--mono);font-size:10px;color:var(--ink4);}
+.vcard-dis{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
+.vcard-dis-num{font-family:var(--mono);font-size:32px;font-weight:300;line-height:1;}
+.vcard-dis-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink4);}
+
+/* AUDIENCE TABS */
+.aud-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--cream2);overflow-x:auto;}
+.aud-tab{padding:10px 20px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.aud-tab:hover{color:var(--ink2);}
+.aud-tab.active{color:var(--forest);border-bottom-color:var(--forest);background:white;}
+
+/* VERDICT BODY */
+.vbody{padding:24px;}
+.verdict-signal{display:flex;align-items:center;gap:16px;padding:16px 20px;margin-bottom:20px;border-left:4px solid;}
+.verdict-signal.buy{background:var(--forest-lt);border-color:var(--forest2);}
+.verdict-signal.sell{background:var(--red-lt);border-color:var(--red);}
+.verdict-signal.wait{background:var(--gold-lt);border-color:var(--gold);}
+.verdict-signal.hold{background:var(--amber-lt);border-color:var(--amber);}
+.verdict-word{font-family:var(--serif);font-size:28px;font-weight:700;line-height:1;flex-shrink:0;}
+.buy .verdict-word{color:var(--forest);}
+.sell .verdict-word{color:var(--red);}
+.wait .verdict-word{color:var(--gold);}
+.hold .verdict-word{color:var(--amber);}
+.verdict-reason{font-size:13px;line-height:1.65;color:var(--ink2);}
+.verdict-reason strong{color:var(--ink);font-weight:500;}
+
+.brief-sec{margin-bottom:20px;}
+.brief-lbl{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;color:var(--ink4);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.brief-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+.brief-txt{font-family:var(--serif);font-size:14px;line-height:1.85;color:var(--ink2);white-space:pre-wrap;}
+.action-txt{font-family:var(--serif);font-style:italic;font-size:14px;line-height:1.7;color:var(--forest);}
+.sources-note{font-family:var(--mono);font-size:10px;color:var(--ink4);border-top:1px solid var(--border);padding-top:12px;margin-top:16px;line-height:1.6;}
+
+/* RIGHT COL */
+.rcol>*{margin-bottom:20px;}
+.data-card{border:1px solid var(--border);background:white;box-shadow:var(--shadow);overflow:hidden;}
+.dc-head{padding:11px 16px;border-bottom:1px solid var(--border);background:var(--cream2);font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;color:var(--ink3);display:flex;align-items:center;justify-content:space-between;}
+.dc-body{padding:14px 16px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
+.stat-cell{background:white;padding:12px 14px;}
+.stat-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--ink4);margin-bottom:3px;}
+.stat-val{font-family:var(--mono);font-size:17px;font-weight:400;color:var(--ink);line-height:1;}
+.stat-sub{font-size:10px;color:var(--ink4);margin-top:2px;}
+.stat-val.pos{color:var(--forest2);}
+.stat-val.neg{color:var(--red);}
+.signal-item{padding:9px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start;}
+.signal-item:last-child{border-bottom:none;}
+.sig-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.sig-hl{font-size:12px;color:var(--ink2);line-height:1.45;flex:1;}
+.sig-score{font-family:var(--mono);font-size:10px;font-weight:500;flex-shrink:0;padding-top:2px;}
+.mf{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.mf:last-child{border-bottom:none;}
+.mf-lbl{color:var(--ink2);}
+.mf-val{font-family:var(--mono);font-size:11px;font-weight:500;}
+.mf-val.pos{color:var(--forest2);}
+.mf-val.neg{color:var(--red);}
+.mf-val.neu{color:var(--ink3);}
+.chart-pad{padding:14px 16px;}
+.chart-h{position:relative;height:140px;}
+
+/* ASK SECTION */
+.ask-sec{background:var(--forest);padding:clamp(32px,4vw,56px) clamp(16px,4vw,48px);margin-top:48px;}
+.ask-hd{max-width:640px;margin:0 auto 28px;}
+.ask-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#5ec49a;margin-bottom:8px;}
+.ask-title{font-family:var(--serif);font-size:clamp(20px,3vw,32px);font-weight:600;color:white;line-height:1.2;margin-bottom:8px;}
+.ask-sub{font-size:14px;color:rgba(255,255,255,.5);line-height:1.6;}
+.ask-box{max-width:760px;margin:0 auto;}
+.ask-hist{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);min-height:180px;max-height:340px;overflow-y:auto;padding:16px;margin-bottom:12px;}
+.ask-msg{margin-bottom:16px;}
+.ask-msg:last-child{margin-bottom:0;}
+.ask-role{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:rgba(255,255,255,.3);margin-bottom:5px;}
+.ask-role.analyst{color:#5ec49a;}
+.ask-body{font-family:var(--serif);font-size:14px;line-height:1.75;color:rgba(255,255,255,.85);}
+.ask-body.user{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.55);}
+.ask-row{display:flex;}
+.ask-input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-right:none;color:white;font-family:var(--sans);font-size:14px;padding:13px 16px;outline:none;}
+.ask-input::placeholder{color:rgba(255,255,255,.3);}
+.ask-input:focus{border-color:rgba(94,196,154,.5);}
+.ask-btn{background:var(--forest2);border:1px solid var(--forest2);color:white;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;padding:0 24px;cursor:pointer;}
+.ask-btn:hover{background:var(--forest3);}
+.ask-think{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.3);padding:8px 0;display:none;}
+.ask-disc{font-size:11px;color:rgba(255,255,255,.25);text-align:center;margin-top:12px;line-height:1.5;}
+
+/* FOOTER */
+.footer{background:var(--ink);padding:24px clamp(16px,4vw,48px);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;}
+.footer-brand{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:rgba(255,255,255,.3);}
+.footer-src{font-size:11px;color:rgba(255,255,255,.2);line-height:1.7;max-width:600px;}
+
+/* UTIL */
+.loader{text-align:center;padding:40px 20px;}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--forest2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-txt{font-family:var(--mono);font-size:11px;color:var(--ink4);}
+.fade{animation:fade .4s ease both;}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-pulse"></div>
+    MONITOR
+    <span class="topbar-tag">Live Agricultural Market Intelligence</span>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-clock" id="clock">—</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">REAL-TIME COMMODITY INTELLIGENCE · TÜRKİYE & WEST ASIA</div>
+  <h1 class="hero-title">Is it the right time<br>to <em>buy, sell,</em> or wait?</h1>
+  <p class="hero-sub">Live supply intelligence for Arabica, Robusta, Black Pepper, Cashew and Almond. Sourced from 60+ public data streams — exchange data, origin weather, trade flows, freight indices, and macroeconomics. Reasoned, not rumoured.</p>
+  <div class="pills">
+    <span class="pill active" id="pl-importer" onclick="setAud('importer')">IMPORTERS &amp; BUYERS</span>
+    <span class="pill" id="pl-exporter" onclick="setAud('exporter')">EXPORTERS &amp; SELLERS</span>
+    <span class="pill" id="pl-broker" onclick="setAud('broker')">BROKERS &amp; TRADERS</span>
+    <span class="pill" id="pl-analyst" onclick="setAud('analyst')">ANALYSTS &amp; TRADE HOUSES</span>
+  </div>
+</div>
+
+<!-- MACRO STRIP -->
+<div class="macro-strip">
+  <div class="macro-item"><span class="macro-lbl">USD/TRY</span><span class="macro-val up" id="m-usdtry">—</span><span class="macro-sub">Live rate</span></div>
+  <div class="macro-item"><span class="macro-lbl">EUR/TRY</span><span class="macro-val up" id="m-eurtry">—</span><span class="macro-sub">Live rate</span></div>
+  <div class="macro-item"><span class="macro-lbl">USD/BRL</span><span class="macro-val" id="m-usdbrl">—</span><span class="macro-sub">Brazil Real</span></div>
+  <div class="macro-item"><span class="macro-lbl">USD/VND</span><span class="macro-val" id="m-usdvnd">—</span><span class="macro-sub">Vietnam Dong ÷1k</span></div>
+  <div class="macro-item"><span class="macro-lbl">USD/INR</span><span class="macro-val" id="m-usdinr">—</span><span class="macro-sub">India Rupee</span></div>
+  <div class="macro-item"><span class="macro-lbl">ICE ARABICA</span><span class="macro-val" id="m-arab">—</span><span class="macro-sub">USc/lb · NY</span></div>
+  <div class="macro-item"><span class="macro-lbl">ICE ROBUSTA</span><span class="macro-val" id="m-rob">—</span><span class="macro-sub">USD/t · London</span></div>
+  <div class="macro-item"><span class="macro-lbl">BALTIC DRY</span><span class="macro-val" id="m-bdi">~1,200</span><span class="macro-sub">Freight index</span></div>
+  <div class="macro-item"><span class="macro-lbl">TR CPI YoY</span><span class="macro-val up" id="m-trcpi">~65%</span><span class="macro-sub">TURKSTAT</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="c-nav" id="c-nav">
+    <div class="loader" style="width:100%;padding:18px"><div class="spinner"></div><div class="loader-txt">Connecting to intelligence feed...</div></div>
+  </div>
+  <div class="cg">
+    <div id="col-left"><div class="loader"><div class="spinner"></div><div class="loader-txt">Loading market intelligence...</div></div></div>
+    <div class="rcol" id="col-right"></div>
+  </div>
+</div>
+
+<!-- ASK SECTION -->
+<div class="ask-sec">
+  <div class="ask-hd">
+    <div class="ask-lbl">MARKET ANALYST · POWERED BY LIVE DATA</div>
+    <div class="ask-title">Ask the intelligence system directly</div>
+    <div class="ask-sub">Ask anything about current supply risks, price outlook, timing strategy, or origin conditions. Every answer is derived from live data — not generic AI knowledge.</div>
+  </div>
+  <div class="ask-box">
+    <div class="ask-hist" id="ask-hist">
+      <div class="ask-msg">
+        <div class="ask-role analyst">MONITOR ANALYST</div>
+        <div class="ask-body">I have access to live signals from 60+ sources: ICO and USDA export data, weather at all major origin locations, freight and logistics indices, USD/TRY and origin currency rates, cooperative export reports, and trade press. Ask me what you need to know to make a better decision today — whether you are buying, selling, or assessing risk.</div>
+      </div>
+    </div>
+    <div class="ask-think" id="ask-think">Analyst is reviewing current intelligence data...</div>
+    <div class="ask-row">
+      <input class="ask-input" id="ask-input" placeholder="e.g. Is now a good time to buy arabica forward for Q3? / What is driving pepper prices up? / Should I lock in freight now?" />
+      <button class="ask-btn" onclick="sendQ()">ASK ↵</button>
+    </div>
+    <div class="ask-disc">All analysis is derived from publicly available data. This is market intelligence, not financial advice. Sources: ICO · USDA FAS · CONAB · TURKSTAT · ITC Trade Map · Open-Meteo · ExchangeRate-API · and others.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-brand">MONITOR — AGRICULTURAL INTELLIGENCE</div>
+  <div class="footer-src">
+    Data sourced continuously from: ICO · USDA FAS · FAO · CONAB · CECAFE · VICOFA · VPSA · Spices Board India ·
+    Almond Board of California · TURKSTAT · ITC Trade Map · UN Comtrade · Open-Meteo (weather) ·
+    ExchangeRate-API · MarineTraffic AIS · Baltic Exchange · Freightwaves ·
+    Rabobank Agri Research · Daily Coffee News · Perfect Daily Grind · and 40+ additional public sources.
+    Intelligence briefs updated every 6 hours. Signal monitoring continuous.
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════
+// CONFIGURATION — WEB DESIGNER: UPDATE THESE TWO LINES
+// ══════════════════════════════════
+const API   = 'https://your-railway-app.up.railway.app';  // ← your Railway backend URL
+const TOKEN = 'your-dashboard-password';                   // ← your dashboard password
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+let aud      = 'importer';
+let coin     = 'arabica';
+let dash     = null;
+let detail   = null;
+let pchart   = null;
+
+const META = {
+  arabica:{ full:'Arabica Coffee',    sub:'Brazil · Colombia · Ethiopia',       unit:'USc/lb',   ex:'ICE New York',   col:'#8a2020' },
+  robusta:{ full:'Robusta Coffee',    sub:'Vietnam · Indonesia · Uganda',        unit:'USD/tonne',ex:'ICE London',     col:'#b5620a' },
+  pepper: { full:'Black Pepper',      sub:'Vietnam · India · Indonesia',         unit:'USD/tonne',ex:'IPSTA Spot',     col:'#185fa5' },
+  cashew: { full:'Cashew Kernel W320',sub:"Ivory Coast · Vietnam · Tanzania",   unit:'USD/tonne',ex:'OTC Spot',       col:'#2d6b54' },
+  almond: { full:'Almond Nonpareil',  sub:'California · Australia · Spain',     unit:'USD/lb',   ex:'Blue Diamond',   col:'#6a3a8a' },
+};
+
+// ══════════════════════════════════
+// CLOCK
+// ══════════════════════════════════
+setInterval(()=>{ document.getElementById('clock').textContent = new Date().toUTCString().slice(5,25)+' UTC'; }, 1000);
+document.getElementById('clock').textContent = new Date().toUTCString().slice(5,25)+' UTC';
+
+// ══════════════════════════════════
+// AUDIENCE TOGGLE
+// ══════════════════════════════════
+function setAud(a){
+  aud=a;
+  ['importer','exporter','broker','analyst'].forEach(x=>{
+    document.getElementById('pl-'+x)?.classList.toggle('active',x===a);
+  });
+  renderVBody();
+}
+
+// ══════════════════════════════════
+// API
+// ══════════════════════════════════
+async function get(path){
+  const r=await fetch(API+path,{headers:{'Authorization':'Bearer '+TOKEN}});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+// ══════════════════════════════════
+// MACRO — ExchangeRate-API (free, no key)
+// ══════════════════════════════════
+async function loadMacro(){
+  try{
+    const r=await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const d=await r.json(); const rt=d.rates||{};
+    const sv=(id,v,cls)=>{ const e=document.getElementById(id); if(e){e.textContent=v; if(cls)e.className='macro-val '+cls;} };
+    sv('m-usdtry', rt.TRY?.toFixed(2)||'—', rt.TRY>30?'up':'dn');
+    sv('m-eurtry', (rt.TRY/rt.EUR)?.toFixed(2)||'—', 'up');
+    sv('m-usdbrl', rt.BRL?.toFixed(3)||'—', '');
+    sv('m-usdvnd', rt.VND?(rt.VND/1000).toFixed(1)+'k':'—', '');
+    sv('m-usdinr', rt.INR?.toFixed(2)||'—', '');
+  }catch(e){}
+  try{
+    const d=await get('/api/dashboard'); dash=d;
+    const arab=d.commodities?.find(c=>c.commodity==='arabica');
+    const rob=d.commodities?.find(c=>c.commodity==='robusta');
+    if(arab?.price_usd) document.getElementById('m-arab').textContent=parseFloat(arab.price_usd).toFixed(0);
+    if(rob?.price_usd)  document.getElementById('m-rob').textContent=parseFloat(rob.price_usd).toFixed(0);
+  }catch(e){}
+}
+
+// ══════════════════════════════════
+// DASHBOARD LOAD
+// ══════════════════════════════════
+async function loadDash(){
+  try{
+    if(!dash) dash=await get('/api/dashboard');
+    renderNav();
+    await loadDetail(coin);
+  }catch(e){
+    document.getElementById('c-nav').innerHTML=mkFallbackNav();
+    document.getElementById('col-left').innerHTML=`<div class="loader"><div class="loader-txt" style="color:var(--red)">Unable to connect to intelligence backend.<br><small>Ensure API_BASE is configured correctly.</small></div></div>`;
+  }
+}
+
+function mkFallbackNav(){
+  return Object.keys(META).map(c=>`<div class="c-tab${c===coin?' active':''}" onclick="swCoin('${c}')">
+    <div class="c-tab-name">${c.toUpperCase()}</div><div class="c-tab-dis">—</div><div class="c-tab-lv lv-low">NO DATA</div></div>`).join('');
+}
+
+function renderNav(){
+  if(!dash?.commodities) return;
+  document.getElementById('c-nav').innerHTML=dash.commodities.map(c=>`
+    <div class="c-tab${c.commodity===coin?' active':''}" onclick="swCoin('${c.commodity}')">
+      <div class="c-tab-name">${c.commodity.toUpperCase()}</div>
+      <div class="c-tab-dis">${c.dis_score??'—'}</div>
+      <div class="c-tab-lv lv-${c.impact_level}">${(c.impact_level||'').toUpperCase()}</div>
+    </div>`).join('');
+}
+
+async function swCoin(c){ coin=c; renderNav(); await loadDetail(c); }
+
+// ══════════════════════════════════
+// DETAIL
+// ══════════════════════════════════
+async function loadDetail(c){
+  document.getElementById('col-left').innerHTML=`<div class="loader"><div class="spinner"></div><div class="loader-txt">Fetching ${c} intelligence...</div></div>`;
+  try{
+    detail=await get('/api/commodity/'+c);
+    renderLeft(); renderRight();
+  }catch(e){
+    document.getElementById('col-left').innerHTML=`<div class="loader"><div class="loader-txt">Failed to load data.</div></div>`;
+  }
+}
+
+// ══════════════════════════════════
+// LEFT — VERDICT CARD
+// ══════════════════════════════════
+function renderLeft(){
+  const s=detail?.state||{}; const m=META[coin]||{};
+  const dis=s.dis_score||0; const lv=s.impact_level||'low';
+  const upd=s.last_briefed_at?new Date(s.last_briefed_at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'Pending first run';
+  document.getElementById('col-left').innerHTML=`
+  <div class="verdict-card fade">
+    <div class="vcard-head">
+      <div>
+        <div class="vcard-commodity">${m.full} <em>· ${m.sub}</em></div>
+        <div class="vcard-updated">Intelligence brief: ${upd} UTC · Monitor Engine</div>
+      </div>
+      <div class="vcard-dis">
+        <div class="vcard-dis-num" style="color:${disColor(lv)}">${dis}</div>
+        <div class="vcard-dis-lbl">RISK SCORE / 100</div>
+      </div>
+    </div>
+    <div class="aud-tabs">
+      <div class="aud-tab${aud==='importer'?' active':''}" onclick="setAud('importer')">IMPORTER / BUYER</div>
+      <div class="aud-tab${aud==='exporter'?' active':''}" onclick="setAud('exporter')">EXPORTER / SELLER</div>
+      <div class="aud-tab${aud==='broker'?' active':''}" onclick="setAud('broker')">BROKER / TRADER</div>
+      <div class="aud-tab${aud==='analyst'?' active':''}" onclick="setAud('analyst')">ANALYST VIEW</div>
+    </div>
+    <div class="vbody" id="vbody">${mkVBody()}</div>
+  </div>`;
+}
+
+function renderVBody(){ const b=document.getElementById('vbody'); if(b) b.innerHTML=mkVBody(); }
+
+function mkVBody(){
+  const s=detail?.state||{}; const sigs=detail?.recent_signals||[];
+  const m=META[coin]||{}; const dis=s.dis_score||0; const lv=s.impact_level||'low';
+  const v=verdict(dis,lv,aud,s);
+  const brief=s.rolling_brief||'';
+  const action=s.procurement_action||'';
+  const cats=[...new Set((sigs||[]).slice(0,8).map(x=>x.category).filter(Boolean))].join(', ');
+  return `
+    <div class="verdict-signal ${v.cls}">
+      <div class="verdict-word">${v.word}</div>
+      <div class="verdict-reason">${v.reason}</div>
+    </div>
+    ${action?`<div class="brief-sec"><div class="brief-lbl">RECOMMENDED ACTION</div><div class="action-txt">${esc(action)}</div></div>`:''}
+    ${brief?`<div class="brief-sec"><div class="brief-lbl">INTELLIGENCE BRIEF</div><div class="brief-txt">${esc(brief)}</div></div>`:`<div class="brief-sec"><div class="brief-lbl">STATUS</div><div class="brief-txt" style="color:var(--ink4);font-style:italic">Intelligence brief being generated on first pipeline run. Use Ask section below to query available signals immediately.</div></div>`}
+    <div class="sources-note">Sources: ICO market reports · USDA FAS · CONAB Brazil · CECAFE · Cooperative export agencies · Open-Meteo weather (origin locations) · ExchangeRate-API (USD/TRY, BRL, VND, INR) · ITC Trade Map · TURKSTAT Turkey import data · Baltic Dry Index · Trade press signal categories used: ${cats||'pending'}. All reasoning is mathematically derived from these public sources only.</div>`;
+}
+
+// ══════════════════════════════════
+// VERDICT LOGIC
+// ══════════════════════════════════
+function verdict(dis,lv,audience,s){
+  const trend=s.dis_trend||'stable';
+  let drvs=[];
+  try{ drvs=JSON.parse(s.primary_drivers||'[]'); }catch{}
+  const top=drvs[0]||'Multiple converging market factors';
+  const top_clean=top.replace(/\(score:.*?\)/,'').trim();
+  const V={
+    importer:{
+      critical:{word:'BUY NOW', cls:'buy',  reason:`<strong>Risk score ${dis}/100 — critical supply pressure detected.</strong> ${top_clean}. Waiting increases your cost exposure as the market prices in these risks. Secure forward coverage now. Diversify origins.`},
+      high:    {word:'BUY',     cls:'buy',  reason:`<strong>Risk score ${dis}/100 — elevated supply risk, ${trend} trend.</strong> ${top_clean}. Conditions favour buyers who act before the market fully adjusts. Consider covering 60–70% of forward requirements.`},
+      medium:  {word:'WATCH',   cls:'wait', reason:`<strong>Risk score ${dis}/100 — moderate risk, situation developing.</strong> ${top_clean}. No immediate urgency. Maintain current positions. Re-evaluate in 2–3 weeks as signals clarify.`},
+      low:     {word:'WAIT',    cls:'wait', reason:`<strong>Risk score ${dis}/100 — supply conditions stable.</strong> No significant disruption detected across monitored origins. Buyer holds leverage. Defer forward purchases — better entry points likely ahead.`},
+    },
+    exporter:{
+      critical:{word:'OFFER NOW',cls:'sell', reason:`<strong>Risk score ${dis}/100 — buyers are under pressure.</strong> ${top_clean}. This is a seller's market. Offer at firm prices with confidence. Import-side anxiety will support your differentials.`},
+      high:    {word:'OFFER',   cls:'sell', reason:`<strong>Risk score ${dis}/100 — favourable selling conditions.</strong> ${top_clean}. Market anxiety is rising on the buy side. Sellers with available inventory are in a strong position.`},
+      medium:  {word:'HOLD',    cls:'hold', reason:`<strong>Risk score ${dis}/100 — mixed signals.</strong> ${top_clean}. Hold inventory for better price discovery. Set a floor price, work the basis, avoid rushing.`},
+      low:     {word:'PRICE UP',cls:'wait', reason:`<strong>Risk score ${dis}/100 — buyer's market.</strong> Competitive origin pressure is high. Differentiate on quality, reliability, and relationships rather than price alone. Protect margins.`},
+    },
+    broker:{
+      critical:{word:'ACTIVE',  cls:'buy',  reason:`<strong>Risk score ${dis}/100 — high-activity environment.</strong> ${top_clean}. Both sides seeking cover. Wide bid/offer spreads and widening differentials. Origin-to-destination arbitrage windows open. Move quickly.`},
+      high:    {word:'ACTIVE',  cls:'buy',  reason:`<strong>Risk score ${dis}/100 — elevated market activity.</strong> ${top_clean}. Basis differentials widening. Monitor Santos, Ho Chi Minh, Mombasa, Cochin basis for arbitrage. Selective but significant opportunities.`},
+      medium:  {word:'WATCH',   cls:'wait', reason:`<strong>Risk score ${dis}/100 — moderate activity.</strong> ${top_clean}. Quality-grade differential plays available. Not a broad-market moment but informed origin-specific positions exist.`},
+      low:     {word:'QUIET',   cls:'wait', reason:`<strong>Risk score ${dis}/100 — stable, competitive market.</strong> Transactional volume, not risk-driven. Focus on relationship maintenance and positioning for the next volatility window.`},
+    },
+    analyst:{
+      critical:{word:'CRITICAL',cls:'sell', reason:`<strong>DIS ${dis}/100 — multivariate supply stress signal.</strong> ${top_clean}. Composite score from: weather anomalies at origins (Open-Meteo), export deviation (ICO/USDA/CONAB), logistics signals, price momentum, and FX impact on TRY cost basis. Signal corroborated across multiple data categories.`},
+      high:    {word:'ELEVATED',cls:'hold', reason:`<strong>DIS ${dis}/100 — above-threshold risk, ${trend} trend.</strong> ${top_clean}. Composite of weather, trade flow, logistics, and price data. FX component: USD/TRY impact on import cost basis significant. See full brief for factor breakdown.`},
+      medium:  {word:'MODERATE',cls:'wait', reason:`<strong>DIS ${dis}/100 — within elevated-normal band.</strong> ${top_clean}. Signals present but not yet corroborated across all data streams. Continue monitoring. Contributing factor details in signal feed.`},
+      low:     {word:'STABLE',  cls:'wait', reason:`<strong>DIS ${dis}/100 — within normal parameters.</strong> No material disruption detected across weather, logistics, or trade flow streams. Baseline conditions prevailing. No actionable signal.`},
+    }
+  };
+  return (V[audience]||V.importer)[lv]||V.importer.low;
+}
+
+function disColor(lv){ return {critical:'var(--red)',high:'var(--amber)',medium:'var(--gold)',low:'var(--forest2)'}[lv]||'var(--ink2)'; }
+
+// ══════════════════════════════════
+// RIGHT COL
+// ══════════════════════════════════
+function renderRight(){
+  const s=detail?.state||{}; const sigs=detail?.recent_signals||[]; const prices=detail?.price_history||[];
+  const m=META[coin]||{}; const dis=s.dis_score||0; const lv=s.impact_level||'low';
+  let drvs=[]; try{drvs=JSON.parse(s.primary_drivers||'[]');}catch{}
+  const dotClrs=['var(--red)','var(--amber)','var(--gold)','var(--ink3)','var(--ink4)'];
+  const dotSigClrs={critical:'var(--red)',high:'var(--amber)',medium:'var(--gold)',low:'var(--ink4)'};
+
+  document.getElementById('col-right').innerHTML=`
+    <div class="data-card fade">
+      <div class="dc-head"><span>MARKET SNAPSHOT</span><span style="color:var(--ink4);font-size:9px">${m.ex}</span></div>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="stat-lbl">RISK SCORE</div><div class="stat-val" style="color:${disColor(lv)}">${dis}</div><div class="stat-sub">/ 100 · ${lv.toUpperCase()}</div></div>
+        <div class="stat-cell"><div class="stat-lbl">TREND</div><div class="stat-val ${s.dis_trend==='rising'?'neg':s.dis_trend==='falling'?'pos':''}">${s.dis_trend==='rising'?'↑ Rising':s.dis_trend==='falling'?'↓ Easing':'→ Stable'}</div><div class="stat-sub">vs 7 days ago</div></div>
+        <div class="stat-cell"><div class="stat-lbl">SPOT PRICE</div><div class="stat-val">${s.price_usd?'$'+parseFloat(s.price_usd).toFixed(2):'—'}</div><div class="stat-sub">${m.unit}</div></div>
+        <div class="stat-cell"><div class="stat-lbl">SIGNALS / 72H</div><div class="stat-val">${sigs.length}</div><div class="stat-sub">classified</div></div>
+      </div>
+    </div>
+
+    ${prices.length>=3?`
+    <div class="data-card fade">
+      <div class="dc-head"><span>PRICE HISTORY — ${m.unit}</span></div>
+      <div class="chart-pad"><div class="chart-h"><canvas id="rchart" role="img" aria-label="Price trend for ${coin}"></canvas></div></div>
+    </div>`:''}
+
+    ${drvs.length?`
+    <div class="data-card fade">
+      <div class="dc-head"><span>ACTIVE RISK DRIVERS</span></div>
+      <div class="dc-body">
+        ${drvs.map((d,i)=>`<div class="mf"><span class="mf-lbl" style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:${dotClrs[i]||dotClrs[4]};display:inline-block;flex-shrink:0"></span>${esc(d.replace(/\(score:.*?\)/,'').trim())}</span></div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <div class="data-card fade">
+      <div class="dc-head"><span>MACRO CONTEXT · TÜRKİYE IMPORTER</span></div>
+      <div class="dc-body">
+        <div class="mf"><span class="mf-lbl">USD/TRY (live)</span><span class="mf-val neg" id="rc-usdtry">—</span></div>
+        <div class="mf"><span class="mf-lbl">USD commodity cost in TRY — elevated?</span><span class="mf-val neg">Yes (TRY weak)</span></div>
+        <div class="mf"><span class="mf-lbl">Brazil Real (BRL) vs USD</span><span class="mf-val" id="rc-brl">—</span></div>
+        <div class="mf"><span class="mf-lbl">Vietnam Dong (VND) vs USD</span><span class="mf-val" id="rc-vnd">—</span></div>
+        <div class="mf"><span class="mf-lbl">Weak origin FX → more export incentive?</span><span class="mf-val neu">See brief</span></div>
+        <div class="mf"><span class="mf-lbl">Baltic Dry Freight Index</span><span class="mf-val neu">~1,200 (moderate)</span></div>
+      </div>
+    </div>
+
+    ${sigs.length?`
+    <div class="data-card fade">
+      <div class="dc-head"><span>LIVE SIGNAL FEED</span><span style="color:var(--ink4)">${sigs.length} signals</span></div>
+      <div class="dc-body" style="padding:8px 16px">
+        ${sigs.slice(0,8).map(sg=>`<div class="signal-item">
+          <span class="sig-dot" style="background:${dotSigClrs[sg.impact_level]||'var(--ink4)'}"></span>
+          <span class="sig-hl">${esc(sg.headline||'—')}</span>
+          <span class="sig-score" style="color:${dotSigClrs[sg.impact_level]||'var(--ink4)'}">+${sg.dis_contribution||0}</span>
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+  `;
+
+  // Sync macro values
+  const usdtry=document.getElementById('m-usdtry')?.textContent;
+  const brl=document.getElementById('m-usdbrl')?.textContent;
+  const vnd=document.getElementById('m-usdvnd')?.textContent;
+  const re=(id,v)=>{ const e=document.getElementById(id); if(e&&v&&v!=='—') e.textContent=v; };
+  re('rc-usdtry',usdtry); re('rc-brl',brl); re('rc-vnd',vnd);
+
+  if(prices.length>=3) setTimeout(()=>drawChart(prices),100);
+}
+
+function drawChart(prices){
+  const canvas=document.getElementById('rchart'); if(!canvas) return;
+  if(pchart){pchart.destroy();pchart=null;}
+  const labels=prices.map(p=>{ const d=new Date(p.recorded_at); return `${d.getDate()}/${d.getMonth()+1}`; });
+  const vals=prices.map(p=>parseFloat(p.price_usd)||0);
+  const c=META[coin]?.col||'#2d6b54';
+  pchart=new Chart(canvas,{
+    type:'line',
+    data:{labels,datasets:[{data:vals,borderColor:c,borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:c+'18',tension:.3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#b0ae9f',font:{family:'DM Mono',size:10},maxTicksLimit:6},grid:{color:'#ede9df'},border:{color:'#dedad0'}},
+        y:{ticks:{color:'#b0ae9f',font:{family:'DM Mono',size:10}},grid:{color:'#ede9df'},border:{color:'#dedad0'}}
+      }}
+  });
+}
+
+// ══════════════════════════════════
+// ASK MONITOR
+// ══════════════════════════════════
+async function sendQ(){
+  const input=document.getElementById('ask-input');
+  const q=input.value.trim(); if(!q) return;
+  input.value='';
+  const hist=document.getElementById('ask-hist');
+  hist.innerHTML+=`<div class="ask-msg"><div class="ask-role">YOU</div><div class="ask-body user">${esc(q)}</div></div>`;
+  hist.scrollTop=hist.scrollHeight;
+  document.getElementById('ask-think').style.display='block';
+  try{
+    const r=await fetch(API+'/api/ask',{method:'POST',
+      headers:{'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},
+      body:JSON.stringify({question:q,commodity:coin})});
+    const d=await r.json();
+    hist.innerHTML+=`<div class="ask-msg"><div class="ask-role analyst">MONITOR ANALYST</div><div class="ask-body">${esc(d.answer||'No response')}</div></div>`;
+  }catch(e){
+    hist.innerHTML+=`<div class="ask-msg"><div class="ask-role" style="color:var(--red)">ERROR</div><div class="ask-body user">Failed to reach intelligence system.</div></div>`;
+  }
+  document.getElementById('ask-think').style.display='none';
+  hist.scrollTop=hist.scrollHeight;
+}
+document.getElementById('ask-input').addEventListener('keydown',e=>{ if(e.key==='Enter') sendQ(); });
+
+// ══════════════════════════════════
+// UTIL
+// ══════════════════════════════════
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+loadMacro();
+loadDash();
+</script>
+</body>
+</html>

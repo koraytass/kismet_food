@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import InsightsPage from '@/components/pages/InsightsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/insights/';
+const title = 'Piyasa Analizleri | Kısmet Foods';
+const description =
+  'Yılların birikimiyle hazırlanan Kısmet Foods piyasa analizleri: kahve, kakao, kuruyemiş ve baharatta her ürün grubunda profesyonel uzmanlığın ortaya çıkardığı menşe hikâyeleri ve ticaret haberleri.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Piyasa Analizleri', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <InsightsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

@@ -1,0 +1,59 @@
+---
+/**
+ * Button — editorial primary/secondary/ghost button.
+ *
+ * Visual DNA: sharp 0px corner, all-caps tight tracking, slide-fill
+ * hover (orange enters from the start edge — echoes favicon color
+ * dance). Renders as `<a>` when href is provided, else `<button>`.
+ */
+type Variant = 'primary' | 'secondary' | 'ghost';
+
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  variant?: Variant;
+  class?: string;
+  ariaLabel?: string;
+  download?: boolean | string;
+  rel?: string;
+  target?: string;
+}
+
+const {
+  href,
+  type = 'button',
+  variant = 'primary',
+  class: extraClass = '',
+  ariaLabel,
+  download,
+  rel,
+  target,
+} = Astro.props;
+
+const variantClass = {
+  primary: 'btn--primary',
+  secondary: 'btn--secondary',
+  ghost: 'btn--ghost',
+}[variant];
+
+const cls = `btn ${variantClass} ${extraClass}`.trim();
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class={cls}
+      aria-label={ariaLabel}
+      download={download as any}
+      rel={rel}
+      target={target}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={cls} aria-label={ariaLabel}>
+      <slot />
+    </button>
+  )
+}

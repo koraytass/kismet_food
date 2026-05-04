@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import CareersPage from '@/components/pages/CareersPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/careers/';
+const title = 'الوظائف | كسمت فودز';
+const description =
+  'وظائف كسمت فودز. انضم إلى فريق صقلته سنوات من الممارسة التجارية المتراكمة وخبرة احترافية عميقة في كل فئة منتج — تنقل بين القارات وحرفة حقيقية.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description, keywords: ['وظائف', 'عمل', 'تجارة عالمية'] }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'الوظائف', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <CareersPage locale={locale} currentPath={pathname} />
+</BaseLayout>

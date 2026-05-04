@@ -1,0 +1,91 @@
+---
+/**
+ * PortfolioGrid — 3 flagship product category cards (editorial bento).
+ * Cards lift on hover, imagery de-saturates then snaps to full color.
+ */
+import type { Locale } from '@/i18n';
+import { t } from '@/i18n';
+import { stockImages } from '@/lib/images';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const tr = t(locale);
+
+const cards = [
+  { ...tr.portfolio.coffee, img: stockImages.coffee },
+  { ...tr.portfolio.cocoa, img: stockImages.cocoa },
+  { ...tr.portfolio.nuts, img: stockImages.nuts },
+];
+---
+
+<section id="portfolio" class="bg-surface py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6 md:px-8">
+    <div class="mb-16 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+      <div class="max-w-2xl">
+        <span class="eyebrow mb-4 block text-orange-dark">
+          {tr.portfolio.eyebrow}
+        </span>
+        <h2 class="serif-display text-4xl font-bold text-on-surface md:text-5xl">
+          {tr.portfolio.headline}
+        </h2>
+      </div>
+      <a
+        href="#quote"
+        class="pb-1 font-bold text-teal-dark transition-colors hover:text-orange-dark border-b-2 border-orange/40"
+      >
+        {tr.portfolio.viewAll}
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      {cards.map((card) => (
+        <article
+          class="group relative overflow-hidden rounded-xl bg-surface-low transition-transform duration-300 hover:-translate-y-1"
+        >
+          <div class="aspect-[4/5] overflow-hidden">
+            <img
+              src={card.img.src}
+              alt={card.img.alt[locale]}
+              class="h-full w-full object-cover grayscale-[20%] transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="p-8">
+            <h3 class="serif-display mb-3 text-2xl font-bold text-on-surface">
+              {card.title}
+            </h3>
+            <p class="mb-6 leading-relaxed text-on-surface-muted">
+              {card.body}
+            </p>
+            <div
+              class="flex items-center text-sm font-bold uppercase tracking-widest text-teal-dark"
+            >
+              {card.cta}
+              <svg
+                class="ms-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5 10a.75.75 0 0 1 .75-.75h7.586L10.27 6.28a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l2.97-2.97H5.75A.75.75 0 0 1 5 10Z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <span
+            class="absolute end-4 top-4 rounded-full bg-teal px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white"
+          >
+            {card.badge}
+          </span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

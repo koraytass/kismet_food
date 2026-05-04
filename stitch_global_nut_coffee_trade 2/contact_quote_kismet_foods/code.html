@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#5c403a",
+                        "on-tertiary-container": "#452c27",
+                        "on-surface": "#1a1c1c",
+                        "on-secondary-fixed-variant": "#7c2e04",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3c4949",
+                        "primary-container": "#00acaf",
+                        "primary-fixed": "#76f6f8",
+                        "surface-container": "#eeeeed",
+                        "tertiary-fixed-dim": "#e5beb5",
+                        "on-primary-fixed": "#002020",
+                        "surface-bright": "#faf9f8",
+                        "primary-fixed-dim": "#56d9dc",
+                        "on-primary-container": "#00393a",
+                        "inverse-primary": "#56d9dc",
+                        "secondary": "#9b451c",
+                        "secondary-fixed": "#ffdbcd",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#faf9f8",
+                        "on-primary-fixed-variant": "#004f51",
+                        "surface-container-low": "#f4f3f2",
+                        "on-secondary-fixed": "#360f00",
+                        "surface-container-highest": "#e3e2e1",
+                        "on-tertiary-fixed": "#2b1611",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#00696b",
+                        "surface-dim": "#dadad9",
+                        "secondary-fixed-dim": "#ffb597",
+                        "error-container": "#ffdad6",
+                        "outline": "#6c7a7a",
+                        "secondary-container": "#fe9162",
+                        "inverse-on-surface": "#f1f0f0",
+                        "tertiary-container": "#b6938b",
+                        "on-background": "#1a1c1c",
+                        "background": "#faf9f8",
+                        "surface-variant": "#e3e2e1",
+                        "on-secondary-container": "#752900",
+                        "on-primary": "#ffffff",
+                        "primary": "#00696b",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdad2",
+                        "tertiary": "#755750",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e9e8e7",
+                        "outline-variant": "#bbc9c9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .editorial-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        .glass-nav { background: rgba(250, 249, 248, 0.8); backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#faf9f8]/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif font-bold tracking-tight text-[#1a1c1c]">KISMET FOODS</div>
+<div class="hidden md:flex space-x-8 items-center">
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">About</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Products</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Origins</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Sustainability</a>
+<a class="text-[#1a1c1c] font-medium hover:text-[#00acaf] transition-colors duration-300" href="#">Insights</a>
+<a class="text-[#00acaf] font-bold border-b-2 border-[#00acaf] pb-1 transition-colors duration-300" href="#">Contact</a>
+</div>
+<div class="flex items-center space-x-6">
+<span class="text-[#1a1c1c] text-sm font-semibold tracking-wider">TR/EN/AR</span>
+<button class="bg-gradient-to-br from-[#00696b] to-[#00acaf] text-white px-6 py-2 rounded-md font-bold text-sm tracking-wide uppercase">Request Quote</button>
+</div>
+</div>
+</nav>
+<main class="pt-24">
+<!-- Hero Section -->
+<section class="relative h-[716px] flex items-center px-8 md:px-24 overflow-hidden bg-surface">
+<div class="absolute right-0 top-0 w-1/2 h-full hidden lg:block">
+<div class="w-full h-full bg-cover bg-center" data-alt="Close-up of vintage maritime nautical map with brass compass and warm lighting, evoking a sense of global trade and exploration." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBedoIFDDOjb8j3LMRA1HphPppip4-EG0erQS01FLWSOPmAKF9133mX1j3SYfijsJ9lO9_knWIhYivQxKGTwJPTpiMHAi0UsDIWpSk_fik2sykaOhsKe3OR-vssb6MQZy22GsDbix7DHX5fXdMDq7IM0VFRpvzUAnFCQFhAtiGsBTjFNpGya9tSg89LyXStIRjHs_Fo3okEqD-5Z11KmtoqVp3inepiINqUU9czInyTPS_rZlZ6bUJVCfHvwa2WlzJfYin6w5RPFbU')"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-surface via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-3xl">
+<p class="font-label text-secondary text-sm font-extrabold tracking-[0.2em] mb-4 uppercase">Direct Access to Excellence</p>
+<h1 class="text-6xl md:text-8xl font-bold tracking-tight text-on-surface leading-[0.95] mb-8">
+                    Let's Connect <br/>Across <span class="text-primary italic">Coordinates</span>
+</h1>
+<p class="text-xl text-on-surface-variant max-w-lg leading-relaxed font-light">
+                    From the fertile soils of Abidjan to the logistics hubs of Rotterdam, our network is your gateway to the world's finest raw commodities.
+                </p>
+</div>
+</section>
+<!-- Global Offices Bento -->
+<section class="px-8 md:px-24 py-24 bg-surface-container-low">
+<div class="mb-16">
+<span class="font-label text-on-surface-variant text-xs font-bold tracking-[0.3em] uppercase">Global Presence</span>
+<h2 class="text-4xl md:text-5xl mt-2 font-bold">Strategic Anchors</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[600px]">
+<!-- Istanbul HQ -->
+<div class="md:col-span-7 bg-surface-container-lowest p-8 flex flex-col justify-between group overflow-hidden relative">
+<div class="relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-3xl font-bold mb-2">Istanbul (HQ)</h3>
+<p class="text-on-surface-variant max-w-xs font-medium">Büyükdere Cd. No:193, Levent, 34394 Şişli/İstanbul, Türkiye</p>
+</div>
+<span class="bg-primary text-white text-[10px] px-3 py-1 rounded-full uppercase tracking-tighter font-bold">Main Headquarters</span>
+</div>
+</div>
+<div class="mt-8 relative z-10">
+<p class="text-primary font-bold text-lg">+90 212 555 0101</p>
+<p class="text-on-surface-variant">global@kismetfoods.com</p>
+<button class="mt-6 flex items-center text-secondary font-bold text-sm tracking-widest uppercase hover:underline underline-offset-8 transition-all">
+                            View on map <span class="material-symbols-outlined ml-2">north_east</span>
+</button>
+</div>
+<div class="absolute right-[-10%] bottom-[-10%] opacity-10 group-hover:opacity-20 transition-opacity">
+<img class="w-96 h-96 object-cover rounded-full" data-alt="Stylized satellite view map of Istanbul focusing on the Bosphorus strait with professional blue color grading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG_WbZdi7OVYShuidcYCsajS658BoqXRWxCPELdU3QpML-JbSay-8c-hxAu--z1jCnaw9DSggrE4Wveh2pIiAoykaMcQ64IFPFxlKVKIYFCiP_EsWKkFeohSxg7ryBbCYOCtc_r9F2VXdCQhQm8qm8TrOx5pPwrLJNa51W2Yhr9fIFsA4DcxAZtm2T2tagUEu7beGiCpKJ1ABWc63IfC21qXblS1CZ2U89gL4bMzxHB1Of-QtZMRaEq4mofiIn9CklCmHEqCpfgHw"/>
+</div>
+</div>
+<!-- Abidjan -->
+<div class="md:col-span-5 bg-surface-container-highest p-8 flex flex-col justify-between relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="text-2xl font-bold mb-2 text-on-surface">Abidjan</h3>
+<p class="text-on-surface-variant text-sm font-medium">Boulevard VGE, Immeuble XL, Plateau, Abidjan, Côte d'Ivoire</p>
+</div>
+<div class="mt-8 relative z-10">
+<p class="text-on-surface font-bold">+225 07 00 00 00</p>
+<button class="mt-4 text-xs font-bold tracking-widest text-secondary uppercase">Origin Hub</button>
+</div>
+<div class="absolute inset-0 z-0 opacity-40 mix-blend-overlay">
+<img class="w-full h-full object-cover grayscale" data-alt="Modern architectural abstract of Ivory Coast skyline in Abidjan with high contrast lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-LY7j2sMzVzJO7PA4kCr4RAgvFYHEOxB9Rslj-qmHE6NHaZu4aYn6IwSZIbh8nYj2sfFj4GyKHU9iFfqGeG3rE8JI1G8GBlpQrdck7-HmXf5yWfYcmrEEPjg1VIbT-o7XJHMc5RCp3S43SZ_l8D_c_MLmHfQmeUZb9zhknwXqaV8DExWqhPYaeRD9dmlc2gYHj65AbJvnAbsYPesFgoUeYL4uYyuL77kTj3myzobpSaeQpdaLHjAJ1bmxeTT9vyLUlnTtuNxODmQ"/>
+</div>
+</div>
+<!-- Rotterdam -->
+<div class="md:col-span-5 bg-[#1a1c1c] p-8 text-surface flex flex-col justify-between">
+<div>
+<h3 class="text-2xl font-bold mb-2">Rotterdam</h3>
+<p class="text-surface/60 text-sm font-medium">Wilhelminakade 173, 3072 AP Rotterdam, Netherlands</p>
+</div>
+<div class="mt-8">
+<p class="text-primary-container font-bold">+31 10 555 0199</p>
+<p class="text-surface/40 text-xs mt-2">Logistics &amp; Distribution</p>
+</div>
+</div>
+<!-- Interactive Map Placeholder -->
+<div class="md:col-span-7 bg-surface-container-lowest overflow-hidden relative">
+<div class="absolute inset-0 bg-primary/5"></div>
+<div class="w-full h-full flex items-center justify-center relative">
+<!-- Custom Map Component (Stylized) -->
+<div class="w-full h-full grayscale opacity-60 bg-cover bg-center" data-alt="Minimalist world map with vector lines and glowing turquoise dots on major cities like Istanbul, Abidjan and Rotterdam." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjOiQXd1Aw2C7Ewk0mM2ETkgfEqRnj5tgOVLy1XAT_hbGijjRvhYKroRr_ukBG1FJb2pYeBzzSqBQDybJBeRCKSYF1KdOuRhDHc7TZjMS0RXcSn-_BQVKmq48z6OSTi1DvuZRA7x2AkrGZ_SMKCZ3ljrr8N2OU3pbHnCMlLj1gocXFMp7lHExTJXqS2DeCe1y6sz4dohv06IHOjo_wh_gpAjy778BTtOLjQ3e0-V2DKMRQDtva_NdeiX1_gvpq2nOClPJnlbj_j9Y')"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+<div class="relative">
+<div class="w-4 h-4 bg-primary rounded-full animate-ping absolute opacity-75"></div>
+<div class="w-4 h-4 bg-primary rounded-full relative"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quote Request Form -->
+<section class="py-24 px-8 md:px-24">
+<div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-20">
+<div class="lg:w-1/3">
+<div class="sticky top-32">
+<span class="font-label text-secondary text-xs font-bold tracking-[0.3em] uppercase">Procurement</span>
+<h2 class="text-5xl font-bold mt-4 leading-tight">Request a<br/>Custom Quote</h2>
+<p class="mt-8 text-on-surface-variant leading-relaxed">
+                            Our trade experts analyze current market indices and logistics routes to provide the most competitive valuation for your raw materials.
+                        </p>
+<div class="mt-12 space-y-6">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<div>
+<h4 class="font-bold text-sm">Direct-from-Origin</h4>
+<p class="text-xs text-on-surface-variant">No intermediaries, just pure quality.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary">speed</span>
+<div>
+<h4 class="font-bold text-sm">24h Response Time</h4>
+<p class="text-xs text-on-surface-variant">Rapid quotes for fast markets.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:w-2/3 bg-surface-container-low p-10 md:p-16 rounded-lg">
+<form action="#" class="space-y-12">
+<!-- Step 1: Identity -->
+<div>
+<h3 class="font-serif text-2xl font-bold mb-8 pb-4 border-b border-outline-variant/30 flex items-center">
+<span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold mr-4">1</span>
+                                Entity Information
+                            </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Full Name</label>
+<input class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all placeholder:text-outline-variant/60 font-medium" placeholder="Johnathan Doe" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Company Name</label>
+<input class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all placeholder:text-outline-variant/60 font-medium" placeholder="Global Logistics Corp" type="text"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Business Email</label>
+<input class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all placeholder:text-outline-variant/60 font-medium" placeholder="trade@company.com" type="email"/>
+</div>
+</div>
+</div>
+<!-- Step 2: Product -->
+<div>
+<h3 class="font-serif text-2xl font-bold mb-8 pb-4 border-b border-outline-variant/30 flex items-center">
+<span class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold mr-4">2</span>
+                                Product Details
+                            </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Product Interest</label>
+<select class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all font-medium appearance-none">
+<option>Select Product</option>
+<option>Raw Cocoa Beans</option>
+<option>Green Coffee Beans</option>
+<option>Premium Vanilla Pods</option>
+<option>Artisan Spices</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Requested Tonnage</label>
+<input class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all placeholder:text-outline-variant/60 font-medium" placeholder="50 MT" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Destination Port</label>
+<input class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all placeholder:text-outline-variant/60 font-medium" placeholder="Port of Rotterdam" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Desired Timeline</label>
+<select class="w-full bg-transparent border-b-2 border-outline-variant focus:border-primary border-t-0 border-x-0 px-0 py-2 focus:ring-0 transition-all font-medium appearance-none">
+<option>ASAP</option>
+<option>Q3 2024</option>
+<option>Q4 2024</option>
+<option>Annual Contract</option>
+</select>
+</div>
+</div>
+</div>
+<div class="pt-8">
+<button class="w-full py-5 bg-on-surface text-surface font-bold tracking-widest uppercase text-sm hover:bg-primary transition-colors flex items-center justify-center gap-3">
+                                Initialize Inquiry <span class="material-symbols-outlined">send</span>
+</button>
+<p class="text-center text-[10px] mt-6 text-on-surface-variant font-medium">
+                                By submitting this form, you agree to our data protection policies for trade inquiries.
+                            </p>
+</div>
+</form>
+</div>
+</div>
+</section>
+<!-- Support Section -->
+<section class="bg-surface-container py-24 px-8 md:px-24">
+<div class="max-w-4xl mx-auto text-center">
+<h2 class="text-4xl font-bold mb-12">Immediate Support</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="p-10 border border-outline-variant/30 rounded-lg hover:bg-surface-container-lowest transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-6" style="font-variation-settings: 'FILL' 1;">mail</span>
+<h3 class="text-xl font-bold mb-4">Direct Trade Desk</h3>
+<p class="text-on-surface-variant mb-6 text-sm">For complex logistics or long-term supply agreements.</p>
+<a class="text-secondary font-extrabold tracking-tight underline-offset-4 hover:underline" href="mailto:trade@kismetfoods.com">trade@kismetfoods.com</a>
+</div>
+<div class="p-10 border border-outline-variant/30 rounded-lg hover:bg-surface-container-lowest transition-colors group">
+<span class="material-symbols-outlined text-4xl text-primary mb-6" style="font-variation-settings: 'FILL' 1;">phone_in_talk</span>
+<h3 class="text-xl font-bold mb-4">Urgent Inquiries</h3>
+<p class="text-on-surface-variant mb-6 text-sm">Our global trading floor is active 24/5 for real-time support.</p>
+<a class="text-secondary font-extrabold tracking-tight underline-offset-4 hover:underline" href="tel:+902125550101">+90 212 555 0101</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f4f3f2] mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 w-full max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-xl font-serif text-[#1a1c1c] mb-2 uppercase tracking-widest font-bold">KISMET FOODS</div>
+<p class="text-[10px] font-label font-bold tracking-widest text-[#1a1c1c]/60 uppercase">© 2024 KISMET FOODS. GLOBAL CURATORS OF RAW EXCELLENCE.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-[10px] font-label font-bold tracking-widest text-[#1a1c1c]/60 uppercase hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Privacy Policy</a>
+<a class="text-[10px] font-label font-bold tracking-widest text-[#1a1c1c]/60 uppercase hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Terms of Service</a>
+<a class="text-[10px] font-label font-bold tracking-widest text-[#1a1c1c]/60 uppercase hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Supply Chain Ethics</a>
+<a class="text-[10px] font-label font-bold tracking-widest text-[#1a1c1c]/60 uppercase hover:text-[#00acaf] underline-offset-4 hover:underline" href="#">Certifications</a>
+</div>
+</div>
+</footer>
+</body></html>

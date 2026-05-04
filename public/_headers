@@ -1,0 +1,51 @@
+# Security & Cache Headers
+#
+# CSP notes:
+# - script-src allows 'self' + Leaflet CDN (for /origins/ interactive map)
+# - style-src allows 'self' + Leaflet CDN (leaflet.css loaded from unpkg)
+# - img-src allows https: so OSM/Carto map tiles and any future CDN load
+# - 'unsafe-inline' required for:
+#     script: Astro JSON-LD <script type="application/ld+json">
+#     style:  Astro scoped styles + Tailwind-generated inline critical CSS
+# - When migrating to SSR, consider nonce-based CSP.
+
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  X-DNS-Prefetch-Control: on
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org; frame-ancestors 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
+
+# Astro hashed immutable assets
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images (hash-based names, safe to cache long)
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Logos
+/logos/*
+  Cache-Control: public, max-age=604800
+
+# Fonts (via fontsource — self-hosted)
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static root assets
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/robots.txt
+  Cache-Control: public, max-age=3600
+/sitemap*.xml
+  Cache-Control: public, max-age=3600
+/llms.txt
+  Cache-Control: public, max-age=3600
+/llms-full.txt
+  Cache-Control: public, max-age=3600
+
+# HTML pages — short cache, must revalidate (pages can change)
+/*
+  Cache-Control: public, max-age=0, must-revalidate

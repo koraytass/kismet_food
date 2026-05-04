@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import AboutPage from '@/components/pages/AboutPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  aboutPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/about/';
+const title = 'Hakkımızda | Kısmet Foods';
+const description =
+  'Kısmet Foods; İstanbul merkezli, yıllara yayılmış uzmanlığa sahip bir uluslararası gıda tedarik şirketidir. Kahve, kakao, kuruyemiş, baharat ve ham madde kategorilerinin her birinde derin operasyonel deneyim.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  aboutPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Hakkımızda', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <AboutPage locale={locale} currentPath={pathname} />
+</BaseLayout>

@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import OriginTurkiyePage from '@/components/pages/OriginTurkiyePage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  productCategorySchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/origins/turkiye/';
+const title = 'نظرة معمقة: تركيا | كسمت فودز';
+const description =
+  'منشأ تركيا: بندق غيرسون، فستق عنتاب، تين وزيتون إيجة، وتوابل الأناضول — تراث طريق الحرير مع خبرة حديثة لمتخصص في كل فئة منتج.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description }),
+  productCategorySchema({
+    name: 'بندق غيرسون',
+    description: 'بندق ممتاز ذو محتوى دهني عالٍ وقشرة رقيقة من منطقة غيرسون على ساحل البحر الأسود في تركيا.',
+    url: pathname,
+    category: 'Tree Nuts',
+    origin: ['Giresun, Türkiye'],
+  }),
+  productCategorySchema({
+    name: 'فستق عنتاب',
+    description: 'فستق عنتاب درجة ممتازة من غازي عنتاب — لب أخضر غامق وقشرة بنفسجية.',
+    url: pathname,
+    category: 'Tree Nuts',
+    origin: ['Gaziantep, Türkiye'],
+  }),
+  productCategorySchema({
+    name: 'توابل الأناضول',
+    description: 'إيسوت أورفا، فلفل عنتاب الأحمر، السماق والمحلب — منشأ قابل للتتبع وسلامة نكهة عطرية.',
+    url: pathname,
+    category: 'Spices',
+    origin: ['Anatolia, Türkiye'],
+  }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'مناشئنا', url: '/ar/origins/' },
+    { name: 'تركيا', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <OriginTurkiyePage locale={locale} currentPath={pathname} />
+</BaseLayout>

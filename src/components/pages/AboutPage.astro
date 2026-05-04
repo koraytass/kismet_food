@@ -1,0 +1,409 @@
+---
+/**
+ * AboutPage — faithful to Stitch design (5 editorial sections).
+ *
+ *   1. Hero         — large italic serif title, "Kismet Philosophy" eyebrow,
+ *                     surface card with quote, cocoa image filling right 3/5.
+ *   2. Vision/Values— "Our Compass" eyebrow + title + 2 icon cards.
+ *   3. Heritage     — Silk Road antique map overlapped by copper coffee pot;
+ *                     "Roots in the Silk Road" multiline heading + italic quote.
+ *   4. Journey      — Alternating timeline (2019 / 2021 / 2023 / Today) with
+ *                     central dot rail; mobile falls back to left-aligned list.
+ *   5. Leadership   — Dark band, 3 portrait cards with grayscale → color hover.
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stitchSrc } from '@/lib/stitch';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+/* --- Locale copy --- */
+const copy = {
+  tr: {
+    eyebrow: 'KISMET FELSEFESİ',
+    heroTitle1: 'Küresel',
+    heroTitleItalic: 'Küratör.',
+    heroLead:
+      'Kısmet Foods yalnızca bir aracı değildir; dünyanın en değerli ham maddeleriyle küresel pazar arasında bir köprüdür. Misyonumuz, dünyanın en önemli lezzetlerini cerrahi bir titizlik ve göçebe bir ruhla kürate etmektir.',
+    visionEyebrow: 'PUSULAMIZ',
+    visionTitle: 'Vizyon & Değerler',
+    visionLead:
+      'Geleneksel ticaret bilgeliği ile modern lojistik teknolojisinin kesişiminde çalışıyoruz. Ellediğimiz her çekirdek, her tohum ve her baharat kendi menşeinin ağırlığını ve vardığı yerin vaadini taşır.',
+    valueA: {
+      t: 'Menşe Bütünlüğü',
+      d: 'Küçük ölçekli çiftçilerle doğrudan ilişkiler; tam izlenebilirlik ve etik fiyatlama yapısını garantiler.',
+    },
+    valueB: {
+      t: 'Küresel Lojistik',
+      d: 'Dört kıtayı gerçek zamanlı takip ve kalite güvencesi ile birbirine bağlayan kusursuz bir ağ.',
+    },
+    heritageEyebrow: 'MİRASIMIZ',
+    heritageTitle1: 'Kökler',
+    heritageTitle2: 'İpek Yolu’nda',
+    heritageLead:
+      'Türkiye her zaman Doğu ile Batı arasındaki ticaretin kalbi olmuştur. Kısmet Foods’ta bu kadim birikimi 21. yüzyıla taşıyoruz. Kurucularımız, ticaretin yalnızca mal değil; kültür, güven ve verilen söz olduğunu anlayan Akdenizli tüccar bir soydan gelir.',
+    heritageQuote:
+      '“Kısmet; mükemmelliğin, hazırlanmış bir niyetle fırsatla buluşmasına olan inançtır.”',
+    journeyEyebrow: 'EVRİM',
+    journeyTitle: 'Yolculuğumuz',
+    journey: [
+      { y: '2019', t: 'Kuruluş', d: 'İstanbul’da Kısmet Foods kuruldu; ilk yıl Avrupa pazarı için premium Türk fındığı ve kuru kayısıya odaklandı.' },
+      { y: '2021', t: 'Afrika Atağı', d: 'Etiyopya ve Gana’da doğrudan tedarik kanalları güvence altına alındı; portföye ham kakao ve spesiyalite kahve eklendi.' },
+      { y: '2023', t: 'Çok Dilli Büyüme', d: 'Türkçe, İngilizce ve Arapça tam operasyonel kapasite; MENA ve EU arasında bire bir müşteri ilişkisi.' },
+      { y: 'Bugün', t: 'Küresel Küratör', d: '32 ülkede, her bölgede yerel uzmanlıkla, yılda 50.000 tondan fazla ham gıda ihracatı yönetiyoruz.' },
+    ],
+    leadershipEyebrow: 'LİDERLİK',
+    leadershipTitle: 'Vizyoner Kadromuz',
+    leadershipLead:
+      'Ekibimiz on yılların lojistik uzmanlığını ürünlerimizin sanatsal doğasına duyulan derin saygıyla birleştirir.',
+    leaders: [
+      { role: 'Kurucu & CEO', name: 'Aras Kısmet' },
+      { role: 'Operasyonlar Direktörü', name: 'Leyla Demir' },
+      { role: 'Global Tedarik Başkanı', name: 'Sami Al-Said' },
+    ],
+  },
+  en: {
+    eyebrow: 'KISMET PHILOSOPHY',
+    heroTitle1: 'The Global',
+    heroTitleItalic: 'Curator.',
+    heroLead:
+      'Kismet Foods is not a mere middleman; we are the bridge between the earth\'s finest raw materials and the global market. Our mission is to curate the world\'s most essential flavors with surgical precision and nomadic soul.',
+    visionEyebrow: 'OUR COMPASS',
+    visionTitle: 'Vision & Values',
+    visionLead:
+      'We operate at the intersection of traditional trade wisdom and modern logistics technology. Every bean, seed, and spice we handle carries the weight of its origin and the promise of its destination.',
+    valueA: {
+      t: 'Integrity of Origin',
+      d: 'Direct relationships with small-hold farmers ensure full traceability and ethical pricing structures.',
+    },
+    valueB: {
+      t: 'Global Logistics',
+      d: 'A seamless network connecting four continents with real-time tracking and quality assurance.',
+    },
+    heritageEyebrow: 'OUR HERITAGE',
+    heritageTitle1: 'Roots in the',
+    heritageTitle2: 'Silk Road',
+    heritageLead:
+      'Turkey has always been the heart of trade between East and West. At Kismet Foods, we carry this ancestral expertise into the 21st century. Our founders come from a lineage of Mediterranean traders who understood that trade is not just about commodities — it is about culture, trust, and the spoken word.',
+    heritageQuote:
+      '"Kismet is the belief that excellence meets opportunity through prepared intention."',
+    journeyEyebrow: 'THE EVOLUTION',
+    journeyTitle: 'Our Journey',
+    journey: [
+      { y: '2019', t: 'The Foundation', d: 'Kismet Foods established in Istanbul; focused in year one on premium Turkish hazelnuts and dried apricots for the European market.' },
+      { y: '2021', t: 'The African Pivot', d: 'Secured direct sourcing channels in Ethiopia and Ghana; expanded the portfolio to include raw cocoa and specialty coffee.' },
+      { y: '2023', t: 'Multilingual Growth', d: 'Full operational capacity in Turkish, English, and Arabic; direct relationship management between MENA and EU.' },
+      { y: 'Today', t: 'Global Curator Status', d: 'Facilitating over 50,000 tons of raw food exports annually across 32 countries with localized expertise in every region.' },
+    ],
+    leadershipEyebrow: 'LEADERSHIP',
+    leadershipTitle: 'Guided by Visionaries',
+    leadershipLead:
+      'Our team combines decades of logistics expertise with a profound respect for the artisanal nature of our products.',
+    leaders: [
+      { role: 'Founder & CEO', name: 'Aras Kismet' },
+      { role: 'Chief Operations', name: 'Leyla Demir' },
+      { role: 'Head of Global Sourcing', name: 'Sami Al-Said' },
+    ],
+  },
+  ar: {
+    eyebrow: 'فلسفة كسمت',
+    heroTitle1: 'القيّم',
+    heroTitleItalic: 'العالمي.',
+    heroLead:
+      'كسمت فودز ليست مجرد وسيط؛ نحن الجسر بين أجود المواد الخام في الأرض والسوق العالمية. مهمتنا أن نختار أهم نكهات العالم بدقة جراحية وروح بدوية.',
+    visionEyebrow: 'بوصلتنا',
+    visionTitle: 'الرؤية والقيم',
+    visionLead:
+      'نعمل عند تقاطع حكمة التجارة التقليدية وتكنولوجيا اللوجستيات الحديثة. كل حبة وبذرة وتابل نتعامل معه يحمل ثقل منشئه ووعد وجهته.',
+    valueA: {
+      t: 'نزاهة المنشأ',
+      d: 'علاقات مباشرة مع صغار المزارعين تضمن التتبع الكامل وهيكل تسعير أخلاقي.',
+    },
+    valueB: {
+      t: 'لوجستيات عالمية',
+      d: 'شبكة متكاملة تربط أربع قارات مع تتبع فوري وضمان جودة.',
+    },
+    heritageEyebrow: 'إرثنا',
+    heritageTitle1: 'جذور في',
+    heritageTitle2: 'طريق الحرير',
+    heritageLead:
+      'لطالما كانت تركيا قلب التجارة بين الشرق والغرب. في كسمت فودز، ننقل هذه الخبرة العريقة إلى القرن الحادي والعشرين. مؤسسونا من سلالة تجار متوسطيين أدركوا أن التجارة ليست مجرد سلع — بل ثقافة وثقة وكلمة منطوقة.',
+    heritageQuote:
+      '"كسمت هو الإيمان بأن التميز يلتقي الفرصة عبر نية مُعَدّة مسبقاً."',
+    journeyEyebrow: 'التطور',
+    journeyTitle: 'رحلتنا',
+    journey: [
+      { y: '2019', t: 'التأسيس', d: 'تأسست كسمت فودز في إسطنبول؛ وركزت في عامها الأول على البندق التركي الفاخر والمشمش المجفف للسوق الأوروبية.' },
+      { y: '2021', t: 'الانعطاف الأفريقي', d: 'تأمين قنوات توريد مباشرة في إثيوبيا وغانا؛ توسيع المحفظة لتشمل الكاكاو الخام والقهوة المتخصصة.' },
+      { y: '2023', t: 'نمو متعدد اللغات', d: 'قدرة تشغيلية كاملة بالتركية والإنجليزية والعربية؛ إدارة علاقة مباشرة بين الشرق الأوسط وشمال أفريقيا والاتحاد الأوروبي.' },
+      { y: 'اليوم', t: 'مكانة القيّم العالمي', d: 'تسهيل أكثر من 50,000 طن من صادرات الأغذية الخام سنوياً عبر 32 دولة بخبرة محلية في كل منطقة.' },
+    ],
+    leadershipEyebrow: 'القيادة',
+    leadershipTitle: 'بقيادة أصحاب رؤية',
+    leadershipLead:
+      'يجمع فريقنا بين عقود من الخبرة اللوجستية والاحترام العميق للطبيعة الحرفية لمنتجاتنا.',
+    leaders: [
+      { role: 'المؤسس والرئيس التنفيذي', name: 'آراس كسمت' },
+      { role: 'مدير العمليات', name: 'ليلى ديمير' },
+      { role: 'رئيس التوريد العالمي', name: 'سامي السعيد' },
+    ],
+  },
+}[locale];
+
+const contactHref = localePath('/contact/', locale);
+
+/* Stitch images — all 6 used on this page */
+const heroImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBwO7Eu-8JzBOsexAAh5Inz8M6_Jhs97m9vXIyg5GH2Ir8G2vV6F5EVUdBsCc6NUDTTls6Q4GZ8ZtRovoUa_IQDpAsI7aB6HXwFkLEbL9iB-6lziZR5r_o0M_ia8At9RJuPX-GdFby-88N1w24M3K76Cr1nq-zfJbRtrKJtlR5xdGjt5zDniSnUAz2CeG8bzUHHVieKzQUWafCoX0DDibmcWKSWLgbSdhZc1NDRsOpwRRYSolH4geGOPsSZGkFG8oQZUU0-3Z73iy8',
+);
+const silkRoadImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuB1IT6Bwy2J5UT2XBFORoE_g5z2-QxBFjv9TnZVgg_VBu29wcb6QxvHObjG1MtEIHgQOGcq-rw35qzX0oMMLE3qjF7_zfgmhnrXUjPPFzwqs0dYK7OtwRa0V-yVv8dYfQn2X5V0KqU8K8UTbG9AqObHw9PlPp5XXEJ6f8lonZ_GQY_DG2UDXxbYeueHhTEi0cMMiJ5Aor-vXRN0MCI4ZqBUf4NoxvMz8U6EKIyNF9jy2f6POWvTqWSFquOmTnrPD9y32dgnpSMQM5w',
+);
+const coffeePotImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuA0L_uVaPXQxpV-xFiJtwmfR2Gh4ze7gupGrM7IFvcKMwa22GJ77-Hgo2KkcXZO4awgQ-fpzvlhTM_ARfnJtSSVWf5urDha4-LXQzC5Ca4E4CLrqvBuyK0JCDMg9s0YtuDHWx1oDeH053TLzO2DHpC0aBKewbDt1ovYGJFsr9OwhN1Zbysks5TEUKZlO13n9PqffT8-_Bd5XpsZ1enQv6RFyvRM3a2hwZrKw530Rf0FV1Y0E2-YHlAZFHOm_iYHQT2B1km-TJsfX3k',
+);
+const leaderImgs = [
+  stitchSrc(
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuASQvq7zenhuyTaD_5S39hMMHzOULczHrfO3tKN_T7HykYTPI8W8s2RSgytaABR6AO2BHzZyq1NoeHltapPSe4Nnp62zZDxo_gmelxXihKGgOVfeYfehRttHQ5kYQM0UGjF5tP_ll0CRZfm7fRT8-bvk2S_LEf_S_nOGPfRzsif36AP2artMIv7S51BNOusDYy10wblT6mc54-UkIg0Sylt6k2oS47YNUnKgkcotfhR339x-HXgvZNivePIDk-L-PDvTpijegRKNUQ',
+  ),
+  stitchSrc(
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuDixqn0lSGJ00AV8LfFuQ9gX7Mh1YtJqkFXk06FF0u-k5CqfEvx-_a9uRJN-qbCI1r2uSUYtAXRhdLUDsH-9j1_samUG9izwA_MJS4G9hwD33coVi8kJupggmv84-TTmVDC5MnFHGXOayzbtxIjTn5z0imxyH1Hbe6C80aVDDCAAXOfJmILclpaj0CCPZlQKcdXoZ-5jDhs7yKjf1WAl3N0qbhyMvA2JYLxqLo5rChxeqxTz_m5VBgJC1C8bnbD01hgO3EjgC7MTYI',
+  ),
+  stitchSrc(
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBRPnpTUbGqn7v-LtDjZzgqfXqET-i_4ZWCvkUdW7dsTgrOhPmNeJ7HDRlLsr_M84FHyba7Qy3dI4bYx04GOWr_tjVzj5uKCh238w6tiktBwCUvDgA3wDdAeYJ2K_2SkpV9Uyb91G-sYVxHJQ9E2OA2JTFncNNLER-ZI89J9snNklEqxAOwD7Gw4m09veKZqpLsN9zlUnTupAVL6Y29M8ahhn5Vnhy4CoNQIG6z2IaBpvsypHVU7bfjafnA-fN5yTVfN4Q_ptTE9f4',
+  ),
+];
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<Breadcrumb locale={locale} items={[{ name: tr.nav.about }]} />
+
+<main id="main" class="bg-surface">
+  {/* ========== 1. HERO — editorial with side image ========== */}
+  <section class="relative overflow-hidden px-4 py-16 md:px-8 md:py-24 lg:py-28">
+    {/* Side image (desktop: right 3/5, mobile: full behind) */}
+    <div class="absolute inset-y-0 end-0 z-0 w-full md:w-3/5">
+      <img
+        src={heroImg}
+        alt=""
+        class="h-full w-full object-cover opacity-40 md:opacity-100"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        width="1200"
+        height="1500"
+      />
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-7xl">
+      <div class="max-w-3xl">
+        <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
+        <h1 class="serif-display mb-10 text-5xl font-bold leading-[0.95] tracking-tight text-on-surface md:text-7xl lg:text-8xl">
+          {copy.heroTitle1}
+          <br />
+          <span class="ms-12 italic md:ms-24">{copy.heroTitleItalic}</span>
+        </h1>
+        <div class="shadow-editorial ms-0 max-w-xl border-s-4 border-teal-dark bg-surface/95 p-8 backdrop-blur-sm md:ms-12 md:p-10">
+          <p class="text-lg font-light leading-relaxed text-on-surface-muted">
+            {copy.heroLead}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== 2. VISION & VALUES ========== */}
+  <section class="px-4 py-20 md:px-8 md:py-28">
+    <div class="mx-auto w-full max-w-7xl">
+      <div class="grid grid-cols-1 items-end gap-10 md:grid-cols-[5fr_7fr] md:gap-16">
+        <div>
+          <span class="eyebrow mb-4 block text-orange-dark">{copy.visionEyebrow}</span>
+          <h2 class="serif-display mb-6 text-4xl font-bold text-on-surface md:text-5xl">
+            {copy.visionTitle}
+          </h2>
+          <p class="text-lg leading-relaxed text-on-surface-muted">{copy.visionLead}</p>
+        </div>
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+          <article class="space-y-4 bg-surface-low p-8 transition-colors duration-500 hover:bg-surface-mid">
+            <svg class="h-10 w-10 text-teal-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2l8 4v6c0 5-3.4 9.3-8 10-4.6-.7-8-5-8-10V6l8-4zm-1 13.4l6-6-1.4-1.4-4.6 4.6-2.6-2.6L7 11.4l4 4z"></path>
+            </svg>
+            <h3 class="serif-display text-xl font-bold text-on-surface">{copy.valueA.t}</h3>
+            <p class="text-sm leading-relaxed text-on-surface-muted">{copy.valueA.d}</p>
+          </article>
+          <article class="mt-0 space-y-4 bg-surface-low p-8 transition-colors duration-500 hover:bg-surface-mid sm:mt-8">
+            <svg class="h-10 w-10 text-teal-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm6.93 9h-3a15.7 15.7 0 00-1.38-5.58A8 8 0 0118.93 11zM12 4.1c.8 1.1 1.8 3.3 2 6.9h-4c.2-3.6 1.2-5.8 2-6.9zM4.26 14A8 8 0 014 12c0-.7.1-1.4.26-2h3.4c-.1.7-.1 1.3-.1 2s0 1.3.1 2h-3.4zm.82 2h3a15.7 15.7 0 001.38 5.58A8 8 0 015.08 16zM11 16h2a14 14 0 01-1 5.5 14 14 0 01-1-5.5zm0-4a26 26 0 010-4h2a26 26 0 010 4h-2zm3.55 10.58A15.7 15.7 0 0016 16h3a8 8 0 01-4.45 5.58zM19.74 14h-3.4c.1-.7.1-1.3.1-2s0-1.3-.1-2h3.4c.16.6.26 1.3.26 2s-.1 1.4-.26 2z"></path>
+            </svg>
+            <h3 class="serif-display text-xl font-bold text-on-surface">{copy.valueB.t}</h3>
+            <p class="text-sm leading-relaxed text-on-surface-muted">{copy.valueB.d}</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== 3. HERITAGE — Silk Road ========== */}
+  <section class="bg-surface-mid px-4 py-24 md:px-8 md:py-32">
+    <div class="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-20">
+      {/* Left: antique map + overlapping coffee-pot vignette */}
+      <div class="relative">
+        <div class="shadow-editorial relative aspect-[4/5] overflow-hidden bg-surface-container-high">
+          <img
+            src={silkRoadImg}
+            alt=""
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+            width="800"
+            height="1000"
+          />
+        </div>
+        <div class="absolute -bottom-8 -end-6 hidden h-48 w-48 overflow-hidden border-[10px] border-surface shadow-xl lg:block">
+          <img
+            src={coffeePotImg}
+            alt=""
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+            width="300"
+            height="300"
+          />
+        </div>
+      </div>
+      {/* Right: copy block */}
+      <div class="space-y-6">
+        <span class="eyebrow block text-orange-dark">{copy.heritageEyebrow}</span>
+        <h2 class="serif-display text-4xl font-bold leading-tight text-on-surface md:text-5xl">
+          {copy.heritageTitle1}
+          <br />
+          {copy.heritageTitle2}
+        </h2>
+        <div class="h-1 w-20 bg-teal-dark"></div>
+        <p class="text-lg leading-relaxed text-on-surface-muted">{copy.heritageLead}</p>
+        <p class="italic leading-relaxed text-on-surface-subtle">{copy.heritageQuote}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ========== 4. JOURNEY — alternating timeline ========== */}
+  <section class="px-4 py-24 md:px-8 md:py-32">
+    <div class="mx-auto w-full max-w-7xl">
+      <div class="mb-16 text-center md:mb-20">
+        <span class="eyebrow mb-4 block text-orange-dark">{copy.journeyEyebrow}</span>
+        <h2 class="serif-display text-4xl font-bold text-on-surface md:text-5xl">
+          {copy.journeyTitle}
+        </h2>
+      </div>
+
+      <ol class="relative space-y-16 md:space-y-24">
+        {/* Desktop center rail */}
+        <span
+          aria-hidden="true"
+          class="absolute start-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-outline/40 md:block"
+        ></span>
+
+        {copy.journey.map((step, idx) => {
+          const isLeft = idx % 2 === 0;
+          const isLast = idx === copy.journey.length - 1;
+          return (
+            <li class="relative flex flex-col items-stretch gap-4 md:flex-row md:items-center md:gap-8">
+              {/* LEFT half */}
+              <div class={`hidden md:block md:w-5/12 ${isLeft ? 'md:text-end' : 'md:order-3'}`}>
+                {isLeft ? (
+                  <span class="serif-display block text-4xl font-bold text-orange/40 md:text-5xl">
+                    {step.y}
+                  </span>
+                ) : (
+                  <article class={`shadow-editorial rounded-md bg-surface-lowest p-8 text-start ${isLast ? 'border-t-4 border-orange' : ''}`}>
+                    <h3 class="mb-2 text-lg font-bold tracking-wide text-on-surface md:text-xl">{step.t}</h3>
+                    <p class="text-sm leading-relaxed text-on-surface-muted">{step.d}</p>
+                  </article>
+                )}
+              </div>
+
+              {/* Center dot */}
+              <div class="relative hidden items-center justify-center md:order-2 md:flex md:w-auto">
+                <span
+                  class={`z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-surface ${isLast ? 'bg-orange shadow-lg shadow-orange/30' : 'bg-surface-mid'}`}
+                >
+                  <span class={`block h-3 w-3 rounded-full ${isLast ? 'bg-white' : 'bg-teal-dark'}`}></span>
+                </span>
+              </div>
+
+              {/* RIGHT half */}
+              <div class={`md:w-5/12 ${isLeft ? 'md:order-3' : 'md:text-start'}`}>
+                {isLeft ? (
+                  <article class={`shadow-editorial rounded-md bg-surface-lowest p-8 ${isLast ? 'border-t-4 border-orange' : ''}`}>
+                    <span class="serif-display mb-2 block text-2xl font-bold text-orange md:hidden">{step.y}</span>
+                    <h3 class="mb-2 text-lg font-bold tracking-wide text-on-surface md:text-xl">{step.t}</h3>
+                    <p class="text-sm leading-relaxed text-on-surface-muted">{step.d}</p>
+                  </article>
+                ) : (
+                  <span class="serif-display hidden text-4xl font-bold text-orange/40 md:block md:text-5xl">
+                    {step.y}
+                  </span>
+                )}
+              </div>
+
+              {/* Mobile: year + content stacked */}
+              {!isLeft && (
+                <article class={`shadow-editorial block rounded-md border-s-2 border-orange/60 bg-surface-lowest p-6 md:hidden ${isLast ? 'border-t-4 border-orange' : ''}`}>
+                  <span class="serif-display mb-2 block text-2xl font-bold text-orange">{step.y}</span>
+                  <h3 class="mb-2 text-lg font-bold tracking-wide text-on-surface">{step.t}</h3>
+                  <p class="text-sm leading-relaxed text-on-surface-muted">{step.d}</p>
+                </article>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </section>
+
+  {/* ========== 5. LEADERSHIP — dark band with portraits ========== */}
+  <section class="overflow-hidden bg-surface-deep px-4 py-24 text-white md:px-8 md:py-32">
+    <div class="mx-auto w-full max-w-7xl">
+      <div class="mb-16 flex flex-col items-start justify-between gap-8 md:mb-20 md:flex-row md:items-end">
+        <div class="max-w-2xl">
+          <span class="eyebrow mb-4 block text-teal">{copy.leadershipEyebrow}</span>
+          <h2 class="serif-display text-4xl font-bold md:text-5xl">{copy.leadershipTitle}</h2>
+        </div>
+        <p class="max-w-sm text-sm text-white/70">{copy.leadershipLead}</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-3">
+        {copy.leaders.map((ld, idx) => (
+          <article class="group relative aspect-[3/4] cursor-pointer overflow-hidden">
+            <img
+              src={leaderImgs[idx]}
+              alt=""
+              class="h-full w-full object-cover brightness-75 grayscale transition-all duration-700 group-hover:brightness-100 group-hover:grayscale-0"
+              loading="lazy"
+              decoding="async"
+              width="600"
+              height="800"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/90 via-transparent to-transparent opacity-80"></div>
+            <div class="absolute bottom-10 start-8 transition-transform duration-500 group-hover:-translate-y-1">
+              <p class="eyebrow mb-2 text-teal">{ld.role}</p>
+              <h3 class="serif-display text-2xl font-bold md:text-3xl">{ld.name}</h3>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />

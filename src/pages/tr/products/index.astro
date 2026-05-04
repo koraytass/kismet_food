@@ -1,0 +1,97 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import ProductsPage from '@/components/pages/ProductsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+  productCategorySchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/products/';
+const title = 'Ürünler | Kısmet Foods — Kahve, Kakao, Kuruyemiş, Baharat ve Ham Madde';
+const description =
+  'Kısmet Foods’un küresel ürün portföyü: kahve & kakao, baharat & otlar, kuruyemiş & kuru meyve, ham maddeler. Yıllara yayılmış uzmanlık, etik tedarik ve izlenebilir sevkiyat.';
+
+const categories = [
+  {
+    slug: 'coffee-cocoa',
+    name: 'Kahve & Kakao',
+    description:
+      'Etiyopya yüksek dağlarından spesiyalite kahve çekirdekleri ve Gana menşeli fermente kakao — doğrudan ticaret ilişkileriyle tedarik edilir.',
+    category: 'Coffee and Cocoa',
+    origin: ['Ethiopia', 'Colombia', 'Ghana', 'Côte d’Ivoire'],
+  },
+  {
+    slug: 'spices-herbs',
+    name: 'Baharat & Otlar',
+    description:
+      'Geleneksel baharat yollarından gelen, laboratuvar testli aromatik hasatlar; her parti saflık ve aroma profili için doğrulanır.',
+    category: 'Spices and Herbs',
+    origin: ['Türkiye', 'India', 'Vietnam', 'Indonesia'],
+  },
+  {
+    slug: 'nuts-dried-fruits',
+    name: 'Kuruyemiş & Kuru Meyve',
+    description:
+      'Anadolu menşeli macadamia, kaju, badem ve doğal kurutulmuş kayısı; boyut ve nem profili için hassas biçimde ayıklanır.',
+    category: 'Tree Nuts and Dried Fruits',
+    origin: ['Türkiye', 'Iran', 'Uzbekistan'],
+  },
+  {
+    slug: 'raw-ingredients',
+    name: 'Ham Maddeler',
+    description:
+      'Küresel üretim için tahıllar, bakliyat ve dökme emtialar; ISO uyumlu tedarik zinciri ve sıkı kalite standartlarıyla.',
+    category: 'Raw Food Ingredients',
+    origin: ['Türkiye', 'Ukraine', 'Egypt'],
+  },
+];
+
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    hasPart: categories.map((c) => ({
+      name: c.name,
+      url: `${pathname}${c.slug}/`,
+    })),
+  }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Ürünler', url: pathname },
+  ]),
+  ...categories.map((c) =>
+    productCategorySchema({
+      name: c.name,
+      description: c.description,
+      url: `${pathname}${c.slug}/`,
+      category: c.category,
+      origin: c.origin,
+    }),
+  ),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <ProductsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

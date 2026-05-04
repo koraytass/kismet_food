@@ -1,0 +1,10 @@
+{
+  "name": "Kismet Foods",
+  "short_name": "Kismet",
+  "description": "International Food Supply Management",
+  "start_url": "/tr/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#00acaf",
+  "icons": []
+}

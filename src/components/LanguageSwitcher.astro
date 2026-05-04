@@ -1,0 +1,49 @@
+---
+/**
+ * LanguageSwitcher - Switches between TR / EN / AR.
+ * Preserves the current page path while changing the locale prefix.
+ */
+import { locales, localeConfig, type Locale } from '@/i18n';
+
+interface Props {
+  currentLocale: Locale;
+  currentPath: string;
+  class?: string;
+}
+
+const { currentLocale, currentPath, class: className } = Astro.props;
+
+// Strip locale prefix from path
+const segments = currentPath.split('/').filter(Boolean);
+const basePath =
+  segments.length > 0 && locales.includes(segments[0] as Locale)
+    ? '/' + segments.slice(1).join('/')
+    : currentPath;
+
+function buildHref(locale: Locale): string {
+  return `/${locale}${basePath}`;
+}
+---
+
+<nav aria-label="Language selector" class:list={['flex items-center gap-1', className]}>
+  {
+    locales.map((locale) => {
+      const isActive = locale === currentLocale;
+      const { dir } = localeConfig[locale];
+      return (
+        <a
+          href={buildHref(locale)}
+          lang={locale}
+          dir={dir}
+          aria-current={isActive ? 'true' : undefined}
+          class:list={[
+            'rounded-md px-2 py-1 font-sans text-sm transition-colors duration-200',
+            isActive ? 'bg-teal font-semibold text-white' : 'text-teal hover:bg-teal/20',
+          ]}
+        >
+          {locale.toUpperCase()}
+        </a>
+      );
+    })
+  }
+</nav>

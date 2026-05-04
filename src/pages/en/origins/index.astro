@@ -1,0 +1,57 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import OriginsPage from '@/components/pages/OriginsPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  collectionPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/origins/';
+const title = 'Global Origins | Kismet Foods';
+const description =
+  'Kismet Foods operates a direct-source network across 11 countries built on years of expertise: Türkiye, Ethiopia, Colombia, Vietnam, Ghana and more — a field specialist in every origin.';
+
+const origins = [
+  { name: 'Türkiye', url: '/en/origins/turkiye/' },
+  { name: 'Ethiopia', url: '/en/origins/' },
+  { name: 'Colombia', url: '/en/origins/' },
+  { name: 'Vietnam', url: '/en/origins/' },
+  { name: 'Ghana', url: '/en/origins/' },
+  { name: "Côte d'Ivoire", url: '/en/origins/' },
+  { name: 'Indonesia', url: '/en/origins/' },
+  { name: 'Brazil', url: '/en/origins/' },
+  { name: 'Uganda', url: '/en/origins/' },
+  { name: 'Kenya', url: '/en/origins/' },
+  { name: 'Rwanda', url: '/en/origins/' },
+];
+
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  collectionPageSchema({ locale, url: pathname, title, description, hasPart: origins }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Origins', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <OriginsPage locale={locale} currentPath={pathname} />
+</BaseLayout>

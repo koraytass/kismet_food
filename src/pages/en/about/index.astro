@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import AboutPage from '@/components/pages/AboutPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  aboutPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/about/';
+const title = 'About Us | Kismet Foods';
+const description =
+  'Kismet Foods is an Istanbul-based international food supply company with years of deep operational expertise across coffee, cocoa, nuts, spices, and raw food ingredients.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  aboutPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'About', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <AboutPage locale={locale} currentPath={pathname} />
+</BaseLayout>

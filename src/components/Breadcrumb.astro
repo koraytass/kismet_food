@@ -1,0 +1,37 @@
+---
+/**
+ * Breadcrumb — Visible breadcrumb navigation.
+ * Complements the BreadcrumbList JSON-LD emitted from schema.ts.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+  items: { name: string; href?: string }[];
+}
+
+const { locale, items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="px-4 pt-24 md:px-8">
+  <ol class="mx-auto flex max-w-7xl flex-wrap items-center gap-2 text-xs text-on-surface-subtle">
+    <li>
+      <a href={localePath('/', locale)} class="hover:text-teal">Kismet</a>
+    </li>
+    {items.map((item, idx) => (
+      <>
+        <li aria-hidden="true" class="text-outline">/</li>
+        <li>
+          {item.href ? (
+            <a href={item.href} class="hover:text-teal">{item.name}</a>
+          ) : (
+            <span aria-current={idx === items.length - 1 ? 'page' : undefined} class="text-on-surface">
+              {item.name}
+            </span>
+          )}
+        </li>
+      </>
+    ))}
+  </ol>
+</nav>

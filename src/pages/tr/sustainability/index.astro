@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SustainabilityPage from '@/components/pages/SustainabilityPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'tr';
+const pathname = '/tr/sustainability/';
+const title = 'Sürdürülebilirlik | Kısmet Foods';
+const description =
+  'Kısmet Foods sürdürülebilirliği; 5000+ çiftçi, plastik-nötr sevkiyat, biyobazlı ambalaj ve 2030 sıfır-atık hedefi ile yılların birikimi her ürün grubunda uzmanlıkla birleşir.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([
+    { name: 'Kısmet Foods', url: '/tr/' },
+    { name: 'Sürdürülebilirlik', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <SustainabilityPage locale={locale} currentPath={pathname} />
+</BaseLayout>

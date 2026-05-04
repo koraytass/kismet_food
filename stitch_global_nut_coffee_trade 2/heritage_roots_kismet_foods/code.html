@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heritage | Kismet Foods</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#00696b",
+                        "secondary": "#9b451c",
+                        "on-primary-fixed": "#002020",
+                        "tertiary-container": "#b6938b",
+                        "outline-variant": "#bbc9c9",
+                        "on-secondary-fixed-variant": "#7c2e04",
+                        "tertiary-fixed": "#ffdad2",
+                        "primary-fixed": "#76f6f8",
+                        "on-surface": "#1a1c1c",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e3e2e1",
+                        "surface-tint": "#00696b",
+                        "secondary-fixed": "#ffdbcd",
+                        "on-secondary-container": "#752900",
+                        "surface-container-highest": "#e3e2e1",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeed",
+                        "surface-dim": "#dadad9",
+                        "on-background": "#1a1c1c",
+                        "inverse-primary": "#56d9dc",
+                        "inverse-surface": "#2f3130",
+                        "surface": "#faf9f8",
+                        "tertiary-fixed-dim": "#e5beb5",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb597",
+                        "secondary-container": "#fe9162",
+                        "on-tertiary-container": "#452c27",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#00393a",
+                        "on-error": "#ffffff",
+                        "tertiary": "#755750",
+                        "surface-container-high": "#e9e8e7",
+                        "on-surface-variant": "#3c4949",
+                        "background": "#faf9f8",
+                        "surface-container-low": "#f4f3f2",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#004f51",
+                        "inverse-on-surface": "#f1f0f0",
+                        "surface-bright": "#faf9f8",
+                        "primary-fixed-dim": "#56d9dc",
+                        "primary-container": "#00acaf",
+                        "on-secondary": "#ffffff",
+                        "outline": "#6c7a7a",
+                        "on-tertiary-fixed": "#2b1611",
+                        "on-tertiary-fixed-variant": "#5c403a",
+                        "on-secondary-fixed": "#360f00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; background-color: #faf9f8; color: #1a1c1c; }
+        h1, h2, h3, h4 { font-family: 'Noto Serif', serif; }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(0, 105, 107, 0.05) 0%, rgba(155, 69, 28, 0.05) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar Component -->
+<nav class="bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md docked full-width top-0 sticky z-50 transition-all duration-300">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-8 py-4">
+<div class="text-2xl font-serif font-bold text-stone-900 dark:text-stone-50">Kismet Foods</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">About</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Products</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Origins</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Sustainability</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Insights</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors tracking-widest uppercase text-xs" href="#">Contact</a>
+</div>
+<div class="flex items-center space-x-6">
+<span class="material-symbols-outlined text-stone-600 cursor-pointer" data-icon="language">language</span>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-md font-bold text-xs uppercase tracking-widest active:scale-95 transition-all">Request Quote</button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section: The Global Curator -->
+<section class="relative h-[819px] flex items-center overflow-hidden bg-surface-container-low">
+<div class="absolute inset-0 z-0">
+<img alt="Silk Road Heritage" class="w-full h-full object-cover opacity-20 grayscale mix-blend-multiply" data-alt="vintage monochrome map overlay with rich textures of burlap and dried spices like cinnamon and star anise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXtuSGFLZShSVX06Z40m9PlQdHOCp-xPICGqbE5mt15_86ukbCZQTx0tNv8q4qGn5Ta3A9PXG2f7kCPKf7a_0pNGgJIVvpbnCG3dj9SBLMyqjIYS4MZ31oKBU5jrkp9ht4k1lFS2MGT2BOXPDYOw4_wAtEB_KvvMEFRDlTphsV5IDy5BGz27_w19Cd_XC5PlhyNSuqG0FoZLN1CwQYJylc0Lkd6vFWie97aKZy2ea42KA63601v82x4tW8si3jhjkIOVidLO18zOY"/>
+</div>
+<div class="max-w-7xl mx-auto px-8 w-full relative z-10 grid md:grid-cols-2 gap-12 items-center">
+<div class="space-y-6">
+<span class="label-md tracking-[0.2em] uppercase text-secondary font-bold inline-block">Est. 1924 • Istanbul</span>
+<h1 class="text-6xl md:text-8xl leading-tight font-bold -tracking-[0.02em] text-on-surface">Roots in the <span class="italic text-primary">Silk Road</span></h1>
+<p class="text-lg md:text-xl text-on-surface-variant max-w-lg leading-relaxed font-light">
+                        Centuries of trade wisdom distilled into a modern vision. We are the architects of a legacy that bridges the ancient spice routes with tomorrow's global table.
+                    </p>
+</div>
+<div class="hidden md:block relative">
+<div class="w-full aspect-[4/5] bg-surface-container-highest rounded-lg overflow-hidden transform translate-x-12 translate-y-12">
+<img alt="Heritage Coffee Beans" class="w-full h-full object-cover" data-alt="Close-up of raw high-quality coffee beans in a vintage wooden bowl with warm dramatic side lighting and earthy tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ubpK_D33nWpadVTmXRkcp5WRHIEp1wAIoU5UHckyr8lWqpRAxexmyqfj9sKri-7dGoCBwjLujWtARgiFfciZPWC6t5bTpLEC_ediP68Sx_VbXsWGf5_5pAjLTs5ymAwMjKq309c76-9j0W4lTQKKH-vPiM8_y_r6VwMhJ-Z7J5rDecsl0G44FFvqi3dF0uTpXdFfPD1aG_WDp9CcFNt16Sts9_Lr2KPwlHr1-8MX3AX6WO7Tu_N_1ERryiQxYsVnSrY96X51ZmI"/>
+</div>
+<div class="absolute -top-12 -left-12 w-64 aspect-square bg-primary/10 backdrop-blur-xl border border-outline-variant/15 p-8 flex flex-col justify-end">
+<span class="text-4xl font-serif text-primary mb-2">100+</span>
+<p class="text-xs uppercase tracking-widest font-bold text-on-surface">Years of Curatorial Mastery</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Historical Context -->
+<section class="py-24 bg-surface">
+<div class="max-w-7xl mx-auto px-8 grid md:grid-cols-12 gap-8 items-start">
+<div class="md:col-span-4 sticky top-32">
+<span class="label-md tracking-widest uppercase text-xs text-primary mb-4 block">Chapter One</span>
+<h2 class="text-4xl font-bold leading-snug">The Turkish Gateway: A Century of Trade</h2>
+<div class="mt-8 space-y-4 text-on-surface-variant font-body">
+<p>Kismet Foods began in the labyrinthine alleys of Istanbul's Grand Bazaar—where the scent of saffron met the sharpness of black pepper for generations.</p>
+<p>We didn't just sell ingredients; we curated experiences. Each sack of grain and barrel of oil was a testament to a relationship built on trust and sensory excellence.</p>
+</div>
+</div>
+<div class="md:col-span-8 space-y-16">
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-2">
+<img alt="Historical Istanbul Trade" class="w-full grayscale hover:grayscale-0 transition-all duration-700" data-alt="Black and white historical photograph of a bustling Turkish port with wooden cargo ships and traditional merchants in the early 20th century" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBarRH-m9VHiwGu6qTs4Sb2FYIjnFzLHGCtyKiv9n3F1A86hY_sTSIko-LcrROo6foDQehC50n4MfHu34Xn4nRnZPNa8BvkQ3KuPXK6RQEp0efZK1W_o_rfwXMVFWoMlqh9RYSMnuk_2PfueH4gH0EBSwubCVtyjRQ9iBo9XMe1TBi0mWEaEyXsIID6iNlO306l5I-KsYzQRi3B1WdT8srI05psp71qXfDr2av5QzZBRtdFumr5Y1_c0tvOMJiUxPQmJk_i110cDKY"/>
+</div>
+<div class="bg-surface-container-low p-2 translate-y-12">
+<img alt="Raw Ingredients" class="w-full grayscale hover:grayscale-0 transition-all duration-700" data-alt="Cinematic shot of traditional copper vessels filled with vibrant spices and grains on a sun-drenched stone floor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqWEHlXO3XQwONQ4gi-JVuV3slBx2QHUoB_53oq6neRJKzZQYepXvDTRAiTqZLt-ND2TaB8U-tcRPfVh7n6NKlSoaRp8l72W9SNeT9src0O4mj1Fcw_XOvvZZU1c6p4XToEFEJYHAi4Mn1z_2Hhm9mEhZKRJ1NZG-NYRHTn-nHKzdkxKXfo9WvLIxgWiZEjqVV3XDm6kNQFCIS4KLHVjkMZPD0UmZ9Q5NQmGf3T4jE4YbRimu2qM3qzS8XrL04xQ777HXQiACAfjs"/>
+</div>
+</div>
+<div class="pt-24 prose prose-lg text-on-surface-variant max-w-none">
+<h3 class="text-2xl font-serif text-on-surface italic mb-6">"The Silk Road was never a single path, but a philosophy of connection."</h3>
+<p class="font-body text-lg leading-relaxed">
+                            Our founders understood that to trade is to translate. They learned the languages of the soil and the wind, identifying which harvest would stand the test of a three-month voyage and which would reach its peak upon arrival. This deep, traditional knowledge remains the bedrock of our logistics engine today.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Global Supply Map -->
+<section class="py-32 bg-stone-900 text-stone-100 overflow-hidden relative">
+<div class="max-w-7xl mx-auto px-8 relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<div class="max-w-xl">
+<span class="text-secondary tracking-[0.3em] uppercase text-xs font-bold mb-4 block">The Network</span>
+<h2 class="text-5xl font-bold">A Map of Human Expertise</h2>
+</div>
+<p class="max-w-xs text-stone-400 text-sm leading-relaxed mb-1">
+                        From the highlands of Ethiopia to the coastal plains of Vietnam, we track the pulse of global agriculture in real-time.
+                    </p>
+</div>
+<div class="relative w-full aspect-[21/9] bg-stone-800 rounded-xl border border-stone-700 p-8">
+<!-- Stylized Map Placeholder -->
+<div class="absolute inset-0 opacity-30 mix-blend-overlay">
+<img alt="World Map" class="w-full h-full object-cover" data-alt="A minimalist abstract line-art world map with glowing nodes at key trade hubs like Istanbul, Santos, and Addis Ababa" data-location="Global" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGWaL_92m4gqxrEO-0WLLiPOIkPwdq1MZGkC7P2PKz67AZLfX-Ltw7WP2YHrdI5WJHHOCSFRqrK_vKz8TheouswJfPRu9L4o6cvPdXKQLXe0Acyh2qYX3ZWpAvJySE6Fx37ElOy_o4EfbZObnbUY0EhGQV2F_v4iiBjw-JvZbknvf9sKSykuYGdH4o8AkZV34xI9MH67Pb3SztSLlX6Ski1ryi6g3dqTZi0I9aWAV6imYmwB1v74UJYWmcFHcquHfpj0TFlCJfOC8"/>
+</div>
+<div class="relative h-full flex items-center justify-center">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 w-full">
+<div class="border-l border-primary/40 pl-4">
+<span class="text-primary font-serif text-3xl">42</span>
+<p class="text-[10px] uppercase tracking-widest text-stone-500 mt-2">Active Origins</p>
+</div>
+<div class="border-l border-secondary/40 pl-4">
+<span class="text-secondary font-serif text-3xl">18k</span>
+<p class="text-[10px] uppercase tracking-widest text-stone-500 mt-2">Tons Annual Flow</p>
+</div>
+<div class="border-l border-primary/40 pl-4">
+<span class="text-primary font-serif text-3xl">99.8%</span>
+<p class="text-[10px] uppercase tracking-widest text-stone-500 mt-2">Quality Grade A</p>
+</div>
+<div class="border-l border-secondary/40 pl-4">
+<span class="text-secondary font-serif text-3xl">Legacy</span>
+<p class="text-[10px] uppercase tracking-widest text-stone-500 mt-2">Certified Provenance</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Curatorial Excellence Philosophy -->
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-5xl mx-auto px-8 text-center">
+<span class="material-symbols-outlined text-primary text-5xl mb-8" data-icon="verified">verified</span>
+<h2 class="text-5xl font-bold mb-12">The Curatorial Mandate</h2>
+<div class="grid md:grid-cols-3 gap-12 text-left">
+<div class="space-y-4">
+<h4 class="text-xl font-bold text-on-surface">01. Precision Sourcing</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">We do not accept 'commodity' standards. Our curators travel to every farm, ensuring micro-climate perfection before a single contract is signed.</p>
+</div>
+<div class="space-y-4">
+<h4 class="text-xl font-bold text-on-surface">02. Modern Alchemists</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Merging ancestral drying techniques with satellite crop monitoring. We use technology to protect tradition, not replace it.</p>
+</div>
+<div class="space-y-4">
+<h4 class="text-xl font-bold text-on-surface">03. Moral Supply</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Excellence cannot exist without equity. Our heritage is built on a century of paying fair prices for extraordinary craft.</p>
+</div>
+</div>
+<div class="mt-20 inline-block group cursor-pointer">
+<div class="flex items-center space-x-4 border-b border-primary pb-2">
+<span class="font-bold uppercase tracking-widest text-sm text-primary">Read our Sustainability Report</span>
+<span class="material-symbols-outlined text-primary group-hover:translate-x-2 transition-transform" data-icon="arrow_right_alt">arrow_right_alt</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Asymmetric Gallery / Texture Section -->
+<section class="py-24 overflow-hidden">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid md:grid-cols-12 gap-4">
+<div class="md:col-span-7 aspect-video rounded-lg overflow-hidden relative group">
+<img alt="Cocoa Pods" class="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105" data-alt="Vivid close-up of a cracked cocoa pod showing fresh beans with deep textures and rich orange-brown tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnnJqBdAB08G2fqoz7pJomCBNhkLSVwVPd6N5n1CMC4tpEDclKKBUVGCvwY90uQ3PAI1WFtgZnV0pQod9pIxOZ3LlZelysofbdCBHhDoGMj5gZBco9LRRWPZMOYeAPfyc7hhfRVI92vjr8WC4WjnEZWtPNa0TAqu9TTB3xWnN96xTFmZ6129hVpdCTuOHwal2A0weC6VbzCv9mF87IuqToUeGY0xzSlW7ZWQ9HxUGH0vkZ1AJb4jY28JErBgRgiTcNewAR1DcqPJM"/>
+<div class="absolute bottom-8 left-8 bg-surface/90 backdrop-blur-md p-6 max-w-xs">
+<span class="label-md text-xs font-bold text-secondary mb-2 block">Origin Focus</span>
+<p class="text-on-surface text-sm font-body">The volcanic soil of Côte d'Ivoire yields a cocoa with unprecedented depth—the core of our signature blend.</p>
+</div>
+</div>
+<div class="md:col-span-5 flex flex-col gap-4">
+<div class="h-1/2 bg-surface-container-highest rounded-lg overflow-hidden">
+<img alt="Coffee Roasting" class="w-full h-full object-cover opacity-80" data-alt="Atmospheric shot of coffee roasting in a traditional drum with steam rising and warm golden light hitting the beans" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQs1pKvD13vSPDoy9MJUjgHlo8A2A_E3SbQj-dWpWpq427dmgfVca872SnXPYWnX78EFw_IoQxHmOiDgnNibQFm3-mYT96_0cPSOa-7BIlwdiMd5iBB1l_OevfaftHld6Qmp-zSXV2-TlHegGxXybdS17tnQwhDYzbLVn41YFgHDpQe-T9njhM35MTYW1QRFlLOImNtBjpZLS6v0U1KI5AKWKHNcQxkLN5wGbdsU_wqNfsQNlZncqnkdSPFSvcRYBDPrzhB-ZhUGE"/>
+</div>
+<div class="h-1/2 bg-primary/10 rounded-lg p-12 flex items-center justify-center text-center">
+<div>
+<h3 class="text-3xl font-serif text-primary mb-4">Tactile Integrity</h3>
+<p class="text-sm font-body text-on-surface-variant italic">"We believe quality is something you should feel as much as taste."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="bg-stone-100 dark:bg-stone-900 full-width py-16">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto px-8">
+<div class="space-y-6">
+<div class="text-xl font-serif font-bold text-stone-800 dark:text-stone-100">Kismet Foods</div>
+<p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed font-body">
+                    Bridging global trade with local expertise. Curating the world's finest raw materials since 1924.
+                </p>
+<div class="flex space-x-4">
+<span class="material-symbols-outlined text-teal-600 cursor-pointer" data-icon="public">public</span>
+<span class="material-symbols-outlined text-teal-600 cursor-pointer" data-icon="eco">eco</span>
+<span class="material-symbols-outlined text-teal-600 cursor-pointer" data-icon="verified">verified</span>
+</div>
+</div>
+<div class="space-y-4">
+<h4 class="Noto Serif text-xl text-stone-800 dark:text-stone-100">Company</h4>
+<ul class="space-y-2">
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">About Us</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Sustainability Report</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Certifications</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="Noto Serif text-xl text-stone-800 dark:text-stone-100">Catalog</h4>
+<ul class="space-y-2">
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Product Catalog</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Origin Maps</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Market Insights</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:underline decoration-teal-500 underline-offset-4 uppercase tracking-tighter text-xs" href="#">Contact Support</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="Noto Serif text-xl text-stone-800 dark:text-stone-100">Newsletter</h4>
+<p class="text-stone-500 dark:text-stone-400 text-xs uppercase tracking-widest">Global Market Pulse</p>
+<div class="flex">
+<input class="bg-white dark:bg-stone-800 border-none px-4 py-2 text-sm w-full focus:ring-1 focus:ring-teal-500" placeholder="Email address" type="email"/>
+<button class="bg-teal-600 text-white px-4 py-2 hover:bg-teal-700 transition-colors">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-8 mt-16 pt-8 border-t border-stone-200 dark:border-stone-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-stone-500 dark:text-stone-400 text-[10px] uppercase tracking-[0.2em]">© 2024 Kismet Foods. Global Trade, Local Expertise.</p>
+<p class="text-teal-600 dark:text-teal-400 font-semibold text-xs cursor-pointer hover:underline" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Back to Top</p>
+</div>
+</footer>
+</body></html>

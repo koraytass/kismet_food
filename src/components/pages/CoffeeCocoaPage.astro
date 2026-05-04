@@ -1,0 +1,538 @@
+---
+/**
+ * CoffeeCocoaPage — Category detail page for /<locale>/products/coffee-cocoa/.
+ * Sections: Editorial hero · Origin bento (Ethiopia / Ghana) · Precision
+ *           grading standards · Specifications table · Equatorial supply
+ *           chain · CTA band
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stitchSrc } from '@/lib/stitch';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+/* --- Locale-scoped page copy --- */
+const copy = {
+  tr: {
+    eyebrow: 'ÜRÜN KATEGORİSİ · YILLARDIR DOĞRUDAN TİCARET',
+    heroTitle: 'Kahve & Kakao',
+    heroLead:
+      'Dünyanın en prestijli ekvator kuşağından etik olarak tedarik edilmiş, hassas şekilde derecelendirilmiş ham maddeler. Küçük ölçekli çiftçiler ile küresel üretim arasındaki köprüyü yıllara yayılmış doğrudan ticaret ilişkileriyle kuruyoruz.',
+    verifiedTitle: 'Kalite Doğrulanmış',
+    verifiedBody: 'Her parti nem, yoğunluk ve aroma profili için titiz laboratuvar testlerinden geçer.',
+    originEyebrow: 'KÜRASYON · MENŞE SEÇKİSİ',
+    originTitle: 'Terruvarın Mirası',
+    originLead:
+      'Küresel ağımız iki kıtada sınırlı hasat partilerine ve endüstriyel ölçekli standartlara kesintisiz erişim sağlar.',
+    origins: [
+      {
+        badge: 'Heirloom Arabica',
+        name: 'Etiyopya Sidamo',
+        body: 'Çiçeksi, narenciye tonlu asiditesi ve çay gibi gövdesiyle tanınır. 1.500 metre ve üzerinde hasat edilir.',
+        link: 'Profili İncele',
+      },
+      {
+        badge: 'Bulk & Spesiyalite',
+        name: 'Gana Forastero',
+        body: 'Endüstriyel kakaonun altın standardı. Derin çikolata notaları ve premium tereyağı ekstraksiyonu için olağanüstü yağ içeriği.',
+        link: 'Teknik Özellikler',
+      },
+    ],
+    gradingTitle: 'Hassas Derecelendirme Standartları',
+    gradingLead:
+      'Çekirdek sınıflandırmasında tam şeffaflık sağlıyoruz — artisan mikro partilerden yüksek hacimli endüstriyel sevkiyatlara kadar üretim hattınıza tam olarak istediğinizi teslim ediyoruz.',
+    grades: [
+      {
+        title: 'Spesiyalite Sınıfı (80+ SCAA)',
+        body: 'Sıfır birincil kusur. Kavurma homojenliği ve kompleks aroma profili için elde ayıklanır.',
+      },
+      {
+        title: 'Endüstriyel & Ticari',
+        body: 'Büyük ölçekli ekstraksiyon, çözünür üretim ve kitlesel pazar karışımları için yüksek verimli işleme.',
+      },
+    ],
+    specTitle: 'Standart Spesifikasyonlar',
+    specEyebrow: 'TEKNİK BELGELENDİRME',
+    specHeaders: ['Metrik', 'Kahve (Yeşil Arabica)', 'Kakao (Kuru Çekirdek)', 'Test Yöntemi'],
+    specRows: [
+      ['Nem İçeriği', '%9,0 – %12,0', '%6,5 – %7,5', 'ISO 6673 / 2291'],
+      ['Elek Boyutu / Çekirdek Sayısı', 'Elek 15+ (en az %90)', '100 gramda 90–100 çekirdek', 'Manuel Ayıklama'],
+      ['Kusur Toleransı', '< 5 İkincil Kusur', '< %3 Küflü / Çürük', 'Görsel Analiz'],
+      ['Kafein / Yağ İçeriği', '%1,2 – %1,5', '%52 – %56 (Yağ)', 'HPLC / Soxhlet'],
+    ],
+    specNote: '*Özel karışımlar için talebe göre özelleştirilmiş spesifikasyonlar sunulur.',
+    supplyEyebrow: 'KÜRESEL VARLIK',
+    supplyTitle: 'Ekvatoryal Tedarik Zinciri',
+    supplyBody:
+      'Tedarik ofislerimiz, sahada kalite kontrolü ve çiftçi kooperatifleriyle doğrudan ilişkiler için stratejik olarak "Kahve Kuşağı"nda konumlanmıştır.',
+    supplyPoints: [
+      'Doğu Afrika Merkezi: Addis Ababa, Etiyopya',
+      'Batı Afrika Merkezi: Accra, Gana',
+      'İşleme Lojistiği: Rotterdam, Hollanda',
+    ],
+    ctaTitle: 'Kahve ve kakao için özel teklif alın.',
+    ctaLead: 'Tek bir konteyner ya da yıllık tedarik sözleşmesi — ticaret masamız hacim ve sevkiyat hedefinize göre 24 saat içinde özel fiyat matrisi hazırlar.',
+    ctaBtn: 'Teklif Al',
+  },
+  en: {
+    eyebrow: 'PRODUCT CATEGORY · YEARS OF DIRECT TRADE',
+    heroTitle: 'Coffee & Cocoa',
+    heroLead:
+      'Ethically sourced, precision-graded raw materials from the world’s most prestigious equatorial belts. We bridge the gap between small-hold farmers and global manufacturing through years of direct-trade relationships.',
+    verifiedTitle: 'Quality Verified',
+    verifiedBody: 'Every batch undergoes rigorous lab testing for moisture, density and flavor profile.',
+    originEyebrow: 'CURATION · ORIGIN SELECT',
+    originTitle: 'The Heritage of Terroir',
+    originLead:
+      'Our global network ensures access to limited-run harvests and industrial staples across two continents.',
+    origins: [
+      {
+        badge: 'Heirloom Arabica',
+        name: 'Ethiopian Sidamo',
+        body: 'Known for its floral, citrusy acidity and tea-like body. Harvested at 1,500+ meters above sea level.',
+        link: 'Explore Profile',
+      },
+      {
+        badge: 'Bulk & Specialty',
+        name: 'Ghanaian Forastero',
+        body: 'The gold standard for industrial cocoa. Deep chocolate base notes with exceptional fat content for premium butter extraction.',
+        link: 'Technical Specs',
+      },
+    ],
+    gradingTitle: 'Precision Grading Standards',
+    gradingLead:
+      'We provide full transparency on bean classification, ensuring your production line receives exactly what it requires — from artisan micro-lots to high-volume industrial batches.',
+    grades: [
+      {
+        title: 'Specialty Grade (80+ SCAA)',
+        body: 'Zero primary defects. Hand-sorted for roast uniformity and complex sensory profiles.',
+      },
+      {
+        title: 'Industrial & Commercial',
+        body: 'High-efficiency processing for large-scale extraction, soluble production and mass-market blending.',
+      },
+    ],
+    specTitle: 'Standard Specifications',
+    specEyebrow: 'TECHNICAL DOCUMENTATION',
+    specHeaders: ['Metric', 'Coffee (Green Arabica)', 'Cocoa (Dried Beans)', 'Testing Method'],
+    specRows: [
+      ['Moisture Content', '9.0% – 12.0%', '6.5% – 7.5%', 'ISO 6673 / 2291'],
+      ['Screen Size / Bean Count', 'Screen 15+ (90% min)', '90 – 100 beans / 100g', 'Manual Sorting'],
+      ['Defect Tolerance', '< 5 Secondary Defects', '< 3% Slaty / Moldy', 'Visual Analysis'],
+      ['Caffeine / Fat Content', '1.2% – 1.5%', '52% – 56% (Fat)', 'HPLC / Soxhlet'],
+    ],
+    specNote: '*Custom specifications available upon request for proprietary blends.',
+    supplyEyebrow: 'GLOBAL PRESENCE',
+    supplyTitle: 'Equatorial Supply Chain',
+    supplyBody:
+      'Our procurement offices are strategically located in the “Coffee Belt” to ensure boots-on-the-ground quality control and direct relationships with farming cooperatives.',
+    supplyPoints: [
+      'East Africa Hub: Addis Ababa, Ethiopia',
+      'West Africa Hub: Accra, Ghana',
+      'Processing Logistics: Rotterdam, Netherlands',
+    ],
+    ctaTitle: 'Request a coffee & cocoa quote.',
+    ctaLead: 'One container or a yearly supply contract — our trade desk returns a custom pricing matrix tailored to your volume and destination within 24 hours.',
+    ctaBtn: 'Request Quote',
+  },
+  ar: {
+    eyebrow: 'فئة المنتج · سنوات من التجارة المباشرة',
+    heroTitle: 'القهوة والكاكاو',
+    heroLead:
+      'مواد خام مصنفة بدقة ومصدرها أخلاقي من أكثر الأحزمة الاستوائية تميزاً في العالم. نردم الفجوة بين صغار المزارعين والتصنيع العالمي عبر سنوات من علاقات التجارة المباشرة.',
+    verifiedTitle: 'جودة مُتحقق منها',
+    verifiedBody: 'كل دفعة تخضع لاختبارات مختبرية صارمة للرطوبة والكثافة وملف النكهة.',
+    originEyebrow: 'تنسيق · منشأ منتقى',
+    originTitle: 'إرث الترّوار',
+    originLead:
+      'تتيح شبكتنا العالمية الوصول إلى حصادات محدودة ومخزون صناعي ثابت عبر قارتين.',
+    origins: [
+      {
+        badge: 'أرابيكا موروثة',
+        name: 'سيدامو الإثيوبية',
+        body: 'معروفة بحموضتها الزهرية الحمضية وقوامها الشبيه بالشاي. تحصد على ارتفاع 1500 متر فما فوق.',
+        link: 'استكشف الملف',
+      },
+      {
+        badge: 'كميات ومتخصص',
+        name: 'فوراستيرو الغانية',
+        body: 'المعيار الذهبي للكاكاو الصناعي. نكهات شوكولاتة عميقة ومحتوى دهون استثنائي لاستخلاص الزبدة الفاخرة.',
+        link: 'المواصفات الفنية',
+      },
+    ],
+    gradingTitle: 'معايير تصنيف دقيقة',
+    gradingLead:
+      'نوفر شفافية كاملة في تصنيف الحبوب لضمان أن يصل إلى خط إنتاجك ما يحتاجه تماماً — من الدفعات الحرفية الصغيرة إلى الكميات الصناعية الضخمة.',
+    grades: [
+      {
+        title: 'درجة متخصصة (80+ SCAA)',
+        body: 'صفر عيب أساسي. فرز يدوي لضمان تجانس التحميص وأعماق حسية معقدة.',
+      },
+      {
+        title: 'صناعي وتجاري',
+        body: 'معالجة عالية الكفاءة للاستخلاص واسع النطاق والإنتاج الذائب والخلطات الجماهيرية.',
+      },
+    ],
+    specTitle: 'المواصفات القياسية',
+    specEyebrow: 'توثيق فني',
+    specHeaders: ['المقياس', 'قهوة (أرابيكا خضراء)', 'كاكاو (حبوب مجففة)', 'طريقة الاختبار'],
+    specRows: [
+      ['نسبة الرطوبة', '9.0% – 12.0%', '6.5% – 7.5%', 'ISO 6673 / 2291'],
+      ['حجم المنخل / عدد الحبوب', 'منخل 15+ (بحد أدنى 90%)', '90 – 100 حبة / 100 غ', 'فرز يدوي'],
+      ['حد العيوب', '< 5 عيوب ثانوية', '< 3% متعفنة / سوداء', 'تحليل بصري'],
+      ['الكافيين / الدهون', '1.2% – 1.5%', '52% – 56% (دهون)', 'HPLC / Soxhlet'],
+    ],
+    specNote: '*تتوفر مواصفات مخصصة عند الطلب للخلطات الخاصة.',
+    supplyEyebrow: 'حضور عالمي',
+    supplyTitle: 'سلسلة إمداد استوائية',
+    supplyBody:
+      'مكاتب الشراء لدينا متمركزة استراتيجياً في "حزام القهوة" لضمان رقابة جودة ميدانية وعلاقات مباشرة مع التعاونيات الزراعية.',
+    supplyPoints: [
+      'مركز شرق أفريقيا: أديس أبابا، إثيوبيا',
+      'مركز غرب أفريقيا: أكرا، غانا',
+      'لوجستيات المعالجة: روتردام، هولندا',
+    ],
+    ctaTitle: 'اطلب عرض سعر للقهوة والكاكاو.',
+    ctaLead: 'حاوية واحدة أو عقد توريد سنوي — يعد مكتبنا التجاري مصفوفة تسعير مخصصة لحجمك ووجهتك خلال 24 ساعة.',
+    ctaBtn: 'اطلب عرض سعر',
+  },
+}[locale];
+
+const contactHref = localePath('/contact/', locale);
+const productsHref = localePath('/products/', locale);
+
+/* Images */
+const imgHero = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuCzM87wgmRExkIMYFcflVoNFpu3ticDrX925FUtC9vANCpG1-pi4jbBj0w277S4lCqg1cZkWaktReKNgGjJnFaNd-cEs1shJhs6GJAGX72fJ1aTkbvhx0m6AX924WEhaVfyfPfiOOP-db9Z3UpMYX13PU719Orv68UoYGesUdIoNZtb5wSA9BxuPasGp6utUiE61N_6LDhZCUEnH4E5wFDpFGnFHeBhz9uN1sD1jPXYnXHA3Hm8j2rPD3viqY1RtVmNoAYeyIXEbXM',
+);
+const imgEthiopia = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBcpsQPAmhytr3P2-xYxvq8IqF79zcNg8luxtYsGGhKFMWQYPnrMJ992qhHJFNm42ROrz7kF7LnCSg-cLyQhdlOPAMepA28Qzje_fQMQ4nVOjKDXwYBe_BRw3GhHd-n6gyrqwCBdGYsAFymdZVZy9ib_rkcc0_8Dlhg223uVj9tX2OFr_iCg_53IytDe5Jn5YeUw139AA6FgMMtB4xOBvBpmU1Vp9hMED6x-Yc6hdAuDu4nlLBcMMetvN1qtPgYdgUTv-RUs8-NXtk',
+);
+const imgGhana = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBlDBh9dNgyNN5RfhWJ72m3CeMYxwptf_KQHwvciz_rzcKs-3heWZ8tfUWanqR0WtaVlENMuPbGRvObVxbLTtPdlGzn0yHy4nyJZHLVtazhwGQktyUum9Jnz1OWyCsBHnBfxDTtjVOdYnTAUMQC8u2QXk65KZOv_fLXXrIEgYg60oSrF7f8flqT9iGw6iTPwsCHywCX5Gf2Z7zNNtEzr7G-oRY0Bt01-jtCc64RRkHEGaJ2L9o_QadaWI_C9Va2CkqzN46Dywgt9OU',
+);
+const imgLab = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuDae3f_xKlgWkFmF3dr0TCuccbzU0N_l0KvK55LeLw2NVFCY_pxZ8WpzXNrWA2N2e_nXRgQWdkgrLdjj9pYCaorvQCPrVIpo3-CqNCsItiDghhUMR4YrxgUC-NtsZ4wj2C9BapOh7lxUMazmbbvkxkcnoGLq6xWBKhXbp68IedfAXDSvWUmu_ozDSTL7WMhQLC-zGFPB_UIUm--SorENlLEldiKZLRKsmZ9KJw4rP_SrKufUN2P_OYpJG2kJTGy1b-E5FUYchwFBSk',
+);
+const imgRoast = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuCdE7YBuen3dpZn5vfqQvDtDsRQXAiF1DNQJ9_iS_oDbURsEp-4PvyHPb1WrsYXAKhlHJej0j75ZziMAwJrkltvOXIYOnK0IfVYk1O4qar0GjSP1wUwywDhS7Wem0Cgwvy8Q9d58eeJfQ2iYbHyruKWzJSd-_Dd4XBoI9sWZazQqr4LbJjzspIGnekmUJksDKnVHfzg05EYvLQ9Fe_vGap0okQ0TWhy2pvXOTQVHADaZZ8BcoAlPfwGliuzTW4UHBZQTBIhmtyZ2OY',
+);
+const imgMap = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBSW8XBZyul4h-cYzx-aK4DfcMX6KK-fWTZlkExNH03urZSZRhjwzIwOWeMmUQAXMPmzrWrC1tZ8dHIiruCW5DHnO8GIthuXSHn1ujUWWJxAj4dLDDhq76hFXQl1LM7eWkuHkPXLz1etb7IEe888CptXtb9y_a3e3f_a1D-EE0pyHj6fXTpBBo1ktS1gTPDGmF3drYl2eB5vWNgOHzCdRZFg8uexuaD0G-h68zfnUbmrcAyf8xIzpdz2VoN2dJw_vKUMjViyENn9e0',
+);
+
+const heroImgAlt =
+  locale === 'tr'
+    ? 'Rustik ahşap tezgâh üzerinde ham Arabica kahve çekirdekleri ve kakao kapsülleri'
+    : locale === 'ar'
+    ? 'حبوب قهوة أرابيكا خضراء وقرون كاكاو على طاولة خشبية ريفية بإضاءة سينمائية'
+    : 'Close-up of high-quality raw Arabica coffee beans and cocoa pods on a rustic wooden table';
+
+const ethiopiaAlt =
+  locale === 'tr'
+    ? 'Sabahın ilk ışıklarında sisli Etiyopya yaylalarındaki yemyeşil kahve plantasyonu'
+    : locale === 'ar'
+    ? 'مزرعة قهوة خضراء في مرتفعات إثيوبيا الضبابية عند شروق الشمس'
+    : 'Lush green coffee plantation in the misty Ethiopian highlands at sunrise';
+
+const ghanaAlt =
+  locale === 'tr'
+    ? 'Altın saatin ışığında ahşap tepsilerde güneşte kurutulan Gana kakao çekirdekleri'
+    : locale === 'ar'
+    ? 'حبوب كاكاو غانية مجففة بالشمس على صواني خشبية في ضوء ذهبي'
+    : 'Sun-dried cocoa beans on wooden trays in Ghana under golden-hour light';
+
+const labAlt =
+  locale === 'tr'
+    ? 'Modern laboratuvarda kahve çekirdeği kalitesini analiz eden uzman'
+    : locale === 'ar'
+    ? 'عالم يحلل جودة حبوب القهوة في مختبر حديث'
+    : 'Specialist analyzing coffee bean quality in a modern laboratory';
+
+const roastAlt =
+  locale === 'tr'
+    ? 'Işıkta kavurma sürecindeki kahve çekirdekleri'
+    : locale === 'ar'
+    ? 'عملية تحميص القهوة الحرفية بحبات متحركة'
+    : 'Artisanal coffee roasting process with moving beans';
+
+const mapAlt =
+  locale === 'tr'
+    ? 'Etiyopya, Gana ve Avrupa’yı birleştiren soyut küresel tedarik haritası'
+    : locale === 'ar'
+    ? 'خريطة عالمية مجردة تربط إثيوبيا وغانا وأوروبا'
+    : 'Abstract world map connecting Ethiopia, Ghana and Europe';
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<Breadcrumb
+  locale={locale}
+  items={[
+    { name: tr.nav.products, href: productsHref },
+    { name: copy.heroTitle },
+  ]}
+/>
+
+<main id="main" class="bg-surface">
+  {/* Editorial hero */}
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src={imgHero}
+        alt={heroImgAlt}
+        width="1920"
+        height="1080"
+        class="h-full w-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-surface-deep/55"></div>
+    </div>
+    <div class="relative z-10 px-4 pb-24 pt-16 md:px-8 md:pb-32 md:pt-24">
+      <div class="mx-auto max-w-7xl">
+        <span class="eyebrow mb-4 block text-orange/90">{copy.eyebrow}</span>
+        <h1 class="serif-display mb-8 max-w-4xl text-5xl font-bold leading-none tracking-tight text-white md:text-7xl lg:text-8xl">
+          {copy.heroTitle}
+        </h1>
+        <div class="flex flex-col items-start gap-8 md:flex-row">
+          <p class="max-w-xl text-lg leading-relaxed text-white/85">{copy.heroLead}</p>
+          <div class="glass-dark rounded-lg border border-white/10 p-6 text-white md:max-w-sm">
+            <p class="eyebrow mb-2 text-orange/90">{copy.verifiedTitle}</p>
+            <p class="text-sm leading-relaxed text-white/85">{copy.verifiedBody}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Origins bento */}
+  <section class="px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <span class="eyebrow mb-2 block text-teal-dark">{copy.originEyebrow}</span>
+          <h2 class="serif-display text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+            {copy.originTitle}
+          </h2>
+        </div>
+        <p class="max-w-md text-on-surface-muted">{copy.originLead}</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
+        <article class="group md:col-span-7">
+          <div class="shadow-editorial relative overflow-hidden rounded-lg bg-surface-mid">
+            <img
+              src={imgEthiopia}
+              alt={ethiopiaAlt}
+              width="1200"
+              height="900"
+              class="aspect-[4/3] h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/70 via-surface-deep/10 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-white md:p-10">
+              <span class="eyebrow mb-3 inline-block bg-orange/90 px-3 py-1 text-white">
+                {copy.origins[0].badge}
+              </span>
+              <h3 class="serif-display mb-3 text-2xl font-bold md:text-4xl">
+                {copy.origins[0].name}
+              </h3>
+              <p class="max-w-md text-sm leading-relaxed text-white/85 md:text-base">
+                {copy.origins[0].body}
+              </p>
+              <span class="mt-4 inline-block border-b-2 border-orange pb-1 text-xs font-bold uppercase tracking-widest">
+                {copy.origins[0].link}
+              </span>
+            </div>
+          </div>
+        </article>
+
+        <article class="group md:col-span-5">
+          <div class="shadow-editorial relative overflow-hidden rounded-lg bg-surface-mid">
+            <img
+              src={imgGhana}
+              alt={ghanaAlt}
+              width="900"
+              height="1000"
+              class="aspect-[4/5] h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/70 via-surface-deep/10 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-white md:p-10">
+              <span class="eyebrow mb-3 inline-block bg-teal px-3 py-1 text-white">
+                {copy.origins[1].badge}
+              </span>
+              <h3 class="serif-display mb-3 text-2xl font-bold md:text-4xl">
+                {copy.origins[1].name}
+              </h3>
+              <p class="max-w-md text-sm leading-relaxed text-white/85 md:text-base">
+                {copy.origins[1].body}
+              </p>
+              <span class="mt-4 inline-block border-b-2 border-orange pb-1 text-xs font-bold uppercase tracking-widest">
+                {copy.origins[1].link}
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {/* Precision grading */}
+  <section class="bg-surface-low px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <h2 class="serif-display mb-6 text-3xl font-bold leading-snug text-on-surface md:text-4xl lg:text-5xl">
+          {copy.gradingTitle}
+        </h2>
+        <p class="mb-10 text-lg leading-relaxed text-on-surface-muted">{copy.gradingLead}</p>
+        <div class="space-y-5">
+          {copy.grades.map((g, idx) => (
+            <div
+              class:list={[
+                'rounded-lg border-s-4 bg-surface-lowest p-6 shadow-editorial',
+                idx === 0 ? 'border-orange' : 'border-teal',
+              ]}
+            >
+              <h3 class="serif-display mb-2 text-xl font-bold text-on-surface">{g.title}</h3>
+              <p class="text-sm leading-relaxed text-on-surface-muted">{g.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <img
+          src={imgLab}
+          alt={labAlt}
+          width="600"
+          height="800"
+          class="mt-12 aspect-[3/4] w-full rounded-lg object-cover shadow-editorial"
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          src={imgRoast}
+          alt={roastAlt}
+          width="600"
+          height="800"
+          class="aspect-[3/4] w-full rounded-lg object-cover shadow-editorial"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* Specifications */}
+  <section class="px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12">
+        <span class="eyebrow mb-2 block text-teal-dark">{copy.specEyebrow}</span>
+        <h2 class="serif-display text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+          {copy.specTitle}
+        </h2>
+      </div>
+      <div class="overflow-x-auto rounded-lg border border-outline/40 bg-surface-lowest">
+        <table class="w-full min-w-[640px] text-start">
+          <thead>
+            <tr class="bg-surface-mid">
+              {copy.specHeaders.map((h) => (
+                <th
+                  scope="col"
+                  class="eyebrow px-6 py-5 text-start text-on-surface-muted md:px-8 md:py-6"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline/30">
+            {copy.specRows.map((row) => (
+              <tr class="transition-colors hover:bg-surface-low">
+                <th
+                  scope="row"
+                  class="px-6 py-5 text-start font-bold text-on-surface md:px-8 md:py-6"
+                >
+                  {row[0]}
+                </th>
+                <td class="px-6 py-5 text-on-surface-muted md:px-8 md:py-6">{row[1]}</td>
+                <td class="px-6 py-5 text-on-surface-muted md:px-8 md:py-6">{row[2]}</td>
+                <td class="px-6 py-5 text-xs italic text-orange-dark md:px-8 md:py-6">
+                  {row[3]}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-xs italic text-on-surface-subtle">{copy.specNote}</p>
+    </div>
+  </section>
+
+  {/* Equatorial supply chain */}
+  <section class="bg-surface-deep px-4 py-20 text-white md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
+      <div>
+        <span class="eyebrow mb-2 block text-orange/90">{copy.supplyEyebrow}</span>
+        <h2 class="serif-display mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+          {copy.supplyTitle}
+        </h2>
+        <p class="mb-8 text-lg leading-relaxed text-white/80">{copy.supplyBody}</p>
+        <ul class="space-y-4">
+          {copy.supplyPoints.map((p, idx) => (
+            <li class="flex items-center gap-3">
+              <span
+                class:list={[
+                  'inline-block h-2 w-2 rounded-full',
+                  idx === 2 ? 'bg-orange' : 'bg-teal',
+                ]}
+                aria-hidden="true"
+              ></span>
+              <span class="text-white/90">{p}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-black/40">
+        <img
+          src={imgMap}
+          alt={mapAlt}
+          width="1200"
+          height="675"
+          class="h-full w-full object-cover opacity-50 mix-blend-luminosity"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="cta-gradient px-4 py-20 text-white md:px-8">
+    <div class="mx-auto max-w-4xl text-center">
+      <h2 class="serif-display mb-4 text-3xl font-bold md:text-4xl">{copy.ctaTitle}</h2>
+      <p class="mb-8 text-lg leading-relaxed text-white/85">{copy.ctaLead}</p>
+      <a
+        href={contactHref}
+        class="inline-block rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
+      >
+        {copy.ctaBtn}
+      </a>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />

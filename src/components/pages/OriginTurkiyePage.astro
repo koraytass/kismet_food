@@ -1,0 +1,341 @@
+---
+/**
+ * OriginTurkiyePage — Deep-dive on Türkiye origin.
+ * Sections: Hero · Hazelnuts/Pistachios bento · Figs/Olives/Spices · Heritage band · CTA
+ */
+import type { Locale } from '@/i18n';
+import { t, localePath } from '@/i18n';
+import { stitchSrc } from '@/lib/stitch';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const tr = t(locale);
+
+const originsHref = localePath('/origins/', locale);
+const contactHref = localePath('/contact/', locale);
+
+const heroImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuCqnUnVA1LOP8DjGtgGfq1bH8h8zXtoMqNgK_rM5nm3LHIpPjAG2iWBSgVIWO7EknXEboz3o4KqO04nUWmTzuz6WMSUe8ghzk0W2E7jqSyMbW7f-IZlcjrb8fKYLc6R7Dop1Klle3I3nfKh7l_mUcm0OZapIaXKEY8euYIMh5xdMQhlrNrpP7VGGQFNMMQqbDKgo6oA953c-04yvC541J677oSa3BAkRZXeMnbAL5ZG561sZiICyG_dZgHwCH_qEVDl6TOZR11EISE',
+);
+const hazelnutImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBCGzze1sDaW2fy17net6aQvW0DWeUqhZqEfdzAJv_77wBSKFl9140xF3ZPXL3YIUQi3IE_r6izs5RVIBDVJQE3CN6_GG4ZsCGeHH9SCDR8TIRB2he7GovoSiW7ebfvGYeP2uZEFgkt0CxhdFqA9b8RAsHzNst4O5B-28d-zRefKNSP1L5lpjqySnwzp4X0oo6_elPE0FYWbRv3hEGH5LRBlIWITMksODbh90cE3jf-Cx1y-AWSRcxR5LUJfIvaShbut-a0kX5EHyA',
+);
+const pistachioImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBVWdL5Z1QGSlupG4i6KEqnQb93jLlrSnhTDe-fwWrzgyZwC_Ycs6hDhPmmNbmTRjC07MC7Y1Xu825VG46_DAGMfFzoUhVMUMeQCANVY_M1vD_8WuAdP-TWaiYa0YOoSv0ShHsrAYEIa-8wwglTUC93y_pHylV5tugGVnNGprIj5M6Z8M3QqJ41GakrXj_MAIMmPGzVCpB5p7FTKtF0j8c7k4wtJj04CvDSj47_jn7lTlVxBSrwLvv84B3wYQa66M3dgw5L1SkSpJQ',
+);
+const heritageImg = stitchSrc(
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBTFcH5Fh41_BDrriZbwUER0-ImIDO8gy93yV3jNfp45OzF7g3ReCqBDibZASgUcwlC63n5KIYPtLcM-tQbXJ9YziEQj7j_Tjp_67RpQ7GU0gZBLywY4W0e5Wv7YC73oQy_BGPnakxEMVZH5m7TJfuQuW2J7OzDmyVjw0hLOET34uNABHX-jXlt4_aj-wYxvrRwQll5OgsTRMTA2BbwqqJC8h0mh0VaRHfv_-ZlsKwZDyXFnXClSloul0B_DTkeK0pmAQzimoGlx7k',
+);
+
+const copy = {
+  tr: {
+    eyebrow: 'MENŞE ODAK · ANADOLU',
+    heroTitle: 'Türkiye',
+    heroLead:
+      'Doğu ile Batı arasındaki köprü. Anadolu mikro iklimi, dünyanın en çok aranan Giresun fındığını, Antep fıstığını ve Ege inciri ile zeytinini yetiştirir. İpek Yolu mirası, modern uzmanlığımızın hâlâ ilk güzergâhıdır.',
+    heroImgAlt: 'Bakır kapta kavrulmuş Türk fındığı ve Antep fıstığı',
+    heartlandEyebrow: 'KALP COĞRAFYA',
+    heartlandTitle: 'Fındık & Fıstık',
+    giresunTitle: 'Giresun Fındığı',
+    giresunLead:
+      'Karadeniz kıyısındaki Giresun’un yüksek yağ oranlı, ince kabuklu fındığı — lüks çikolata üreticilerinin tercih ettiği dünya standardı.',
+    giresunImgAlt: 'Karadeniz’e bakan Giresun fındık bahçelerinin hava görüntüsü',
+    antepTitle: 'Antep Fıstığı',
+    antepLead:
+      'Derin yeşil iç, mor zar, yoğun aroma — Gaziantep bölgesinin terroir-işaretli fıstığı. Premium grade ve izlenebilir menşe.',
+    antepImgAlt: 'Çatlamış Antep fıstığı — derin yeşil iç, mor zar',
+    antepBadge: 'Premium Grade',
+    statNumber: '%70',
+    statLabel: 'Küresel Pazar Payı',
+    statBody:
+      'Türkiye ortaklığımız, Avrupa operasyonlarımızın en büyük tek premium kuruyemiş kaynağıdır.',
+    aegeanTitle: 'Ege İnciri & Zeytini',
+    aegeanLead:
+      'Aydın kuru inciri, Ayvalık zeytinyağı ve sofralık zeytin — Ege’nin yıllık rüzgârıyla olgunlaşan aromatik profil.',
+    spicesTitle: 'Anadolu Baharatları',
+    spicesLead:
+      'Urfa isot, Antep pul biber, sumak ve mahlep — İpek Yolu’nun bugünkü mirasçısı olarak, aroma bütünlüğünde taviz yok.',
+    silkTitle: 'İpek Yolu mirası, modern uzmanlık.',
+    silkLead:
+      'Osmanlı ticaret mirası üzerine inşa edilmiş modern bir operasyon. Ordu’dan Gaziantep’e, İzmir’den İstanbul’a; her bölgede saha-içinden ticaret ekipleri. Yıllara yayılmış birikim, her konteyner belgesinde görünür.',
+    certsTitle: 'Küresel standartlar, yerel kökler.',
+    certsLead:
+      'Anadolu tesislerimizden çıkan her parti; hem yerel düzenlemeleri hem de küresel mükemmeliyet işaretlerini karşılamak için titizlikle test edilir.',
+    certs: ['ISO 22000', 'Helal Sertifikalı', 'BRC GS Food', 'Kosher'],
+    ctaTitle: '2026 Türkiye hasat ayırımınızı şimdi güvence altına alın.',
+    ctaLead:
+      'Fındık, fıstık, incir veya baharat — ticaret uzmanlarımız menşe ve lojistik teklifini 24 saat içinde hazırlar.',
+    ctaBtn: 'İletişime Geç',
+    backBtn: '← Tüm Menşelere Dön',
+  },
+  en: {
+    eyebrow: 'ORIGIN SPOTLIGHT · ANATOLIA',
+    heroTitle: 'Türkiye',
+    heroLead:
+      'The bridge between East and West. The Anatolian microclimate grows the world’s most sought-after Giresun hazelnut, Antep pistachio, and Aegean fig and olive. The Silk Road heritage is still the first route of our modern expertise.',
+    heroImgAlt: 'Roasted Turkish hazelnuts and Antep pistachios in a copper bowl',
+    heartlandEyebrow: 'THE HEARTLAND',
+    heartlandTitle: 'Hazelnuts & Pistachios',
+    giresunTitle: 'Giresun Hazelnut',
+    giresunLead:
+      'High-fat content, delicate-skin hazelnuts from Giresun on the Black Sea — the world-standard chosen by luxury chocolate makers.',
+    giresunImgAlt: 'Aerial view of hazelnut groves in Giresun overlooking the Black Sea',
+    antepTitle: 'Antep Pistachio',
+    antepLead:
+      'Deep-green kernel, purple skin, intense aroma — the terroir-marked pistachio of the Gaziantep region. Premium grade, fully traceable origin.',
+    antepImgAlt: 'Cracked Antep pistachios — deep green kernel, purple skin',
+    antepBadge: 'Premium Grade',
+    statNumber: '70%',
+    statLabel: 'Global Market Share',
+    statBody:
+      'Our Turkish partnership is the single largest premium-nut source for our European operations.',
+    aegeanTitle: 'Aegean Figs & Olives',
+    aegeanLead:
+      'Aydın dried figs, Ayvalık olive oil and table olives — an aromatic profile ripened by the Aegean’s annual winds.',
+    spicesTitle: 'Anatolian Spices',
+    spicesLead:
+      'Urfa isot, Antep red pepper, sumac and mahleb — as the modern steward of the Silk Road, we accept no compromise on aromatic integrity.',
+    silkTitle: 'Silk Road heritage, modern expertise.',
+    silkLead:
+      'A modern operation built on Ottoman trade heritage. From Ordu to Gaziantep, from İzmir to İstanbul — trade teams on the ground in every region. Decades of accumulated expertise visible in every container document.',
+    certsTitle: 'Global standards, local roots.',
+    certsLead:
+      'Every batch from our Anatolian facilities undergoes rigorous testing to meet both regional requirements and global excellence markers.',
+    certs: ['ISO 22000', 'Halal Certified', 'BRC GS Food', 'Kosher'],
+    ctaTitle: 'Secure your 2026 Türkiye harvest allocation now.',
+    ctaLead:
+      'Hazelnuts, pistachios, figs or spices — our trade experts prepare an origin + logistics proposal within 24 hours.',
+    ctaBtn: 'Contact Us',
+    backBtn: '← Back to all origins',
+  },
+  ar: {
+    eyebrow: 'نظرة معمّقة · الأناضول',
+    heroTitle: 'تركيا',
+    heroLead:
+      'الجسر بين الشرق والغرب. يُنبت المناخ المحلي الأناضولي أكثر أنواع البندق (غيرسون) والفستق (عنتاب) والتين والزيتون الإيجي طلباً في العالم. تراث طريق الحرير لا يزال الطريق الأول لخبرتنا الحديثة.',
+    heroImgAlt: 'بندق تركي وفستق عنتاب محمّص في وعاء نحاسي',
+    heartlandEyebrow: 'قلب المنطقة',
+    heartlandTitle: 'البندق والفستق',
+    giresunTitle: 'بندق غيرسون',
+    giresunLead:
+      'بندق ذو محتوى دهني عالٍ وقشرة رقيقة من غيرسون على البحر الأسود — المعيار العالمي الذي يختاره صُنّاع الشوكولاتة الفاخرة.',
+    giresunImgAlt: 'منظر جوي لبساتين بندق غيرسون المطلة على البحر الأسود',
+    antepTitle: 'فستق عنتاب',
+    antepLead:
+      'لب أخضر غامق، قشرة بنفسجية، نكهة كثيفة — فستق منطقة غازي عنتاب بطابع الأرض. درجة ممتازة ومنشأ قابل للتتبع بالكامل.',
+    antepImgAlt: 'فستق عنتاب مشقوق — لب أخضر غامق وقشرة بنفسجية',
+    antepBadge: 'درجة ممتازة',
+    statNumber: '70٪',
+    statLabel: 'حصة السوق العالمية',
+    statBody:
+      'شراكتنا التركية هي أكبر مصدر منفرد للمكسرات الممتازة لعملياتنا الأوروبية.',
+    aegeanTitle: 'تين وزيتون بحر إيجة',
+    aegeanLead:
+      'تين آيدن المجفف، زيت زيتون آيفاليك وزيتون المائدة — نكهة عطرية تنضج برياح بحر إيجة السنوية.',
+    spicesTitle: 'توابل الأناضول',
+    spicesLead:
+      'إيسوت أورفا، فلفل عنتاب الأحمر، السماق والمحلب — بصفتنا الوريث الحديث لطريق الحرير، لا تنازل عن سلامة النكهة العطرية.',
+    silkTitle: 'تراث طريق الحرير، خبرة حديثة.',
+    silkLead:
+      'عملية حديثة مبنية على تراث التجارة العثمانية. من أوردو إلى غازي عنتاب، ومن إزمير إلى إسطنبول — فرق تجارية على الأرض في كل منطقة. عقود من الخبرة المتراكمة ظاهرة في كل مستند حاوية.',
+    certsTitle: 'معايير عالمية، جذور محلية.',
+    certsLead:
+      'تخضع كل دفعة من مرافقنا في الأناضول لاختبارات صارمة لتلبية المتطلبات الإقليمية ومعايير التميز العالمية معاً.',
+    certs: ['ISO 22000', 'حلال معتمد', 'BRC GS Food', 'كوشر'],
+    ctaTitle: 'احجز حصتك من حصاد تركيا 2026 الآن.',
+    ctaLead:
+      'بندق، فستق، تين أو توابل — يُعد خبراؤنا التجاريون عرضاً للمنشأ واللوجستيات في غضون 24 ساعة.',
+    ctaBtn: 'تواصل معنا',
+    backBtn: '← العودة إلى كل المناشئ',
+  },
+}[locale];
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<Breadcrumb
+  locale={locale}
+  items={[
+    { name: tr.nav.origins, href: originsHref },
+    { name: copy.heroTitle },
+  ]}
+/>
+
+<main id="main" class="bg-surface">
+  {/* Hero */}
+  <section class="px-4 pb-16 pt-8 md:px-8 md:pt-12">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 md:grid-cols-2">
+      <div class="">
+        <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
+        <h1 class="serif-display mb-8 text-5xl font-bold leading-none text-on-surface md:text-7xl lg:text-8xl">
+          {copy.heroTitle}
+        </h1>
+        <p class="max-w-xl text-lg leading-relaxed text-on-surface-muted md:text-xl">
+          {copy.heroLead}
+        </p>
+        <a
+          href={originsHref}
+          class="eyebrow mt-8 inline-block text-teal-dark hover:text-orange-dark"
+        >
+          {copy.backBtn}
+        </a>
+      </div>
+      <div class="relative">
+        <img
+          src={heroImg}
+          alt={copy.heroImgAlt}
+          class="shadow-editorial aspect-[4/5] w-full rounded-lg object-cover"
+          width="1200"
+          height="1500"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* Hazelnuts + Pistachios bento */}
+  <section class="bg-surface-low px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12 text-center">
+        <span class="eyebrow mb-4 block text-teal-dark">{copy.heartlandEyebrow}</span>
+        <h2 class="serif-display text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
+          {copy.heartlandTitle}
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:grid-rows-2">
+        {/* Giresun */}
+        <div class="relative overflow-hidden rounded-lg md:col-span-8 md:row-span-2">
+          <img
+            src={hazelnutImg}
+            alt={copy.giresunImgAlt}
+            class="h-full min-h-[320px] w-full object-cover md:min-h-[640px]"
+            width="1600"
+            height="1200"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/80 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-8">
+            <h3 class="serif-display mb-3 text-3xl font-bold text-white md:text-4xl">
+              {copy.giresunTitle}
+            </h3>
+            <p class="max-w-md leading-relaxed text-white/85">{copy.giresunLead}</p>
+          </div>
+        </div>
+        {/* Antep */}
+        <div class="relative overflow-hidden rounded-lg md:col-span-4">
+          <img
+            src={pistachioImg}
+            alt={copy.antepImgAlt}
+            class="h-full min-h-[280px] w-full object-cover"
+            width="800"
+            height="800"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/80 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-6">
+            <span class="eyebrow mb-2 inline-block bg-orange px-3 py-1 text-white">
+              {copy.antepBadge}
+            </span>
+            <h3 class="serif-display text-2xl font-bold text-white">{copy.antepTitle}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-white/85">{copy.antepLead}</p>
+          </div>
+        </div>
+        {/* Stat */}
+        <div class="flex flex-col justify-center rounded-lg bg-surface-lowest p-8 shadow-editorial md:col-span-4">
+          <span class="serif-display mb-2 text-5xl font-bold text-teal-dark md:text-6xl">
+            {copy.statNumber}
+          </span>
+          <p class="eyebrow mb-4 text-on-surface-subtle">{copy.statLabel}</p>
+          <p class="text-sm leading-relaxed text-on-surface-muted">{copy.statBody}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Aegean + Spices */}
+  <section class="px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-2">
+      <article class="rounded-lg bg-surface-low p-8 md:p-10">
+        <h3 class="serif-display mb-3 text-2xl font-bold text-teal-dark md:text-3xl">
+          {copy.aegeanTitle}
+        </h3>
+        <p class="leading-relaxed text-on-surface-muted">{copy.aegeanLead}</p>
+      </article>
+      <article class="rounded-lg bg-surface-low p-8 md:p-10">
+        <h3 class="serif-display mb-3 text-2xl font-bold text-orange-dark md:text-3xl">
+          {copy.spicesTitle}
+        </h3>
+        <p class="leading-relaxed text-on-surface-muted">{copy.spicesLead}</p>
+      </article>
+    </div>
+  </section>
+
+  {/* Silk Road heritage band */}
+  <section class="relative overflow-hidden bg-surface-deep px-4 py-20 text-white md:px-8 md:py-24">
+    <div class="absolute inset-0 opacity-20">
+      <img
+        src={heritageImg}
+        alt=""
+        class="h-full w-full object-cover"
+        width="1920"
+        height="1080"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="relative z-10 mx-auto max-w-5xl text-center">
+      <h2 class="serif-display mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+        {copy.silkTitle}
+      </h2>
+      <p class="mx-auto max-w-3xl text-lg leading-relaxed text-white/85">{copy.silkLead}</p>
+    </div>
+  </section>
+
+  {/* Certifications */}
+  <section class="px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto max-w-7xl">
+      <div class="flex flex-col items-start gap-12 md:flex-row md:items-center md:gap-16">
+        <div class="md:w-1/3">
+          <h2 class="serif-display mb-6 text-3xl font-bold text-on-surface md:text-4xl">
+            {copy.certsTitle}
+          </h2>
+          <p class="leading-relaxed text-on-surface-muted">{copy.certsLead}</p>
+        </div>
+        <div class="grid w-full grid-cols-2 gap-6 md:w-2/3 md:grid-cols-4">
+          {copy.certs.map((c) => (
+            <div class="flex items-center justify-center rounded-lg bg-surface-low p-6 text-center">
+              <span class="eyebrow text-on-surface">{c}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="cta-gradient px-4 py-20 text-white md:px-8">
+    <div class="mx-auto max-w-4xl text-center">
+      <h2 class="serif-display mb-4 text-3xl font-bold md:text-4xl">{copy.ctaTitle}</h2>
+      <p class="mb-8 text-lg leading-relaxed text-white/85">{copy.ctaLead}</p>
+      <a
+        href={contactHref}
+        class="inline-block rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
+      >
+        {copy.ctaBtn}
+      </a>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />

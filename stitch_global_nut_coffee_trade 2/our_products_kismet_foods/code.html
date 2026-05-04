@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#1a1c1c",
+                    "inverse-surface": "#2f3130",
+                    "tertiary-fixed": "#ffdad2",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#b6938b",
+                    "on-tertiary-container": "#452c27",
+                    "outline": "#6c7a7a",
+                    "inverse-primary": "#56d9dc",
+                    "surface-container": "#eeeeed",
+                    "surface-bright": "#faf9f8",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#f4f3f2",
+                    "surface": "#faf9f8",
+                    "secondary-container": "#fe9162",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e3e2e1",
+                    "on-primary-fixed": "#002020",
+                    "on-secondary-fixed-variant": "#7c2e04",
+                    "background": "#faf9f8",
+                    "surface-container-high": "#e9e8e7",
+                    "on-secondary-fixed": "#360f00",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#2b1611",
+                    "on-secondary-container": "#752900",
+                    "surface-dim": "#dadad9",
+                    "outline-variant": "#bbc9c9",
+                    "on-tertiary-fixed-variant": "#5c403a",
+                    "primary-fixed-dim": "#56d9dc",
+                    "surface-tint": "#00696b",
+                    "secondary-fixed-dim": "#ffb597",
+                    "on-primary-container": "#00393a",
+                    "secondary": "#9b451c",
+                    "tertiary": "#755750",
+                    "on-surface-variant": "#3c4949",
+                    "primary-container": "#00acaf",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#e5beb5",
+                    "surface-container-highest": "#e3e2e1",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#1a1c1c",
+                    "inverse-on-surface": "#f1f0f0",
+                    "primary-fixed": "#76f6f8",
+                    "on-primary-fixed-variant": "#004f51",
+                    "secondary-fixed": "#ffdbcd",
+                    "primary": "#00696b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3 { font-family: 'Noto Serif', serif; }
+        .glass-nav {
+            background: rgba(250, 249, 248, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-12 py-6 max-w-[1920px] mx-auto glass-nav">
+<div class="text-2xl font-serif font-bold text-stone-900 dark:text-stone-50">KISMET FOODS</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-teal-500 transition-colors duration-300 font-label text-xs tracking-[0.1em] uppercase" href="#">About</a>
+<a class="text-teal-600 dark:text-teal-400 border-b-2 border-orange-700 pb-1 font-label text-xs tracking-[0.1em] uppercase" href="#">Products</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-teal-500 transition-colors duration-300 font-label text-xs tracking-[0.1em] uppercase" href="#">Origins</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-teal-500 transition-colors duration-300 font-label text-xs tracking-[0.1em] uppercase" href="#">Sustainability</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-teal-500 transition-colors duration-300 font-label text-xs tracking-[0.1em] uppercase" href="#">Insights</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium hover:text-teal-500 transition-colors duration-300 font-label text-xs tracking-[0.1em] uppercase" href="#">Contact</a>
+</div>
+<div class="flex items-center space-x-6">
+<span class="text-stone-600 font-label text-xs tracking-widest cursor-pointer hover:text-secondary">EN/TR/AR</span>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-lg font-label text-xs font-bold uppercase tracking-widest active:scale-95 duration-150 shadow-sm">
+                Request Quote
+            </button>
+</div>
+</nav>
+<main class="pt-32 pb-24">
+<!-- Editorial Header Section -->
+<header class="px-12 mb-20 max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl">
+<span class="font-label text-xs tracking-[0.2em] text-secondary uppercase block mb-4">The Global Curator</span>
+<h1 class="text-5xl md:text-7xl font-bold leading-tight tracking-tighter text-on-surface">Product Portfolio</h1>
+<p class="mt-6 text-lg text-on-surface-variant leading-relaxed font-body max-w-xl">
+                        Bridging the world's most exceptional raw materials with international markets through precision logistics and ethical sourcing.
+                    </p>
+</div>
+<div class="hidden md:block">
+<div class="h-px w-32 bg-outline-variant mb-6"></div>
+<span class="font-label text-xs text-outline tracking-widest">CURATED EXCELLENCE</span>
+</div>
+</div>
+</header>
+<!-- Category Grid: Asymmetric Layout -->
+<section class="px-12 max-w-[1440px] mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+<!-- Coffee & Cocoa: Large Featured Card -->
+<div class="md:col-span-7 group">
+<div class="bg-surface-container-low overflow-hidden relative aspect-[4/5] md:aspect-[16/10]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up of premium raw green coffee beans and sun-dried cocoa pods on a rustic wooden texture with warm dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf3xnmI7oq8dt-O3370grjkqFEh9Hw0tWGCewRtc0y0Ajm6AyoKdi4Ylg-IC4TDX-gpyhfKwp7Y3fTiMpkooyEqalk8C0qNFsoateoZKpEGacOtwKjtq1YrF_eOrd88WG85fwG_jjI9n3qGU9d--v9WdjHoDRifcrOY07HwxjDqQcmN1ftTAl2dlrCDV-fMT0Mw5XRi_O7eHMsliXGBpxfzht1coVg8N2I7ANoQ04Q0wBuQgDWiHUrjFMHyc6sNjwAeocCitwz0HQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/60 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-12 text-on-primary">
+<span class="bg-secondary-fixed text-on-secondary-fixed px-3 py-1 text-[10px] font-bold tracking-widest uppercase mb-4 inline-block">Featured Origin</span>
+<h2 class="text-4xl font-bold mb-4">Coffee &amp; Cocoa</h2>
+<p class="text-on-primary/80 max-w-md font-body mb-6">Ethically sourced specialty grade beans from the highlands of Ethiopia and the volcanic soils of Indonesia.</p>
+<button class="flex items-center gap-2 group/btn">
+<span class="font-label text-sm uppercase tracking-widest border-b-2 border-secondary pb-1 group-hover/btn:border-primary-fixed transition-all">View Catalog</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Spices & Herbs: Tall Editorial Card -->
+<div class="md:col-span-5 pt-0 md:pt-24 group">
+<div class="bg-surface-container-low overflow-hidden relative aspect-[3/4]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Vibrant array of whole exotic spices including star anise, cinnamon sticks, and peppercorns on dark slate background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGph67KssqaQBYqynx742YWlGZY5ajlwVj_BKavqubpzfRKSz-0_fAhASYBcHe_UT-4-MRm7ChbMhmDBG_QQz5z4D1G8tSTqqvsyDnlAYxN59u-PdqDLNd07lofZAU_T_7XsLiCBEyP5-yqcQucSwtb8MSuMz5o8QgO_g2NMjlAh6KKCqxbaIcbdm_aNWKP0eQOq2Q3g0sIAv5jBtWqzaiBM_8EJ8dcyjHVzUY-xf8YApECQ5Ca81hG7pfp85i3eUCLcV2CRDuyUI"/>
+<div class="absolute inset-0 bg-on-background/20 group-hover:bg-on-background/40 transition-colors duration-500"></div>
+<div class="absolute top-8 right-8">
+<span class="material-symbols-outlined text-on-primary text-3xl" data-weight="fill">workspace_premium</span>
+</div>
+<div class="absolute bottom-0 left-0 p-10 text-on-primary">
+<h2 class="text-3xl font-bold mb-3">Spices &amp; Herbs</h2>
+<p class="text-on-primary/80 font-body mb-6 text-sm">Purity tested aromatic harvests from traditional spice routes.</p>
+<button class="flex items-center gap-2 group/btn">
+<span class="font-label text-sm uppercase tracking-widest border-b-2 border-secondary pb-1 group-hover/btn:border-primary-fixed transition-all">Explore Range</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Nuts & Dried Fruits: Balanced Grid -->
+<div class="md:col-span-5 group">
+<div class="bg-surface-container-low overflow-hidden relative aspect-[4/5]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Artisanal arrangement of walnuts, almonds, and dried apricots in natural light with organic shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSmjHeOGh1MFuy6XVXUL3u6SacSmdebSl64nEB8K_3nK_9gVMWCIfh81kyInqPAOMapIAdoY49X2WxwtYQso-6OvIEQJyuuvqxf8cD2YAvLzDJ4-ifja-cXnYJKUpscf1B2zKRvbPoRFIv0Tian_naa3yhQSVXuAWKgN63wuFjvmutjZUN0dUtlTQZ1nxtRQsW-0rMyfyxZzMMV65KA8fTsb1u0J_8eMMLM6km4zRlOjKPAf_4_Nfy-ewBEA3TVfv1_ymVvkeqH_4"/>
+<div class="absolute inset-0 bg-on-background/20"></div>
+<div class="absolute bottom-0 left-0 p-10 text-on-primary">
+<h2 class="text-3xl font-bold mb-3">Nuts &amp; Dried Fruits</h2>
+<p class="text-on-primary/80 font-body mb-6 text-sm">Premium kernels and naturally preserved fruits, selected for size and moisture profile.</p>
+<button class="flex items-center gap-2 group/btn">
+<span class="font-label text-sm uppercase tracking-widest border-b-2 border-secondary pb-1 group-hover/btn:border-primary-fixed transition-all">Browse Collection</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Raw Ingredients: Overlapping Component -->
+<div class="md:col-span-7 md:-mt-32 group z-10">
+<div class="bg-surface-container-low overflow-hidden relative aspect-[16/9]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Macro photography of raw organic grains and legumes falling through soft focus lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBkeaLnB2F34KEFWN5OwRrRvzaSepS6ypGxIV5y-G248lKiwoFoEuPAFNUUpCxBSk6MKWVyFlbjXThjZ59cgdUROlZ8r05LDNdFzSBjgAkeSETicPJcT6WvVIifOdjtyrODBasa7Ph5bmogrwqdsr5R9QDCYsXbLx_n1bTS9otxpkTFFhSmZn5CRqjv3mpw4soNyHgqy1l436FNtyP_Q9rxZxvtSaqwA7PekMvwO9FsJ4Pxb6Zf-AT1iSEYNxzosaq2HeFac7Ear0"/>
+<div class="absolute inset-0 bg-on-background/40"></div>
+<div class="absolute inset-0 flex flex-col justify-center items-center text-center p-12">
+<h2 class="text-4xl md:text-5xl font-bold text-on-primary mb-6">Raw Ingredients</h2>
+<p class="text-on-primary/90 max-w-lg font-body mb-8 text-lg">Bulk commodities for global manufacturing, meeting the strictest international quality standards.</p>
+<button class="bg-on-primary text-on-surface px-8 py-3 font-label text-xs font-bold uppercase tracking-widest hover:bg-secondary hover:text-on-secondary transition-all duration-300">
+                                View Bulk Catalog
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Global Presence Logic -->
+<section class="mt-40 px-12 max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center">
+<div class="md:w-1/2">
+<span class="font-label text-xs tracking-widest text-primary font-bold uppercase">Traceability</span>
+<h3 class="text-4xl font-bold mt-4 leading-snug">The Story Behind Every Shipment</h3>
+<p class="mt-6 text-on-surface-variant font-body leading-relaxed">
+                    We believe transparency is the ultimate luxury. Every product in our portfolio comes with a digital certificate of origin, detailing the journey from harvest to your facility. Our global network ensures consistent supply cycles and unmatched logistical precision.
+                </p>
+<div class="mt-10 grid grid-cols-2 gap-8">
+<div>
+<span class="block text-3xl font-serif text-secondary">42+</span>
+<span class="text-xs font-label uppercase tracking-widest text-outline">Origin Countries</span>
+</div>
+<div>
+<span class="block text-3xl font-serif text-secondary">100%</span>
+<span class="text-xs font-label uppercase tracking-widest text-outline">Quality Audited</span>
+</div>
+</div>
+</div>
+<div class="md:w-1/2 relative">
+<div class="absolute -top-8 -left-8 w-32 h-32 bg-secondary-fixed/30 rounded-full blur-3xl"></div>
+<div class="bg-surface-container-high p-8 aspect-square flex items-center justify-center relative overflow-hidden">
+<!-- Placeholder for the Global Supply Map -->
+<div class="w-full h-full opacity-40 border border-dashed border-outline-variant rounded-full flex items-center justify-center p-12">
+<span class="material-symbols-outlined text-9xl text-outline-variant">public</span>
+</div>
+<div class="absolute bottom-12 right-12 bg-surface-container-lowest p-6 shadow-2xl">
+<span class="font-label text-[10px] tracking-widest text-secondary block mb-2">LATEST SHIPMENT</span>
+<span class="text-sm font-bold block">San Pedro de Macorís</span>
+<span class="text-xs text-outline font-body">Premium Cocoa Butter • En Route</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-20 bg-stone-100 dark:bg-stone-950 border-t border-surface-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 max-w-7xl mx-auto">
+<div class="flex flex-col gap-6">
+<span class="text-xl font-serif text-stone-900 dark:text-stone-50 font-bold">KISMET FOODS</span>
+<p class="text-stone-500 text-sm font-body leading-relaxed">
+                    Global excellence in trade, sourcing the world’s finest ingredients with integrity and expertise.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label text-xs uppercase tracking-widest font-bold text-on-surface">Resources</span>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Privacy Policy</a>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Terms of Service</a>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Compliance</a>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Trade Certificates</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label text-xs uppercase tracking-widest font-bold text-on-surface">Categories</span>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Coffee &amp; Cocoa</a>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Spices &amp; Herbs</a>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Nuts &amp; Fruits</a>
+<a class="text-stone-500 hover:text-orange-600 underline-offset-4 hover:underline text-sm transition-all" href="#">Raw Grains</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label text-xs uppercase tracking-widest font-bold text-on-surface">Connect</span>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-stone-400 hover:text-primary cursor-pointer">language</span>
+<span class="material-symbols-outlined text-stone-400 hover:text-primary cursor-pointer">mail</span>
+<span class="material-symbols-outlined text-stone-400 hover:text-primary cursor-pointer">location_on</span>
+</div>
+<span class="text-xs font-label text-stone-400 mt-4 leading-relaxed">
+                    Headquarters: Istanbul, TR<br/>
+                    Operational Hubs: London • Dubai • Singapore
+                </span>
+</div>
+</div>
+<div class="mt-16 px-12 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center border-t border-stone-200 pt-8">
+<span class="text-stone-500 text-xs font-label uppercase tracking-widest">© 2024 Kismet Foods. Global Trade Excellence.</span>
+<div class="flex gap-6 mt-4 md:mt-0">
+<span class="text-stone-400 text-[10px] tracking-widest uppercase">Member of Global Trade Federation</span>
+<span class="text-stone-400 text-[10px] tracking-widest uppercase">ISO 22000 Certified</span>
+</div>
+</div>
+</footer>
+</body></html>

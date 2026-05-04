@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import OriginTurkiyePage from '@/components/pages/OriginTurkiyePage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  productCategorySchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'en';
+const pathname = '/en/origins/turkiye/';
+const title = 'Origin Spotlight: Türkiye | Kismet Foods';
+const description =
+  'Türkiye origin: Giresun hazelnuts, Antep pistachios, Aegean figs and olives, and Anatolian spices — Silk Road heritage meets the modern expertise of every commodity specialist.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description }),
+  productCategorySchema({
+    name: 'Giresun Hazelnut',
+    description: 'High-fat content, delicate-skin premium hazelnut from the Giresun region on the Black Sea coast of Türkiye.',
+    url: pathname,
+    category: 'Tree Nuts',
+    origin: ['Giresun, Türkiye'],
+  }),
+  productCategorySchema({
+    name: 'Antep Pistachio',
+    description: 'Premium grade Antep pistachio from Gaziantep — deep green kernel and purple skin.',
+    url: pathname,
+    category: 'Tree Nuts',
+    origin: ['Gaziantep, Türkiye'],
+  }),
+  productCategorySchema({
+    name: 'Anatolian Spices',
+    description: 'Urfa isot, Antep red pepper, sumac and mahleb — traceable origin, preserved aromatic integrity.',
+    url: pathname,
+    category: 'Spices',
+    origin: ['Anatolia, Türkiye'],
+  }),
+  breadcrumbSchema([
+    { name: 'Kismet Foods', url: '/en/' },
+    { name: 'Origins', url: '/en/origins/' },
+    { name: 'Türkiye', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <OriginTurkiyePage locale={locale} currentPath={pathname} />
+</BaseLayout>

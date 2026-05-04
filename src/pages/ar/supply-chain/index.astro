@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import SupplyChainPage from '@/components/pages/SupplyChainPage.astro';
+import {
+  organizationSchema,
+  webSiteSchema,
+  webPageSchema,
+  serviceSchema,
+  breadcrumbSchema,
+} from '@/lib/schema';
+
+const locale = 'ar';
+const pathname = '/ar/supply-chain/';
+const title = 'سلسلة التوريد واللوجستيات | كسمت فودز';
+const description =
+  'سلسلة التوريد واللوجستيات في كسمت فودز: تتبع شامل عبر موانئ مرسين وإزمير وإسطنبول، ومراقبة جودة بمعايير SGS وبيرو فيريتاس، وشروط FOB/CIF/DDP — عقود من الخبرة التشغيلية المتراكمة.';
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({
+    locale,
+    url: pathname,
+    title,
+    description,
+    keywords: [
+      'سلسلة التوريد',
+      'اللوجستيات',
+      'ميناء مرسين',
+      'ميناء إزمير',
+      'ميناء إسطنبول',
+      'Incoterms 2020',
+      'مراقبة جودة SGS',
+      'قابلية التتبع',
+    ],
+  }),
+  serviceSchema({
+    name: 'سلسلة توريد ولوجستيات غذائية عالمية',
+    description:
+      'تتبع شامل من المصدر إلى الوجهة، مناولة احترافية في الموانئ التركية الرئيسية (مرسين، إزمير، إسطنبول)، مراقبة جودة بشهادات SGS وبيرو فيريتاس، وتوصيل عالمي وفق شروط FOB/CIF/CFR/DDP.',
+    url: pathname,
+    serviceType: 'Food supply chain and logistics management',
+    areaServed: [
+      'European Union',
+      'Middle East and North Africa',
+      'North America',
+      'Asia Pacific',
+    ],
+  }),
+  breadcrumbSchema([
+    { name: 'كسمت فودز', url: '/ar/' },
+    { name: 'سلسلة التوريد', url: pathname },
+  ]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead
+      title={title}
+      description={description}
+      locale={locale}
+      pathname={pathname}
+      ogTitle={title}
+      ogDescription={description}
+      jsonLd={jsonLd}
+    />
+  </Fragment>
+
+  <SupplyChainPage locale={locale} currentPath={pathname} />
+</BaseLayout>

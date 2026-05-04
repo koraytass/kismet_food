@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Origins | KISMET FOODS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#1a1c1c",
+                    "inverse-surface": "#2f3130",
+                    "tertiary-fixed": "#ffdad2",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#b6938b",
+                    "on-tertiary-container": "#452c27",
+                    "outline": "#6c7a7a",
+                    "inverse-primary": "#56d9dc",
+                    "surface-container": "#eeeeed",
+                    "surface-bright": "#faf9f8",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#f4f3f2",
+                    "surface": "#faf9f8",
+                    "secondary-container": "#fe9162",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e3e2e1",
+                    "on-primary-fixed": "#002020",
+                    "on-secondary-fixed-variant": "#7c2e04",
+                    "background": "#faf9f8",
+                    "surface-container-high": "#e9e8e7",
+                    "on-secondary-fixed": "#360f00",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#2b1611",
+                    "on-secondary-container": "#752900",
+                    "surface-dim": "#dadad9",
+                    "outline-variant": "#bbc9c9",
+                    "on-tertiary-fixed-variant": "#5c403a",
+                    "primary-fixed-dim": "#56d9dc",
+                    "surface-tint": "#00696b",
+                    "secondary-fixed-dim": "#ffb597",
+                    "on-primary-container": "#00393a",
+                    "secondary": "#9b451c",
+                    "tertiary": "#755750",
+                    "on-surface-variant": "#3c4949",
+                    "primary-container": "#00acaf",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#e5beb5",
+                    "surface-container-highest": "#e3e2e1",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#1a1c1c",
+                    "inverse-on-surface": "#f1f0f0",
+                    "primary-fixed": "#76f6f8",
+                    "on-primary-fixed-variant": "#004f51",
+                    "secondary-fixed": "#ffdbcd",
+                    "primary": "#00696b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .map-mesh {
+            background-image: radial-gradient(circle, #bbc9c9 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .editorial-overlay {
+            background: linear-gradient(90deg, rgba(250,249,248,1) 0%, rgba(250,249,248,0.9) 30%, rgba(250,249,248,0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-12 py-6 max-w-[1920px] mx-auto">
+<div class="text-2xl font-serif font-bold text-stone-900 dark:text-stone-50">KISMET FOODS</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-stone-600 dark:text-stone-400 font-medium text-xs tracking-[0.1em] uppercase hover:text-teal-500 transition-colors duration-300" href="#">About</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium text-xs tracking-[0.1em] uppercase hover:text-teal-500 transition-colors duration-300" href="#">Products</a>
+<a class="text-teal-600 dark:text-teal-400 border-b-2 border-orange-700 pb-1 text-xs tracking-[0.1em] uppercase" href="#">Origins</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium text-xs tracking-[0.1em] uppercase hover:text-teal-500 transition-colors duration-300" href="#">Sustainability</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium text-xs tracking-[0.1em] uppercase hover:text-teal-500 transition-colors duration-300" href="#">Insights</a>
+<a class="text-stone-600 dark:text-stone-400 font-medium text-xs tracking-[0.1em] uppercase hover:text-teal-500 transition-colors duration-300" href="#">Contact</a>
+</div>
+<div class="flex items-center space-x-6">
+<span class="text-stone-600 dark:text-stone-400 text-xs tracking-[0.1em] uppercase font-bold">EN/TR/AR</span>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-lg text-xs tracking-[0.1em] uppercase font-bold active:scale-95 transition-all duration-150">Request Quote</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="relative pt-24 min-h-screen overflow-hidden">
+<!-- Interactive World Map Section -->
+<section class="relative h-[calc(100vh-6rem)] w-full overflow-hidden bg-surface-container-low">
+<!-- Global Supply Map (Decorative Base) -->
+<div class="absolute inset-0 map-mesh opacity-50"></div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+<img class="w-full h-full object-cover grayscale brightness-75" data-alt="high contrast minimalist vector world map with abstract network connections and soft glowing nodes representing global trade hubs" data-location="world" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKsY6NNpMYbIXsPzBSEBtwLLFRvdPQiElShl98zx1_hXRif_RLaRZnsqsVibKF2i0CkhUKP-I4f7zOXDDqruyb0VX8iLANZ8PcD7Xs3ITd696Jo2M5CBmOqb88aURsuE67mqqprAtQcb0zMcm77TGAyW46Jm3BBbm6lJ7wdLDmmBaSs-ymAIdB6FpBimtIpm_PwdePZ-mFPudMWYUW_lsX33Gz8umTBNldSlxBmgur-157c8_vDHdUmKTpp_DVS5EMrf2tqOh8t_w"/>
+</div>
+<!-- Header Overlay -->
+<div class="absolute top-12 left-12 z-10 max-w-xl editorial-overlay p-8 rounded-xl backdrop-blur-sm">
+<span class="font-label text-xs tracking-[0.2em] uppercase text-secondary font-extrabold mb-2 block">Our Presence</span>
+<h1 class="font-headline text-5xl font-bold tracking-tight text-on-surface mb-4 leading-none">The Global Curator of Rare Earth Goods.</h1>
+<p class="text-on-surface-variant leading-relaxed max-w-md">Discover our direct-source network. From the volcanic soils of Ethiopia to the coastal groves of Turkey, we trace every bean and pod back to its ancestral home.</p>
+</div>
+<!-- Map Markers -->
+<div class="absolute inset-0">
+<!-- Marker: Turkey -->
+<button class="group absolute top-[38%] left-[55%] flex flex-col items-center cursor-pointer transition-transform hover:scale-110">
+<span class="relative flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-secondary"></span>
+</span>
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 shadow-2xl rounded text-xs font-bold tracking-widest uppercase text-on-surface border border-outline-variant/20">Turkey</div>
+</button>
+<!-- Marker: Ethiopia -->
+<button class="group absolute top-[55%] left-[58%] flex flex-col items-center cursor-pointer transition-transform hover:scale-110">
+<span class="relative flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
+</span>
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 shadow-2xl rounded text-xs font-bold tracking-widest uppercase text-on-surface border border-outline-variant/20">Ethiopia</div>
+</button>
+<!-- Marker: Vietnam -->
+<button class="group absolute top-[52%] left-[78%] flex flex-col items-center cursor-pointer transition-transform hover:scale-110">
+<span class="relative flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
+</span>
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 shadow-2xl rounded text-xs font-bold tracking-widest uppercase text-on-surface border border-outline-variant/20">Vietnam</div>
+</button>
+<!-- Marker: Colombia -->
+<button class="group absolute top-[62%] left-[28%] flex flex-col items-center cursor-pointer transition-transform hover:scale-110">
+<span class="relative flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
+</span>
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 shadow-2xl rounded text-xs font-bold tracking-widest uppercase text-on-surface border border-outline-variant/20">Colombia</div>
+</button>
+<!-- Marker: Ghana -->
+<button class="group absolute top-[58%] left-[48%] flex flex-col items-center cursor-pointer transition-transform hover:scale-110">
+<span class="relative flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
+</span>
+<div class="mt-2 bg-surface-container-lowest px-3 py-1 shadow-2xl rounded text-xs font-bold tracking-widest uppercase text-on-surface border border-outline-variant/20">Ghana</div>
+</button>
+</div>
+<!-- Regional Insight Sidebar (Asymmetric Editorial Style) -->
+<div class="absolute right-0 top-0 bottom-0 w-[420px] bg-white shadow-2xl z-20 flex flex-col translate-x-0 transition-transform duration-500">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up of premium roasted hazelnuts and pistachios in a rustic ceramic bowl with warm natural side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp4b9SPax2mM_iqe8o83-Ft0EivW53iLJLQw6S71mLyRNbmNBmT3z52PuJcTAEx02oxfYF1Hd_4fqXiUHmFA7c5J4WDxO6c348vvSAlUxNIJ1GC2LQiRWF9wbFTSLIb9fxm5MfCGGssxLVcEdbGAw64ABLwcb6CWdDFdRRzHNoquLEYaiRjS4mGwCnEC8-feG6cI2Br6Kw4-bVsH0EJSkQxPSLTAsw1OVpIupgreL3z5ErpllgPJZCsrO2jfH_schQ8b790yMF9Y8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-white to-transparent"></div>
+<div class="absolute bottom-6 left-8">
+<div class="bg-secondary px-3 py-1 inline-block mb-2">
+<span class="text-[10px] font-bold text-white uppercase tracking-[0.2em]">Active Hub</span>
+</div>
+<h2 class="font-headline text-3xl font-bold">Turkey</h2>
+</div>
+</div>
+<div class="p-10 space-y-8 flex-1 overflow-y-auto">
+<div>
+<span class="font-label text-[10px] font-extrabold uppercase tracking-widest text-outline block mb-4">Core Exports</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-2 bg-secondary-fixed text-on-secondary-fixed rounded-full text-xs font-bold uppercase tracking-tight">Hazelnuts</span>
+<span class="px-4 py-2 bg-secondary-fixed text-on-secondary-fixed rounded-full text-xs font-bold uppercase tracking-tight">Pistachios</span>
+<span class="px-4 py-2 bg-surface-container-high text-on-surface rounded-full text-xs font-bold uppercase tracking-tight">Dried Figs</span>
+</div>
+</div>
+<div class="space-y-4">
+<span class="font-label text-[10px] font-extrabold uppercase tracking-widest text-outline block">Supply Insights</span>
+<p class="text-sm leading-relaxed text-on-surface-variant">Turkey remains the cornerstone of our nut distribution. Our partnering groves in Giresun provide high-fat content hazelnuts favored by luxury chocolatiers globally.</p>
+<div class="grid grid-cols-2 gap-4 pt-4">
+<div class="bg-surface-container-low p-4 rounded-xl">
+<span class="text-2xl font-headline font-bold text-primary block">12.4k</span>
+<span class="text-[10px] uppercase font-bold text-outline">MT Annual Volume</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl">
+<span class="text-2xl font-headline font-bold text-primary block">98.2%</span>
+<span class="text-[10px] uppercase font-bold text-outline">Purity Rating</span>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-outline-variant/20">
+<button class="w-full group flex items-center justify-between py-4 border-b border-outline-variant/20 hover:text-secondary transition-colors">
+<span class="font-bold text-sm uppercase tracking-widest">View Quality Certificates</span>
+<span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="w-full group flex items-center justify-between py-4 border-b border-outline-variant/20 hover:text-secondary transition-colors">
+<span class="font-bold text-sm uppercase tracking-widest">Download Sourcing Report</span>
+<span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">download</span>
+</button>
+</div>
+</div>
+<div class="p-8 bg-surface-container-low">
+<button class="w-full bg-on-background text-white py-4 font-bold text-xs uppercase tracking-[0.2em] hover:bg-primary transition-colors">Contact Regional Director</button>
+</div>
+</div>
+</section>
+<!-- Product Highlight (Bento Style) -->
+<section class="bg-surface py-24 px-12 max-w-[1920px] mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<div class="md:col-span-4 flex flex-col justify-center pr-12">
+<span class="font-label text-xs tracking-[0.2em] uppercase text-secondary font-extrabold mb-4">Origin Highlights</span>
+<h2 class="font-headline text-4xl font-bold leading-tight mb-6">Sourcing Without Compromise.</h2>
+<p class="text-on-surface-variant mb-8">Our presence in these regions isn't just commercial; it's custodial. We invest in local infrastructure to ensure the longevity of these ancestral crops.</p>
+<div class="flex items-center space-x-4">
+<div class="w-12 h-[2px] bg-secondary"></div>
+<a class="font-bold text-xs uppercase tracking-widest hover:text-secondary" href="#">Explore all Origins</a>
+</div>
+</div>
+<div class="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Ethiopia Card -->
+<div class="relative group overflow-hidden bg-surface-container rounded-lg">
+<img class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700" data-alt="close-up of sun-dried ethiopian coffee beans spread across a traditional wooden drying bed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXFGDdddtlGn4vjo596vpqW-0Nwh_kxb9eml7gOQdQG-lAML4TnmMMZKuyPN-oI8AydX5oldxK-6_kroKY2gAYRm7azgNVIMYQRzL9YyV_Lg5XT0y1gYVvmArRYR9E9sZzfrBthOsfAWBQ7r0aRh-SDjrzJhSosgc6Z3DJbMkvEfUIFxHK-WjQDfwF6L487wnJWz3xJ5H04UFitkfAon7fH0TeSd8SFRqPiJC7Ieg7efEltrjVTyDv0UNj41s8WhzzipR_yEsTpFM"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500"></div>
+<div class="absolute bottom-8 left-8 text-white">
+<h3 class="font-headline text-2xl font-bold mb-1">Ethiopian Arabica</h3>
+<p class="text-white/80 text-xs font-bold uppercase tracking-widest">Yirgacheffe Region</p>
+</div>
+</div>
+<!-- Ghana Card -->
+<div class="relative group overflow-hidden bg-surface-container rounded-lg">
+<img class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700" data-alt="raw cocoa pods freshly harvested on a dark background with dramatic moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZDqrlB9gTmAAC1Th8UF59GfCavs9_OUZIzlAgxAh5h4xkpB-6l05lc1U53IVY9aRhRsjy3ztZnmVLLFYVB9lZnpOoTREHRIkitJIwUnltjfxjw_0-PS_PG-S2ohS9yJEYsnIGMUPzaZcvg0u_MBEI4UjS2X9Uf6jwm13Cfx2KwVf-yjwlKCbEMrlu_h6oHfYhiFdj1H9f-MW_bnISQ8hA2_Gojat-wJauIlw7LBcf2FJZ8YOnmy1IpvXa49GEEhNXIQmVYg3_-yM"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500"></div>
+<div class="absolute bottom-8 left-8 text-white">
+<h3 class="font-headline text-2xl font-bold mb-1">Ghanaian Cocoa</h3>
+<p class="text-white/80 text-xs font-bold uppercase tracking-widest">Premium Fermentation</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="bg-primary text-on-primary py-24 px-12">
+<div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+<div>
+<span class="block text-5xl font-headline font-bold mb-2">42</span>
+<span class="block text-[10px] uppercase font-bold tracking-[0.2em] opacity-70">Direct Partnerships</span>
+</div>
+<div>
+<span class="block text-5xl font-headline font-bold mb-2">15</span>
+<span class="block text-[10px] uppercase font-bold tracking-[0.2em] opacity-70">Origin Countries</span>
+</div>
+<div>
+<span class="block text-5xl font-headline font-bold mb-2">100%</span>
+<span class="block text-[10px] uppercase font-bold tracking-[0.2em] opacity-70">Traceable Supply</span>
+</div>
+<div>
+<span class="block text-5xl font-headline font-bold mb-2">24h</span>
+<span class="block text-[10px] uppercase font-bold tracking-[0.2em] opacity-70">Logistics Visibility</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-stone-100 dark:bg-stone-950 w-full py-20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 max-w-7xl mx-auto">
+<div class="col-span-1">
+<div class="text-xl font-serif text-stone-900 dark:text-stone-50 font-bold mb-6">KISMET FOODS</div>
+<p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">Connecting global markets with earth's finest raw materials through sustainable practices and logistical precision.</p>
+</div>
+<div>
+<h4 class="text-xs font-bold uppercase tracking-widest mb-6 text-on-surface">Resources</h4>
+<ul class="space-y-4">
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Market Insights</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Quality Standards</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Annual Reports</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-xs font-bold uppercase tracking-widest mb-6 text-on-surface">Legal</h4>
+<ul class="space-y-4">
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Privacy Policy</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Terms of Service</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Compliance</a></li>
+<li><a class="text-stone-500 dark:text-stone-400 hover:text-orange-600 transition-all ease-in-out" href="#">Trade Certificates</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-xs font-bold uppercase tracking-widest mb-6 text-on-surface">Newsletter</h4>
+<p class="text-xs text-stone-500 mb-4">Market trends and harvest alerts.</p>
+<div class="flex flex-col space-y-2">
+<input class="bg-white border-none text-sm p-3 focus:ring-1 focus:ring-primary" placeholder="Email address" type="email"/>
+<button class="bg-secondary text-white py-3 text-xs font-bold uppercase tracking-widest">Subscribe</button>
+</div>
+</div>
+</div>
+<div class="mt-20 px-12 border-t border-stone-200 pt-8 max-w-7xl mx-auto flex justify-between items-center text-[10px] uppercase font-bold tracking-widest text-stone-400">
+<div>© 2024 Kismet Foods. Global Trade Excellence.</div>
+<div class="flex space-x-6">
+<span>LinkedIn</span>
+<span>Instagram</span>
+<span>Twitter / X</span>
+</div>
+</div>
+</footer>
+</body></html>
