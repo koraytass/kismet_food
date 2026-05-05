@@ -15,12 +15,12 @@ const { locale } = Astro.props;
 const tr = t(locale);
 ---
 
-<footer class="w-full bg-surface-low py-16">
+<footer class="w-full bg-surface-low py-12">
   <div class="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-6 md:grid-cols-4 md:px-8">
     <div class="col-span-2 md:col-span-1">
-      <a href={localePath('/', locale)} class="mb-4 inline-flex items-center gap-2">
-        <img src="/logos/logo-teal.svg" alt="" width="32" height="32" class="h-8 w-8" />
-        <span class="font-serif text-lg font-bold text-teal-dark">
+      <a href={localePath('/', locale)} class="mb-2 inline-flex items-center gap-2">
+        <img src="/logos/logo-teal.svg" alt="" width="56" height="56" class="h-14 w-14" />
+        <span class="font-serif text-2xl font-bold text-teal">
           Kismet <span class="text-orange">Foods</span>
         </span>
       </a>
@@ -35,7 +35,7 @@ const tr = t(locale);
         <li><a href={localePath('/products/', locale)} class="text-sm text-on-surface-subtle hover:text-teal">{tr.categories.coffee}</a></li>
         <li><a href={localePath('/products/', locale)} class="text-sm text-on-surface-subtle hover:text-teal">{tr.categories.nuts}</a></li>
         <li><a href={localePath('/products/', locale)} class="text-sm text-on-surface-subtle hover:text-teal">{tr.categories.spices}</a></li>
-        <li><a href={localePath('/products/', locale)} class="text-sm text-on-surface-subtle hover:text-teal">{tr.categories.ingredients}</a></li>
+        <li><a href={localePath('/products/', locale)} class="text-sm text-on-surface-subtle hover:text-teal">{tr.categories.industrialIngredients}</a></li>
       </ul>
     </div>
 
@@ -54,9 +54,11 @@ const tr = t(locale);
       <h4 class="eyebrow mb-4 text-on-surface">{tr.nav.contact}</h4>
       <ul class="space-y-2.5 text-sm text-on-surface-subtle">
         <li>
-          <a href="mailto:trade@kismetfoods.com" class="hover:text-teal">
-            trade@kismetfoods.com
-          </a>
+          <span>
+            {locale === 'tr' && 'E-posta: yakında'}
+            {locale === 'en' && 'Email: coming soon'}
+            {locale === 'ar' && 'البريد الإلكتروني: قريباً'}
+          </span>
         </li>
         <li class="leading-relaxed">
           {brand.address.street}<br />

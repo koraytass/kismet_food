@@ -1,0 +1,155 @@
+---
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+import type { DetailCopy } from '@/lib/detail-pages';
+import SiteHeader from '../SiteHeader.astro';
+import SiteFooter from '../SiteFooter.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+import Button from '../Button.astro';
+import TextLink from '../TextLink.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+  parentPath: string;
+  page: DetailCopy;
+}
+
+const { locale, currentPath, parentPath, page } = Astro.props;
+
+const resolvedLinks = page.links?.map((link) => ({
+  ...link,
+  href: link.href.startsWith(`/${locale}/`) ? link.href : localePath(link.href, locale),
+})) ?? [];
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<Breadcrumb locale={locale} items={[{ name: page.parentLabel, href: parentPath }, { name: page.title }]} />
+
+<main id="main" class="bg-surface text-on-surface">
+  <section class="relative overflow-hidden px-5 pb-16 pt-10 sm:px-6 md:px-8 md:pb-20 md:pt-16">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end lg:gap-14">
+      <div class="lg:col-span-7">
+        <span class="eyebrow mb-5 block text-orange">{page.eyebrow}</span>
+        <h1 class="serif-display max-w-4xl text-[2.8rem] font-semibold leading-[0.98] tracking-tight text-on-surface sm:text-6xl lg:text-[5.7rem]">
+          {page.title}
+        </h1>
+      </div>
+
+      <div class="lg:col-span-5">
+        <p class="max-w-xl text-base leading-[1.75] text-on-surface-muted md:text-lg">
+          {page.lead}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-5 pb-20 sm:px-6 md:px-8 md:pb-28">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+      <figure class="relative min-h-[26rem] overflow-hidden bg-surface-low lg:col-span-8">
+        <img src={page.image} alt={page.imageAlt} class="h-full min-h-[26rem] w-full object-cover" loading="eager" decoding="async" />
+        <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,17,13,0.38),transparent_58%)]"></div>
+      </figure>
+
+      <aside class="flex flex-col justify-between border-t border-outline/40 pt-7 lg:col-span-4 lg:border-s lg:border-t-0 lg:ps-8 lg:pt-0">
+        <div>
+          <p class="eyebrow mb-5 text-teal">{page.parentLabel}</p>
+          {page.stat && (
+            <div class="mb-8">
+              <p class="serif-display text-6xl italic leading-none text-on-surface md:text-7xl">{page.stat}</p>
+              <p class="mt-3 text-[11px] font-bold uppercase tracking-[0.22em] text-on-surface-muted">{page.statLabel}</p>
+            </div>
+          )}
+        </div>
+
+        {resolvedLinks.length > 0 && (
+          <div class="flex flex-wrap gap-4">
+            <Button href={resolvedLinks[0].href} variant="primary">{resolvedLinks[0].label}</Button>
+            {resolvedLinks.slice(1).map((link) => (
+              <TextLink href={link.href}>{link.label}</TextLink>
+            ))}
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  {page.notes && page.notes.length > 0 && (
+    <section class="px-5 pb-20 sm:px-6 md:px-8 md:pb-28">
+      <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 border-y border-outline/40 py-10 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-3">
+          <p class="eyebrow text-orange">
+            {locale === 'tr' && 'Okuma notu'}
+            {locale === 'en' && 'Reading notes'}
+            {locale === 'ar' && 'ملاحظات قراءة'}
+          </p>
+        </div>
+        <div class="grid gap-5 lg:col-span-9">
+          {page.notes.map((note) => (
+            <p class="max-w-4xl text-base leading-[1.85] text-on-surface-muted md:text-lg">
+              {note}
+            </p>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {page.factSheet && page.factSheet.length > 0 && (
+    <section class="px-5 pb-20 sm:px-6 md:px-8 md:pb-28">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <p class="eyebrow text-teal">
+            {locale === 'tr' && 'Ticari çerçeve'}
+            {locale === 'en' && 'Commercial frame'}
+            {locale === 'ar' && 'الإطار التجاري'}
+          </p>
+          <p class="max-w-xl text-sm leading-[1.7] text-on-surface-muted">
+            {locale === 'tr' && 'Satın alma kararında ürün adı kadar kalite, evrak, menşe ve teslim yapısı da belirleyicidir.'}
+            {locale === 'en' && 'In procurement, quality, records, origin and delivery structure matter as much as the product name.'}
+            {locale === 'ar' && 'في الشراء، لا يقل أثر الجودة والوثائق والمنشأ والتسليم عن اسم المنتج.'}
+          </p>
+        </div>
+        <div class="grid grid-cols-1 border-t border-outline/35 md:grid-cols-2">
+          {page.factSheet.map((item) => (
+            <article class="border-b border-outline/35 py-7 md:px-7 md:first:ps-0">
+              <p class="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-orange">{item.label}</p>
+              <h2 class="serif-display mb-3 text-2xl font-semibold leading-tight text-on-surface md:text-3xl">{item.title}</h2>
+              <p class="text-sm leading-[1.78] text-on-surface-muted">{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-surface-low px-5 py-20 sm:px-6 md:px-8 md:py-28">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-3">
+      {page.sections.map((section) => (
+        <article class="group min-h-[18rem] border border-outline/35 bg-surface p-7 transition-colors duration-300 hover:border-teal/45 md:p-8">
+          <p class="mb-8 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-orange">{section.label}</p>
+          <h2 class="serif-display mb-5 text-3xl font-semibold leading-tight text-on-surface">{section.title}</h2>
+          <p class="text-sm leading-[1.75] text-on-surface-muted">{section.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="px-5 py-18 sm:px-6 md:px-8 md:py-24">
+    <div class="mx-auto flex max-w-7xl flex-col gap-6 border-y border-outline/40 py-8 md:flex-row md:items-center md:justify-between">
+      <p class="serif-display max-w-2xl text-3xl font-semibold leading-tight text-on-surface md:text-4xl">
+        {locale === 'tr' && 'Keşfe ana başlıktan devam edin.'}
+        {locale === 'en' && 'Continue exploring from the main section.'}
+        {locale === 'ar' && 'تابع الاستكشاف من القسم الرئيسي.'}
+      </p>
+      <TextLink href={parentPath}>
+        {locale === 'tr' && 'Üst sayfaya dön'}
+        {locale === 'en' && 'Back to parent'}
+        {locale === 'ar' && 'العودة إلى الصفحة الأم'}
+      </TextLink>
+    </div>
+  </section>
+</main>
+
+<SiteFooter locale={locale} />

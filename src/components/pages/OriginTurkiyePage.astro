@@ -52,10 +52,10 @@ const copy = {
       'Derin yeşil iç, mor zar, yoğun aroma — Gaziantep bölgesinin terroir-işaretli fıstığı. Premium grade ve izlenebilir menşe.',
     antepImgAlt: 'Çatlamış Antep fıstığı — derin yeşil iç, mor zar',
     antepBadge: 'Premium Grade',
-    statNumber: '%70',
-    statLabel: 'Küresel Pazar Payı',
+    statNumber: 'Gaziantep',
+    statLabel: 'Haritada işaretli menşe',
     statBody:
-      'Türkiye ortaklığımız, Avrupa operasyonlarımızın en büyük tek premium kuruyemiş kaynağıdır.',
+      'Antep fıstığı dünya haritasında genel Türkiye noktasıyla değil, kendi terroir merkezi olan Gaziantep ile gösterilir.',
     aegeanTitle: 'Ege İnciri & Zeytini',
     aegeanLead:
       'Aydın kuru inciri, Ayvalık zeytinyağı ve sofralık zeytin — Ege’nin yıllık rüzgârıyla olgunlaşan aromatik profil.',
@@ -71,7 +71,7 @@ const copy = {
     certs: ['ISO 22000', 'Helal Sertifikalı', 'BRC GS Food', 'Kosher'],
     ctaTitle: '2026 Türkiye hasat ayırımınızı şimdi güvence altına alın.',
     ctaLead:
-      'Fındık, fıstık, incir veya baharat — ticaret uzmanlarımız menşe ve lojistik teklifini 24 saat içinde hazırlar.',
+      'Fındık, fıstık, incir veya baharat — ticaret uzmanlarımız menşe ve lojistik teklifini kısa süre içinde hazırlar.',
     ctaBtn: 'İletişime Geç',
     backBtn: '← Tüm Menşelere Dön',
   },
@@ -92,10 +92,10 @@ const copy = {
       'Deep-green kernel, purple skin, intense aroma — the terroir-marked pistachio of the Gaziantep region. Premium grade, fully traceable origin.',
     antepImgAlt: 'Cracked Antep pistachios — deep green kernel, purple skin',
     antepBadge: 'Premium Grade',
-    statNumber: '70%',
-    statLabel: 'Global Market Share',
+    statNumber: 'Gaziantep',
+    statLabel: 'Mapped origin',
     statBody:
-      'Our Turkish partnership is the single largest premium-nut source for our European operations.',
+      'Antep pistachio is shown on the world map through Gaziantep, its own terroir center, not as a generic Türkiye marker.',
     aegeanTitle: 'Aegean Figs & Olives',
     aegeanLead:
       'Aydın dried figs, Ayvalık olive oil and table olives — an aromatic profile ripened by the Aegean’s annual winds.',
@@ -111,7 +111,7 @@ const copy = {
     certs: ['ISO 22000', 'Halal Certified', 'BRC GS Food', 'Kosher'],
     ctaTitle: 'Secure your 2026 Türkiye harvest allocation now.',
     ctaLead:
-      'Hazelnuts, pistachios, figs or spices — our trade experts prepare an origin + logistics proposal within 24 hours.',
+      'Hazelnuts, pistachios, figs or spices — our trade experts prepare an origin and logistics proposal with the right commercial context.',
     ctaBtn: 'Contact Us',
     backBtn: '← Back to all origins',
   },
@@ -132,10 +132,10 @@ const copy = {
       'لب أخضر غامق، قشرة بنفسجية، نكهة كثيفة — فستق منطقة غازي عنتاب بطابع الأرض. درجة ممتازة ومنشأ قابل للتتبع بالكامل.',
     antepImgAlt: 'فستق عنتاب مشقوق — لب أخضر غامق وقشرة بنفسجية',
     antepBadge: 'درجة ممتازة',
-    statNumber: '70٪',
-    statLabel: 'حصة السوق العالمية',
+    statNumber: 'غازي عنتاب',
+    statLabel: 'منشأ محدد على الخريطة',
     statBody:
-      'شراكتنا التركية هي أكبر مصدر منفرد للمكسرات الممتازة لعملياتنا الأوروبية.',
+      'يظهر فستق عنتاب على الخريطة من خلال غازي عنتاب، مركزه الترابي، لا كنقطة عامة لتركيا.',
     aegeanTitle: 'تين وزيتون بحر إيجة',
     aegeanLead:
       'تين آيدن المجفف، زيت زيتون آيفاليك وزيتون المائدة — نكهة عطرية تنضج برياح بحر إيجة السنوية.',
@@ -151,9 +151,84 @@ const copy = {
     certs: ['ISO 22000', 'حلال معتمد', 'BRC GS Food', 'كوشر'],
     ctaTitle: 'احجز حصتك من حصاد تركيا 2026 الآن.',
     ctaLead:
-      'بندق، فستق، تين أو توابل — يُعد خبراؤنا التجاريون عرضاً للمنشأ واللوجستيات في غضون 24 ساعة.',
+      'بندق، فستق، تين أو توابل — يُعد خبراؤنا التجاريون عرضاً للمنشأ واللوجستيات بسياق تجاري دقيق.',
     ctaBtn: 'تواصل معنا',
     backBtn: '← العودة إلى كل المناشئ',
+  },
+}[locale];
+
+const dossiers = {
+  tr: {
+    eyebrow: 'ÜRÜN DOSYASI',
+    title: 'Anadolu ürünlerini şehir adıyla okuyoruz.',
+    lead:
+      'Türkiye menşesi tek bir genel başlık değil; Gaziantep, Giresun, Malatya, Aydın, Urfa ve Ege gibi kendi ürün hafızası olan ayrı ticari dosyalardan oluşur.',
+    items: [
+      {
+        label: 'Gaziantep',
+        title: 'Antep fıstığı',
+        body:
+          'Derin yeşil iç, mor zar ve yoğun aroma premium sınıfın ana göstergeleridir. Baklava, dondurma, çikolata ve kavrulmuş atıştırmalık üretimi için kabuklu, iç, file, pirinç ve toz formlar ayrı kalibre edilir. Alıcı tarafında nem, açık kabuk oranı, iç doluluk, aflatoksin ve renk dağılımı birlikte değerlendirilir.',
+      },
+      {
+        label: 'Giresun',
+        title: 'Tombul fındık',
+        body:
+          'Giresun Tombul fındığı yüksek yağ oranı ve yuvarlak gövdesiyle çikolata, pralin, krema ve fındık ezmesi üretiminde değerli kabul edilir. 11-13 mm, 13-15 mm ve 15+ mm kalibreler; çiğ, kavrulmuş, beyazlatılmış, dilimli, kıyılmış ve un formlarında farklı üretim hatlarına girer.',
+      },
+      {
+        label: 'Malatya',
+        title: 'Kuru kayısı',
+        body:
+          'Malatya kayısısı kükürtlü parlak turuncu ve doğal gün kurusu koyu renkli iki ana hatta ayrılır. B2B alıcı için boylama, nem, renk standardı, çekirdekli/çekirdeksiz form ve SO2 seviyesi önemlidir. Enerji barı, müsli, pastacılık ve endüstriyel dolgu üretiminde farklı kesim ve parça formları kullanılır.',
+      },
+      {
+        label: 'Aydın',
+        title: 'Sarılop incir',
+        body:
+          'Aydın inciri bütün, layer, pulled, diced ve paste formunda tedarik edilir. Raf ömrü, nem ve şekerlenme davranışı özellikle pastacılık, bar, kahvaltılık ve doğal tatlandırıcı uygulamalarında belirleyicidir. İncirde aflatoksin ve okratoksin kontrolü parti dosyasının ana unsurudur.',
+      },
+      {
+        label: 'Urfa · Maraş · Antep',
+        title: 'İsot, pul biber, sumak',
+        body:
+          'Baharat hattında renk, acılık, nem, uçucu yağ, yabancı madde ve öğütme inceliği satın alma kararını belirler. Urfa isot daha isli ve derin; Antep pul biber daha parlak ve meyvemsi; sumak ise asidite profiliyle sos ve et marinasyonlarında kullanılır.',
+      },
+      {
+        label: 'Ege',
+        title: 'Zeytin & zeytinyağı',
+        body:
+          'Ayvalık ve Edremit hatları sofralık zeytin, naturel sızma ve riviera yağ akışlarında ayrışır. Serbest yağ asidi, peroksit, duyusal kusur, filtreli/filtresiz form ve ambalaj tipi ürünün hangi pazara uygun olduğunu belirler.',
+      },
+    ],
+  },
+  en: {
+    eyebrow: 'PRODUCT DOSSIER',
+    title: 'We read Anatolian products through their city names.',
+    lead:
+      'Türkiye origin is not one generic label; it is a set of trade files shaped by Gaziantep, Giresun, Malatya, Aydın, Urfa and the Aegean.',
+    items: [
+      { label: 'Gaziantep', title: 'Antep pistachio', body: 'Deep-green kernel, purple skin and intense aroma define premium grade. In-shell, kernel, sliced, diced and powder forms are calibrated separately for baklava, ice cream, chocolate and roasted snack production. Moisture, open-shell ratio, kernel fill, aflatoxin and color distribution are evaluated together.' },
+      { label: 'Giresun', title: 'Tombul hazelnut', body: 'Giresun Tombul is valued in chocolate, praline, spread and paste production for its oil ratio and round body. 11-13 mm, 13-15 mm and 15+ mm calibrations are supplied raw, roasted, blanched, sliced, chopped or as meal.' },
+      { label: 'Malatya', title: 'Dried apricot', body: 'Malatya apricot splits into sulphured bright-orange and natural sun-dried darker lines. B2B buyers read sizing, moisture, color, pitted/whole form and SO2 level. Different cuts are used in energy bars, muesli, bakery and filling production.' },
+      { label: 'Aydın', title: 'Sarılop fig', body: 'Aydın fig is supplied whole, layer, pulled, diced and paste. Shelf life, moisture and sugaring behavior shape use in bakery, bars, breakfast products and natural sweetening. Aflatoxin and ochratoxin control are central to the batch file.' },
+      { label: 'Urfa · Maraş · Antep', title: 'Isot, chili, sumac', body: 'For spices, color, heat, moisture, volatile oil, foreign matter and grind size shape buying. Urfa isot is deeper and smoky; Antep chili is brighter and fruitier; sumac brings acidity to sauces and meat marinades.' },
+      { label: 'Aegean', title: 'Olive & olive oil', body: 'Ayvalık and Edremit lines split between table olive, extra virgin and Riviera oil flows. Free fatty acid, peroxide, sensory defect, filtered/unfiltered form and packing define market fit.' },
+    ],
+  },
+  ar: {
+    eyebrow: 'ملف المنتج',
+    title: 'نقرأ منتجات الأناضول من خلال أسماء المدن.',
+    lead:
+      'منشأ تركيا ليس عنواناً عاماً؛ بل ملفات تجارية مرتبطة بغازي عنتاب وغيرسون وملاطية وآيدن وأورفا وإيجة.',
+    items: [
+      { label: 'غازي عنتاب', title: 'فستق عنتاب', body: 'اللب الأخضر العميق والقشرة البنفسجية والعطر القوي مؤشرات الدرجة الممتازة. تفرز أشكال القشرة واللب والشرائح والحبيبات والمسحوق لإنتاج البقلاوة والآيس كريم والشوكولاتة. الرطوبة ونسبة الانفتاح وامتلاء اللب والأفلاتوكسين واللون تقرأ معاً.' },
+      { label: 'غيرسون', title: 'بندق تومبول', body: 'يُقدّر بندق غيرسون تومبول في الشوكولاتة والبرالين والكريمات بسبب نسبة الزيت والجسم الدائري. معايرات ١١-١٣ و١٣-١٥ و١٥+ ملم تورّد خاماً أو محمصاً أو مقشراً أو شرائح أو مجروشاً أو دقيقاً.' },
+      { label: 'ملاطية', title: 'مشمش مجفف', body: 'ينقسم مشمش ملاطية إلى خط مكبرت برتقالي وخط طبيعي مجفف بالشمس أغمق. يقرأ مشتري B2B الحجم والرطوبة واللون والشكل ومستوى SO2. تستخدم القطع المختلفة في ألواح الطاقة والموسلي والمخابز والحشوات.' },
+      { label: 'آيدن', title: 'تين ساريلوب', body: 'يورّد تين آيدن كاملاً أو layer أو pulled أو مكعبات أو معجون. مدة الصلاحية والرطوبة وسلوك التبلور تحدد استخدامه في المخابز والألواح ومنتجات الإفطار والتحلية الطبيعية. الأفلاتوكسين والأوكراتوكسين عنصران أساسيان في ملف الدفعة.' },
+      { label: 'أورفا · مرعش · عنتاب', title: 'إيسوت وفلفل وسماق', body: 'في التوابل تحدد اللون والحرارة والرطوبة والزيت الطيار والشوائب ودرجة الطحن قرار الشراء. إيسوت أورفا أعمق ومدخن؛ فلفل عنتاب ألمع وفاكهي؛ والسماق يمنح الحموضة للصلصات وتتبيل اللحوم.' },
+      { label: 'إيجة', title: 'زيتون وزيت زيتون', body: 'تتفرع خطوط آيفاليك وإدريميت بين زيتون المائدة والزيت البكر والريفييرا. الحموضة الحرة والبيروكسيد والعيوب الحسية والشكل المفلتر/غير المفلتر والتعبئة تحدد ملاءمة السوق.' },
+    ],
   },
 }[locale];
 ---
@@ -191,7 +266,7 @@ const copy = {
         <img
           src={heroImg}
           alt={copy.heroImgAlt}
-          class="shadow-editorial aspect-[4/5] w-full rounded-lg object-cover"
+          class="shadow-editorial aspect-[4/5] w-full object-cover"
           width="1200"
           height="1500"
           loading="eager"
@@ -213,7 +288,7 @@ const copy = {
       </div>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:grid-rows-2">
         {/* Giresun */}
-        <div class="relative overflow-hidden rounded-lg md:col-span-8 md:row-span-2">
+        <div class="relative overflow-hidden md:col-span-8 md:row-span-2">
           <img
             src={hazelnutImg}
             alt={copy.giresunImgAlt}
@@ -232,7 +307,7 @@ const copy = {
           </div>
         </div>
         {/* Antep */}
-        <div class="relative overflow-hidden rounded-lg md:col-span-4">
+        <div class="relative overflow-hidden md:col-span-4">
           <img
             src={pistachioImg}
             alt={copy.antepImgAlt}
@@ -252,8 +327,8 @@ const copy = {
           </div>
         </div>
         {/* Stat */}
-        <div class="flex flex-col justify-center rounded-lg bg-surface-lowest p-8 shadow-editorial md:col-span-4">
-          <span class="serif-display mb-2 text-5xl font-bold text-teal-dark md:text-6xl">
+        <div class="flex flex-col justify-center border-s-2 border-orange bg-surface-lowest p-8 shadow-editorial md:col-span-4">
+          <span class="serif-display mb-2 text-4xl font-bold text-teal-dark md:text-5xl">
             {copy.statNumber}
           </span>
           <p class="eyebrow mb-4 text-on-surface-subtle">{copy.statLabel}</p>
@@ -266,13 +341,13 @@ const copy = {
   {/* Aegean + Spices */}
   <section class="px-4 py-20 md:px-8 md:py-24">
     <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-2">
-      <article class="rounded-lg bg-surface-low p-8 md:p-10">
+      <article class="border-t border-outline/30 bg-surface-low p-8 md:p-10">
         <h3 class="serif-display mb-3 text-2xl font-bold text-teal-dark md:text-3xl">
           {copy.aegeanTitle}
         </h3>
         <p class="leading-relaxed text-on-surface-muted">{copy.aegeanLead}</p>
       </article>
-      <article class="rounded-lg bg-surface-low p-8 md:p-10">
+      <article class="border-t border-outline/30 bg-surface-low p-8 md:p-10">
         <h3 class="serif-display mb-3 text-2xl font-bold text-orange-dark md:text-3xl">
           {copy.spicesTitle}
         </h3>
@@ -281,24 +356,53 @@ const copy = {
     </div>
   </section>
 
-  {/* Silk Road heritage band */}
-  <section class="relative overflow-hidden bg-surface-deep px-4 py-20 text-white md:px-8 md:py-24">
-    <div class="absolute inset-0 opacity-20">
-      <img
-        src={heritageImg}
-        alt=""
-        class="h-full w-full object-cover"
-        width="1920"
-        height="1080"
-        loading="lazy"
-        decoding="async"
-      />
+  {/* Product dossier */}
+  <section class="bg-surface px-4 py-20 md:px-8 md:py-28">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-10 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-5">
+          <span class="eyebrow mb-4 block text-orange-dark">{dossiers.eyebrow}</span>
+          <h2 class="serif-display text-3xl font-bold leading-tight text-on-surface md:text-5xl">
+            {dossiers.title}
+          </h2>
+        </div>
+        <p class="max-w-2xl text-base leading-[1.8] text-on-surface-muted md:col-span-7 md:text-lg">
+          {dossiers.lead}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 border-t border-outline/35 md:grid-cols-2 lg:grid-cols-3">
+        {dossiers.items.map((item) => (
+          <article class="border-b border-outline/35 py-8 md:px-7 md:first:ps-0">
+            <p class="mb-5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-teal-dark">{item.label}</p>
+            <h3 class="serif-display mb-4 text-2xl font-semibold leading-tight text-on-surface">{item.title}</h3>
+            <p class="text-sm leading-[1.82] text-on-surface-muted">{item.body}</p>
+          </article>
+        ))}
+      </div>
     </div>
-    <div class="relative z-10 mx-auto max-w-5xl text-center">
-      <h2 class="serif-display mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+  </section>
+
+  {/* Silk Road heritage band */}
+  <section class="relative overflow-hidden bg-surface-low px-4 py-20 md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 md:grid-cols-12 md:gap-14">
+      <figure class="photo-grade photo-grade--cool overflow-hidden shadow-editorial md:col-span-5">
+        <img
+          src={heritageImg}
+          alt=""
+          class="aspect-[4/5] w-full object-cover"
+          width="900"
+          height="1100"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="md:col-span-7">
+      <h2 class="serif-display mb-6 text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
         {copy.silkTitle}
       </h2>
-      <p class="mx-auto max-w-3xl text-lg leading-relaxed text-white/85">{copy.silkLead}</p>
+      <p class="max-w-3xl text-lg leading-relaxed text-on-surface-muted">{copy.silkLead}</p>
+      </div>
     </div>
   </section>
 
@@ -314,7 +418,7 @@ const copy = {
         </div>
         <div class="grid w-full grid-cols-2 gap-6 md:w-2/3 md:grid-cols-4">
           {copy.certs.map((c) => (
-            <div class="flex items-center justify-center rounded-lg bg-surface-low p-6 text-center">
+            <div class="flex items-center justify-center border border-outline/20 bg-surface-low p-6 text-center">
               <span class="eyebrow text-on-surface">{c}</span>
             </div>
           ))}
@@ -324,13 +428,13 @@ const copy = {
   </section>
 
   {/* CTA */}
-  <section class="cta-gradient px-4 py-20 text-white md:px-8">
+  <section class="bg-surface px-4 py-20 md:px-8">
     <div class="mx-auto max-w-4xl text-center">
-      <h2 class="serif-display mb-4 text-3xl font-bold md:text-4xl">{copy.ctaTitle}</h2>
-      <p class="mb-8 text-lg leading-relaxed text-white/85">{copy.ctaLead}</p>
+      <h2 class="serif-display mb-4 text-3xl font-bold text-on-surface md:text-4xl">{copy.ctaTitle}</h2>
+      <p class="mb-8 text-lg leading-relaxed text-on-surface-muted">{copy.ctaLead}</p>
       <a
         href={contactHref}
-        class="inline-block rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
+        class="btn btn--primary"
       >
         {copy.ctaBtn}
       </a>

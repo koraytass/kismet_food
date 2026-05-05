@@ -1,0 +1,64 @@
+---
+/**
+ * BrandEyebrow — SoonPage'in imza eyebrow'u: iki yandan turuncu kural çizgisi
+ * + ortada mono uppercase "Trade. Trust. Kismet." (veya custom label).
+ *
+ * Kullanım:
+ *   <BrandEyebrow />                          (default strapline)
+ *   <BrandEyebrow label="Menşe Ağı" />        (özel label)
+ *   <BrandEyebrow label="..." align="start" /> (sola hizala — tek rule)
+ */
+interface Props {
+  label?: string;
+  align?: 'center' | 'start';
+  size?: 'sm' | 'md';
+}
+
+const {
+  label = 'Trade. Trust. Kismet.',
+  align = 'center',
+  size = 'md',
+} = Astro.props;
+
+const sizeClass =
+  size === 'sm'
+    ? 'text-[10px] sm:text-[11px]'
+    : 'text-xs sm:text-sm lg:text-base';
+
+const ruleW =
+  size === 'sm' ? 'w-8 sm:w-10' : 'w-12 sm:w-14 lg:w-20';
+---
+
+{align === 'center' ? (
+  <span class:list={['brand-eyebrow brand-eyebrow--center', `brand-eyebrow--${size}`, sizeClass, 'inline-flex items-center gap-3 sm:gap-4 font-bold uppercase tracking-[0.32em] text-orange']}>
+    <span class:list={['brand-eyebrow__rule brand-eyebrow__rule--l h-[2px] bg-orange', ruleW]}></span>
+    <span>{label}</span>
+    <span class:list={['brand-eyebrow__rule brand-eyebrow__rule--r h-[2px] bg-orange', ruleW]}></span>
+  </span>
+) : (
+  <span class:list={['brand-eyebrow brand-eyebrow--start', sizeClass, 'inline-flex items-center gap-3 sm:gap-4 font-bold uppercase tracking-[0.32em] text-orange']}>
+    <span class:list={['brand-eyebrow__rule brand-eyebrow__rule--l h-[2px] bg-orange', ruleW]}></span>
+    <span>{label}</span>
+  </span>
+)}
+
+<style>
+  /* Same rule-grow animation as SoonPage so the brand strapline reads
+     identically on every page that uses this primitive. */
+  @keyframes brand-eyebrow-rule-grow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+  .brand-eyebrow__rule--l {
+    transform-origin: right;
+    animation: brand-eyebrow-rule-grow 900ms cubic-bezier(0.22, 0.72, 0.22, 1) 500ms both;
+  }
+  .brand-eyebrow__rule--r {
+    transform-origin: left;
+    animation: brand-eyebrow-rule-grow 900ms cubic-bezier(0.22, 0.72, 0.22, 1) 500ms both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-eyebrow__rule--l,
+    .brand-eyebrow__rule--r { animation: none; transform: scaleX(1); }
+  }
+</style>

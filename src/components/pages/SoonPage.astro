@@ -154,58 +154,14 @@ const accentDot = {
 
       <div class="soon-fade-7 mt-6 flex flex-col items-center lg:mt-6">
         <p class="text-xs font-bold uppercase tracking-[0.32em] text-neutral-400">Commercial Inquiries</p>
-        <a
+        <span
           id="soon-mail"
-          href="mailto:commercial@kismetfoods.com"
-          data-email="commercial@kismetfoods.com"
           class="group relative mt-2 inline-flex items-baseline gap-2 font-serif text-lg tracking-tight text-neutral-900 lg:text-xl"
         >
           <span class="border-b border-neutral-900 pb-0.5 transition-colors duration-300 group-hover:border-orange group-hover:text-orange">
-            commercial@kismetfoods.com
+            contact details coming soon
           </span>
-          <span class="inline-block text-orange transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
-          <span
-            id="soon-mail-toast"
-            class="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-sm bg-neutral-900 px-3 py-1 text-xs font-normal not-italic tracking-normal text-white opacity-0 transition-opacity duration-300"
-            role="status"
-            aria-live="polite"
-          >
-            E-posta kopyalandı · Copied · تم النسخ
-          </span>
-        </a>
-        <script is:inline>
-          (function () {
-            const link = document.getElementById('soon-mail');
-            const toast = document.getElementById('soon-mail-toast');
-            if (!link || !toast) return;
-            link.addEventListener('click', async (e) => {
-              const email = link.dataset.email;
-              if (!email) return;
-              // Always copy the address to clipboard as a robust fallback
-              try {
-                if (navigator.clipboard && window.isSecureContext) {
-                  await navigator.clipboard.writeText(email);
-                } else {
-                  const ta = document.createElement('textarea');
-                  ta.value = email;
-                  ta.style.position = 'fixed';
-                  ta.style.opacity = '0';
-                  document.body.appendChild(ta);
-                  ta.select();
-                  document.execCommand('copy');
-                  document.body.removeChild(ta);
-                }
-              } catch (_) {
-                /* ignore — mailto: still fires */
-              }
-              toast.style.opacity = '1';
-              setTimeout(() => {
-                toast.style.opacity = '0';
-              }, 2200);
-              // Do NOT preventDefault — let the native mailto: handler try to open.
-            });
-          })();
-        </script>
+        </span>
       </div>
     </div>
 

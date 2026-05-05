@@ -82,11 +82,10 @@ const copy = {
       { n: '5.000+', l: 'Ortak çiftçi' },
       { n: '11', l: 'Menşe ülke' },
       { n: '100%', l: 'İzlenebilir tedarik' },
-      { n: '24s', l: 'Lojistik görünürlük' },
     ],
     ctaTitle: 'Kendi ihtiyacınıza özel menşe planı hazırlayalım.',
     ctaLead:
-      'Tek bir konteyner ya da yıllık tedarik — ticaret uzmanlarımız 24 saat içinde özel menşe + lojistik teklifi hazırlar.',
+      'Tek bir konteyner ya da yıllık tedarik — ticaret uzmanlarımız kısa süre içinde özel menşe + lojistik teklifi hazırlar.',
     ctaBtn: 'İletişime Geç',
   },
   en: {
@@ -117,11 +116,10 @@ const copy = {
       { n: '5,000+', l: 'Partner farmers' },
       { n: '11', l: 'Origin countries' },
       { n: '100%', l: 'Traceable supply' },
-      { n: '24h', l: 'Logistics visibility' },
     ],
     ctaTitle: 'Let’s build an origin plan matched to your spec.',
     ctaLead:
-      'A single container or annual supply — our trade experts prepare a custom origin + logistics proposal within 24 hours.',
+      'A single container or annual supply — our trade experts prepare a custom origin and logistics proposal with the right commercial context.',
     ctaBtn: 'Contact Us',
   },
   ar: {
@@ -152,56 +150,80 @@ const copy = {
       { n: '5000+', l: 'مزارع شريك' },
       { n: '11', l: 'دولة منشأ' },
       { n: '100%', l: 'توريد قابل للتتبع' },
-      { n: '24س', l: 'رؤية لوجستية' },
     ],
     ctaTitle: 'لنبنِ خطة منشأ مخصصة لمواصفاتك.',
     ctaLead:
-      'حاوية واحدة أو توريد سنوي — يُعد خبراؤنا التجاريون عرضاً مخصصاً للمنشأ واللوجستيات في غضون 24 ساعة.',
+      'حاوية واحدة أو توريد سنوي — يُعد خبراؤنا التجاريون عرضاً مخصصاً للمنشأ واللوجستيات بسياق تجاري دقيق.',
     ctaBtn: 'تواصل معنا',
   },
 }[locale];
 
 const contactHref = localePath('/contact/', locale);
 
-/* Origin marker data for the interactive Leaflet map.
- * Keys align with `copy.countries[].k`, so localized names flow through. */
-const markerMeta: Record<
-  string,
-  { lat: number; lng: number; category: OriginMarker['category']; productsKey: string[] }
-> = {
-  turkiye: { lat: 40.91, lng: 38.39, category: 'mixed', productsKey: ['nuts', 'spices', 'dried'] },
-  ethiopia: { lat: 6.15, lng: 38.2, category: 'coffee', productsKey: ['coffee'] },
-  colombia: { lat: 2.55, lng: -75.52, category: 'coffee', productsKey: ['coffee'] },
-  vietnam: { lat: 12.7, lng: 108.1, category: 'coffee', productsKey: ['coffee', 'cashew', 'pepper'] },
-  ghana: { lat: 6.7, lng: -1.62, category: 'cocoa', productsKey: ['cocoa'] },
-  ivory: { lat: 4.75, lng: -6.64, category: 'cocoa', productsKey: ['cocoa'] },
-  indonesia: { lat: 0.6, lng: 100.0, category: 'coffee', productsKey: ['coffee', 'spices'] },
-  brazil: { lat: -18.5, lng: -44.5, category: 'coffee', productsKey: ['coffee'] },
-  uganda: { lat: 1.12, lng: 34.53, category: 'coffee', productsKey: ['coffee'] },
-  kenya: { lat: -0.42, lng: 36.95, category: 'coffee', productsKey: ['coffee'] },
-  rwanda: { lat: -2.5, lng: 28.9, category: 'coffee', productsKey: ['coffee'] },
+const mapMarkersByLocale: Record<Locale, OriginMarker[]> = {
+  tr: [
+    { k: 'gaziantep-pistachio', name: 'Gaziantep, Türkiye', region: 'Antep platosu', products: ['Antep fıstığı'], lat: 37.0662, lng: 37.3833, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'malatya-apricot', name: 'Malatya, Türkiye', region: 'Doğu Anadolu', products: ['Gün kurusu kayısı'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'giresun-hazelnut', name: 'Giresun, Türkiye', region: 'Karadeniz', products: ['Levant kalite fındık'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'aydin-fig', name: 'Aydın, Türkiye', region: 'Ege', products: ['Sarı lop incir'], lat: 37.856, lng: 27.8416, category: 'nuts', href: turkiyeHref },
+    { k: 'ethiopia-coffee', name: 'Yirgacheffe, Etiyopya', region: 'Gedeo yüksek rakım', products: ['Arabica kahve'], lat: 6.1622, lng: 38.205, category: 'coffee' },
+    { k: 'colombia-coffee', name: 'Huila, Kolombiya', region: 'And etekleri', products: ['Specialty kahve'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
+    { k: 'brazil-coffee', name: 'Minas Gerais, Brezilya', region: 'Cerrado Mineiro', products: ['Harman arabica'], lat: -18.5122, lng: -44.555, category: 'coffee' },
+    { k: 'vietnam-coffee', name: 'Dak Lak, Vietnam', region: 'Central Highlands', products: ['Robusta kahve', 'Kaju'], lat: 12.71, lng: 108.2378, category: 'coffee' },
+    { k: 'ghana-cocoa', name: 'Ashanti, Gana', region: 'Kakao kuşağı', products: ['Fermente kakao'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
+    { k: 'ivory-cocoa', name: 'San-Pédro, Fildişi Sahili', region: 'Atlantik kakao hattı', products: ['Kakao çekirdeği'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
+    { k: 'ecuador-cocoa', name: 'Guayas, Ekvador', region: 'Arriba Nacional', products: ['Fine-flavour kakao'], lat: -1.8312, lng: -79.928, category: 'cocoa' },
+    { k: 'madagascar-vanilla', name: 'Sava, Madagaskar', region: 'Vanilya kıyısı', products: ['Vanilya', 'Karanfil'], lat: -14.2667, lng: 50.1667, category: 'spices' },
+    { k: 'india-spices', name: 'Kerala, Hindistan', region: 'Malabar hattı', products: ['Karabiber', 'Kakule'], lat: 10.8505, lng: 76.2711, category: 'spices' },
+    { k: 'sri-lanka-cinnamon', name: 'Galle, Sri Lanka', region: 'Seylan kıyısı', products: ['Tarçın'], lat: 6.0535, lng: 80.221, category: 'spices' },
+    { k: 'indonesia-spices', name: 'Sumatra, Endonezya', region: 'Takımada menşei', products: ['Kahve', 'Hindistan cevizi'], lat: 0.5897, lng: 101.3431, category: 'spices' },
+    { k: 'tanzania-cashew', name: 'Mtwara, Tanzanya', region: 'Hint Okyanusu hattı', products: ['Kaju'], lat: -10.2736, lng: 40.1828, category: 'nuts' },
+    { k: 'peru-quinoa', name: 'Puno, Peru', region: 'And yüksek platosu', products: ['Kinoa', 'Özel tahıllar'], lat: -15.8402, lng: -70.0219, category: 'ingredients' },
+    { k: 'ukraine-grain', name: 'Odesa, Ukrayna', region: 'Karadeniz tahıl koridoru', products: ['Tahıl', 'Yağlı tohum'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
+  ],
+  en: [
+    { k: 'gaziantep-pistachio', name: 'Gaziantep, Türkiye', region: 'Antep plateau', products: ['Antep pistachio'], lat: 37.0662, lng: 37.3833, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'malatya-apricot', name: 'Malatya, Türkiye', region: 'Eastern Anatolia', products: ['Sun-dried apricot'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'giresun-hazelnut', name: 'Giresun, Türkiye', region: 'Black Sea', products: ['Levant hazelnut'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'aydin-fig', name: 'Aydın, Türkiye', region: 'Aegean', products: ['Sari lop fig'], lat: 37.856, lng: 27.8416, category: 'nuts', href: turkiyeHref },
+    { k: 'ethiopia-coffee', name: 'Yirgacheffe, Ethiopia', region: 'Gedeo highlands', products: ['Arabica coffee'], lat: 6.1622, lng: 38.205, category: 'coffee' },
+    { k: 'colombia-coffee', name: 'Huila, Colombia', region: 'Andean foothills', products: ['Specialty coffee'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
+    { k: 'brazil-coffee', name: 'Minas Gerais, Brazil', region: 'Cerrado Mineiro', products: ['Blend-base arabica'], lat: -18.5122, lng: -44.555, category: 'coffee' },
+    { k: 'vietnam-coffee', name: 'Dak Lak, Vietnam', region: 'Central Highlands', products: ['Robusta coffee', 'Cashew'], lat: 12.71, lng: 108.2378, category: 'coffee' },
+    { k: 'ghana-cocoa', name: 'Ashanti, Ghana', region: 'Cocoa belt', products: ['Fermented cocoa'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
+    { k: 'ivory-cocoa', name: "San-Pédro, Côte d'Ivoire", region: 'Atlantic cocoa line', products: ['Cocoa bean'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
+    { k: 'ecuador-cocoa', name: 'Guayas, Ecuador', region: 'Arriba Nacional', products: ['Fine-flavour cocoa'], lat: -1.8312, lng: -79.928, category: 'cocoa' },
+    { k: 'madagascar-vanilla', name: 'Sava, Madagascar', region: 'Vanilla coast', products: ['Vanilla', 'Clove'], lat: -14.2667, lng: 50.1667, category: 'spices' },
+    { k: 'india-spices', name: 'Kerala, India', region: 'Malabar line', products: ['Black pepper', 'Cardamom'], lat: 10.8505, lng: 76.2711, category: 'spices' },
+    { k: 'sri-lanka-cinnamon', name: 'Galle, Sri Lanka', region: 'Ceylon coast', products: ['Cinnamon'], lat: 6.0535, lng: 80.221, category: 'spices' },
+    { k: 'indonesia-spices', name: 'Sumatra, Indonesia', region: 'Archipelago origin', products: ['Coffee', 'Coconut'], lat: 0.5897, lng: 101.3431, category: 'spices' },
+    { k: 'tanzania-cashew', name: 'Mtwara, Tanzania', region: 'Indian Ocean line', products: ['Cashew'], lat: -10.2736, lng: 40.1828, category: 'nuts' },
+    { k: 'peru-quinoa', name: 'Puno, Peru', region: 'Andean altiplano', products: ['Quinoa', 'Specialty grains'], lat: -15.8402, lng: -70.0219, category: 'ingredients' },
+    { k: 'ukraine-grain', name: 'Odesa, Ukraine', region: 'Black Sea grain corridor', products: ['Grain', 'Oilseed'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
+  ],
+  ar: [
+    { k: 'gaziantep-pistachio', name: 'غازي عنتاب، تركيا', region: 'هضبة عنتاب', products: ['فستق عنتاب'], lat: 37.0662, lng: 37.3833, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'malatya-apricot', name: 'ملاطية، تركيا', region: 'شرق الأناضول', products: ['مشمش مجفف بالشمس'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'giresun-hazelnut', name: 'غيرسون، تركيا', region: 'البحر الأسود', products: ['بندق ليفانت'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'aydin-fig', name: 'آيدن، تركيا', region: 'إيجة', products: ['تين ساري لوب'], lat: 37.856, lng: 27.8416, category: 'nuts', href: turkiyeHref },
+    { k: 'ethiopia-coffee', name: 'يرغاشيف، إثيوبيا', region: 'مرتفعات غيديو', products: ['قهوة أرابيكا'], lat: 6.1622, lng: 38.205, category: 'coffee' },
+    { k: 'colombia-coffee', name: 'هويلا، كولومبيا', region: 'سفوح الأنديز', products: ['قهوة مختصة'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
+    { k: 'brazil-coffee', name: 'ميناس جيرايس، البرازيل', region: 'سيرادو مينيرو', products: ['أرابيكا للمزجات'], lat: -18.5122, lng: -44.555, category: 'coffee' },
+    { k: 'vietnam-coffee', name: 'داك لاك، فيتنام', region: 'المرتفعات الوسطى', products: ['قهوة روبوستا', 'كاجو'], lat: 12.71, lng: 108.2378, category: 'coffee' },
+    { k: 'ghana-cocoa', name: 'أشانتي، غانا', region: 'حزام الكاكاو', products: ['كاكاو مخمر'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
+    { k: 'ivory-cocoa', name: 'سان بيدرو، ساحل العاج', region: 'خط الكاكاو الأطلسي', products: ['حبوب كاكاو'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
+    { k: 'ecuador-cocoa', name: 'غواياس، الإكوادور', region: 'أريبا ناسيونال', products: ['كاكاو فاخر النكهة'], lat: -1.8312, lng: -79.928, category: 'cocoa' },
+    { k: 'madagascar-vanilla', name: 'سافا، مدغشقر', region: 'ساحل الفانيلا', products: ['فانيلا', 'قرنفل'], lat: -14.2667, lng: 50.1667, category: 'spices' },
+    { k: 'india-spices', name: 'كيرالا، الهند', region: 'خط مالابار', products: ['فلفل أسود', 'هيل'], lat: 10.8505, lng: 76.2711, category: 'spices' },
+    { k: 'sri-lanka-cinnamon', name: 'غالي، سريلانكا', region: 'ساحل سيلان', products: ['قرفة'], lat: 6.0535, lng: 80.221, category: 'spices' },
+    { k: 'indonesia-spices', name: 'سومطرة، إندونيسيا', region: 'منشأ أرخبيل', products: ['قهوة', 'جوز الهند'], lat: 0.5897, lng: 101.3431, category: 'spices' },
+    { k: 'tanzania-cashew', name: 'متوارا، تنزانيا', region: 'خط المحيط الهندي', products: ['كاجو'], lat: -10.2736, lng: 40.1828, category: 'nuts' },
+    { k: 'peru-quinoa', name: 'بونو، بيرو', region: 'هضبة الأنديز', products: ['كينوا', 'حبوب خاصة'], lat: -15.8402, lng: -70.0219, category: 'ingredients' },
+    { k: 'ukraine-grain', name: 'أوديسا، أوكرانيا', region: 'ممر حبوب البحر الأسود', products: ['حبوب', 'بذور زيتية'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
+  ],
 };
 
-/* Locale-scoped product labels used inside the map popup. */
-const productLabels: Record<Locale, Record<string, string>> = {
-  tr: { coffee: 'Kahve', cocoa: 'Kakao', nuts: 'Kuruyemiş', spices: 'Baharat', dried: 'Kuru meyve', cashew: 'Kaju', pepper: 'Kara biber' },
-  en: { coffee: 'Coffee', cocoa: 'Cocoa', nuts: 'Nuts', spices: 'Spices', dried: 'Dried fruit', cashew: 'Cashew', pepper: 'Pepper' },
-  ar: { coffee: 'قهوة', cocoa: 'كاكاو', nuts: 'مكسرات', spices: 'توابل', dried: 'فواكه مجففة', cashew: 'كاجو', pepper: 'فلفل أسود' },
-};
-
-const mapMarkers: OriginMarker[] = copy.countries.map((c) => {
-  const meta = markerMeta[c.k];
-  return {
-    k: c.k,
-    name: c.name,
-    region: c.region,
-    products: meta ? meta.productsKey.map((p) => productLabels[locale][p] ?? p) : [],
-    lat: meta?.lat ?? 0,
-    lng: meta?.lng ?? 0,
-    href: (c as { href?: string }).href,
-    category: meta?.category ?? 'mixed',
-  };
-});
+const mapMarkers = mapMarkersByLocale[locale];
 
 const mapLabels = {
   tr: {
@@ -211,6 +233,9 @@ const mapLabels = {
     mapAria: 'Kısmet Foods menşe ağı interaktif haritası',
     panelHint: 'Bir noktanın üzerine gelin · ya da dokunun',
     closeLabel: 'Kapat',
+    filters: { all: 'Tümü', coffee: 'Kahve', cocoa: 'Kakao', nuts: 'Kuruyemiş', spices: 'Baharat', ingredients: 'Hammadde' },
+    listTitle: 'Ürün menşe defteri',
+    productPrefix: 'Ürün',
   },
   en: {
     title: 'Hover into every origin',
@@ -219,6 +244,9 @@ const mapLabels = {
     mapAria: 'Kismet Foods origin network interactive map',
     panelHint: 'Hover a marker · or tap',
     closeLabel: 'Close',
+    filters: { all: 'All', coffee: 'Coffee', cocoa: 'Cocoa', nuts: 'Nuts', spices: 'Spices', ingredients: 'Ingredient' },
+    listTitle: 'Product origin ledger',
+    productPrefix: 'Product',
   },
   ar: {
     title: 'اقترب من كل منشأ',
@@ -227,6 +255,9 @@ const mapLabels = {
     mapAria: 'خريطة تفاعلية لشبكة مناشئ كسمت فودز',
     panelHint: 'مرر فوق علامة · أو اضغط',
     closeLabel: 'إغلاق',
+    filters: { all: 'الكل', coffee: 'القهوة', cocoa: 'الكاكاو', nuts: 'المكسرات', spices: 'التوابل', ingredients: 'المواد الخام' },
+    listTitle: 'سجل مناشئ المنتجات',
+    productPrefix: 'المنتج',
   },
 }[locale];
 ---
@@ -285,6 +316,9 @@ const mapLabels = {
           mapAria: mapLabels.mapAria,
           panelHint: mapLabels.panelHint,
           closeLabel: mapLabels.closeLabel,
+          filters: mapLabels.filters,
+          listTitle: mapLabels.listTitle,
+          productPrefix: mapLabels.productPrefix,
         }}
       />
     </div>
@@ -347,7 +381,7 @@ const mapLabels = {
       <h2 class="serif-display mb-12 text-center text-3xl font-bold md:text-4xl">
         {copy.statsTitle}
       </h2>
-      <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
         {copy.stats.map((s) => (
           <div class="text-center">
             <span class="serif-display mb-2 block text-4xl font-bold md:text-5xl">{s.n}</span>

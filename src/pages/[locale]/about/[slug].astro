@@ -1,0 +1,36 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SEOHead from '@/components/SEOHead.astro';
+import DetailPage from '@/components/pages/DetailPage.astro';
+import { detailStaticPaths, type DetailCopy } from '@/lib/detail-pages';
+import { organizationSchema, webSiteSchema, webPageSchema, breadcrumbSchema } from '@/lib/schema';
+import type { Locale } from '@/i18n';
+
+export function getStaticPaths() {
+  return detailStaticPaths('about');
+}
+
+interface Props {
+  locale: Locale;
+  pathname: string;
+  parentPath: string;
+  page: DetailCopy;
+}
+
+const { locale, pathname, parentPath, page } = Astro.props;
+const title = `${page.title} | Kismet Foods`;
+const description = page.lead;
+const jsonLd = [
+  organizationSchema(locale),
+  webSiteSchema(),
+  webPageSchema({ locale, url: pathname, title, description }),
+  breadcrumbSchema([{ name: 'Kismet Foods', url: `/${locale}/` }, { name: page.parentLabel, url: parentPath }, { name: page.title, url: pathname }]),
+];
+---
+
+<BaseLayout locale={locale}>
+  <Fragment slot="head">
+    <SEOHead title={title} description={description} locale={locale} pathname={pathname} jsonLd={jsonLd} />
+  </Fragment>
+  <DetailPage locale={locale} currentPath={pathname} parentPath={parentPath} page={page} />
+</BaseLayout>

@@ -1,18 +1,13 @@
 ---
 /**
- * HeroSection — Editorial display hero, magazine cover energy.
+ * HeroSection — cinematic editorial cover.
  *
- * Composition: full-width type stage. Headline is ENORMOUS (clamp
- * 4rem → 12rem, fluid). Image sits as a tall vertical accent on the
- * right but anchored to the headline baseline — they share a visual
- * grid. Italic accent kelimesi rakamla aynı baseline'a oturur.
- *
- * Background: warm cream wash with soft teal/orange halo.
- * Cursor-follow halo on lg+. Clip-path curtain reveal on the image.
+ * The first viewport is image-led. The hero image is no longer a small side
+ * accent; it is the stage. Typography sits over the image with measured scale,
+ * a quiet trade ledger, and a single logo mark used as brand punctuation.
  */
 import type { Locale } from '@/i18n';
 import { t, localePath } from '@/i18n';
-import { stockImages } from '@/lib/images';
 import Button from './Button.astro';
 import TextLink from './TextLink.astro';
 
@@ -22,10 +17,33 @@ interface Props {
 
 const { locale } = Astro.props;
 const tr = t(locale);
-const img = stockImages.hero;
 
 const productsHref = localePath('/products/', locale);
 const originsHref = localePath('/origins/', locale);
+const heroImage = '/images/gallery/hero.jpg';
+const heroAlt = {
+  tr: 'Koyu zeminde yakın plan premium kahve çekirdekleri',
+  en: 'Close-up of premium coffee beans on a dark editorial surface',
+  ar: 'لقطة قريبة لحبوب قهوة فاخرة على سطح تحريري داكن',
+}[locale];
+
+const proofItems = {
+  tr: ['Kahve', 'Kakao', 'Kuruyemiş', 'Baharat', 'Endüstriyel içerikler'],
+  en: ['Coffee', 'Cocoa', 'Nuts', 'Spices', 'Industrial ingredients'],
+  ar: ['القهوة', 'الكاكاو', 'المكسرات', 'التوابل', 'مكونات صناعية'],
+}[locale];
+
+const productRenderAlt = {
+  tr: 'Kahve, kakao ve kaju görsellerinden oluşan dönen ürün sahnesi',
+  en: 'Rotating product stage composed of coffee, cocoa and cashew imagery',
+  ar: 'مشهد منتجات دوّار مكوّن من صور القهوة والكاكاو والكاجو',
+}[locale];
+
+const productRenders = [
+  { src: '/images/gallery/hero.jpg', label: proofItems[0] },
+  { src: '/images/gallery/cocoa.jpg', label: proofItems[1] },
+  { src: '/images/gallery/caju.jpg', label: proofItems[2] },
+];
 
 /* Italicise the last word of the headline as the duo-tone accent */
 const headlineRaw = tr.hero.headline.replace(/[.!?]+\s*$/, '');
@@ -34,94 +52,106 @@ const headLead = lastSpace === -1 ? '' : headlineRaw.slice(0, lastSpace);
 const headAccent = lastSpace === -1 ? headlineRaw : headlineRaw.slice(lastSpace + 1);
 ---
 
-<section class="hero relative isolate overflow-hidden bg-surface" data-hero>
+<section class="hero relative isolate min-h-screen overflow-hidden bg-surface-deep text-white" data-hero>
+  <img
+    src={heroImage}
+    alt={heroAlt}
+    class="hero-bg absolute inset-0 h-full w-full object-cover"
+    width="2400"
+    height="1600"
+    fetchpriority="high"
+    loading="eager"
+    decoding="async"
+  />
+  <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,17,13,0.88)_0%,rgba(20,17,13,0.68)_38%,rgba(20,17,13,0.22)_78%,rgba(20,17,13,0.36)_100%)]"></div>
+  <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,17,13,0.82)_0%,rgba(20,17,13,0.24)_42%,rgba(20,17,13,0.50)_100%)]"></div>
+
+  <div class="hero-product-stage" aria-label={productRenderAlt}>
+    <div class="hero-product-stage__orbit" aria-hidden="true">
+      {productRenders.map((item, index) => (
+        <figure class="hero-product-stage__item" style={`--i:${index};`}>
+          <img src={item.src} alt="" width="1200" height="900" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+        </figure>
+      ))}
+    </div>
+  </div>
+
   {/* Cursor-follow halo (desktop only) */}
   <div
     aria-hidden="true"
-    class="hero-cursor-halo pointer-events-none absolute inset-0 -z-10 hidden opacity-0 transition-opacity duration-700 lg:block"
+    class="hero-cursor-halo pointer-events-none absolute inset-0 hidden opacity-0 transition-opacity duration-700 lg:block"
     data-cursor-halo
   ></div>
 
-  {/* Static ambient halo */}
-  <div
-    aria-hidden="true"
-    class="hero-ambient pointer-events-none absolute inset-x-0 top-0 -z-20 h-[120%]"
-  ></div>
-
-  <div class="relative mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1440px] flex-col px-5 pt-32 pb-20 sm:pt-40 sm:pb-24 md:px-8 md:pt-48 md:pb-28 lg:min-h-[calc(100vh-7rem)] lg:pt-56 lg:pb-32">
+  <div class="relative z-10 mx-auto flex min-h-screen max-w-[1500px] flex-col px-5 pb-8 pt-28 sm:px-6 sm:pt-32 md:px-8 lg:pb-10 lg:pt-36">
 
     {/* Eyebrow row — full width */}
-    <div class="hero-eyebrow flex items-center gap-3 sm:gap-4">
+    <div class="hero-eyebrow flex items-center gap-3 text-white sm:gap-4">
       <span class="hero-eyebrow__rule"></span>
       <span class="eyebrow text-orange">{tr.hero.eyebrow}</span>
     </div>
 
-    {/* Headline + image grid */}
-    <div class="mt-10 flex-1 grid grid-cols-1 items-end gap-10 sm:mt-14 lg:grid-cols-[1fr_auto] lg:gap-16">
-
-      {/* Type column */}
-      <div class="lg:max-w-[850px]">
-        <h1 class="hero-headline font-serif tracking-[-0.03em] text-on-surface">
+    <div class="grid flex-1 grid-cols-1 items-end gap-10 pb-10 pt-10 md:pt-14 lg:grid-cols-12 lg:gap-12 lg:pb-16">
+      <div class="lg:col-span-8 xl:col-span-7">
+        <h1 class="hero-headline font-serif tracking-[-0.025em] text-white">
           <span class="hero-line hero-line--lead block font-semibold leading-[0.95]">{headLead}</span>
-          <span class="hero-line hero-line--accent mt-2 block font-light italic leading-[0.95] text-teal">
+          <span class="hero-line hero-line--accent mt-2 block font-light italic leading-[0.95] text-orange">
             {headAccent}<span aria-hidden="true" class="hero-period text-orange">.</span>
           </span>
         </h1>
 
-        <p class="hero-lead mt-10 max-w-[36rem] text-base leading-[1.7] text-on-surface-muted sm:mt-12 sm:text-lg md:text-xl">
+        <p class="hero-lead mt-8 max-w-[38rem] text-base leading-[1.75] text-white/82 sm:text-lg md:mt-10 md:text-xl">
           {tr.hero.subheadline}
         </p>
 
-        <div class="hero-cta mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 sm:mt-12">
+        <div class="hero-cta mt-9 flex flex-wrap items-center gap-x-7 gap-y-4 sm:mt-11">
           <Button href={productsHref} variant="primary">
             {tr.hero.ctaPrimary}
           </Button>
-          <TextLink href={originsHref}>{tr.hero.ctaSecondary}</TextLink>
+          <TextLink href={originsHref}><span class="text-white">{tr.hero.ctaSecondary}</span></TextLink>
         </div>
       </div>
 
-      {/* Image column — tall vertical accent, anchored to headline baseline */}
-      <div class="hero-image hidden lg:block">
-        <figure
-          class="hero-photo photo-grade photo-grade--warm relative overflow-hidden rounded-sm shadow-editorial"
-          data-hero-photo
-        >
-          <img
-            src={img.src}
-            alt={img.alt[locale]}
-            class="aspect-[3/4] w-[260px] object-cover xl:w-[320px]"
-            fetchpriority="high"
-            loading="eager"
-            decoding="async"
-          />
-        </figure>
+      <div class="hero-ledger hidden lg:col-span-4 lg:block xl:col-span-5">
+        <div class="hero-ledger__panel">
+        <img src="/logos/logo-orange.svg" alt="" class="hero-ledger__logo mb-0 h-36 w-36" width="144" height="144" />
+        <p class="eyebrow mb-4 mt-[-0.35rem] text-white/55">Trade · Trust · Kismet</p>
+        <ul class="grid max-w-sm grid-cols-1 gap-2.5">
+          {proofItems.map((item, i) => (
+            <li class="flex items-center justify-between border-t border-white/16 pt-3">
+              <span class="font-serif text-xl italic text-white">{item}</span>
+              <span class="font-mono text-[10px] font-bold tracking-[0.22em] text-orange">
+                N° {String(i + 1).padStart(2, '0')}
+              </span>
+            </li>
+          ))}
+        </ul>
+        </div>
       </div>
     </div>
 
-    {/* Mobile-only image — sits below CTA in flow */}
-    <div class="hero-image-mobile mt-12 lg:hidden">
-      <figure
-        class="hero-photo photo-grade photo-grade--warm relative ms-auto overflow-hidden rounded-sm shadow-editorial"
-        data-hero-photo
-      >
-        <img
-          src={img.src}
-          alt={img.alt[locale]}
-          class="aspect-[3/4] w-full max-w-[14rem] object-cover sm:max-w-[18rem] md:max-w-[22rem]"
-          fetchpriority="high"
-          loading="eager"
-          decoding="async"
-        />
-      </figure>
+    <div class="hero-bottom grid grid-cols-1 gap-5 border-t border-white/18 pt-5 text-white/70 md:grid-cols-[1fr_auto] md:items-center">
+      <p class="max-w-3xl text-[11px] font-bold uppercase tracking-[0.24em]">
+        {proofItems.map((item, index) => (
+          <span class="hero-bottom__item">
+            {item}{index < proofItems.length - 1 && <span class="hero-bottom__dot">·</span>}
+          </span>
+        ))}
+      </p>
+      <p class="hidden text-[11px] font-bold uppercase tracking-[0.24em] text-orange md:block">
+        Trade. Trust. Kismet.
+      </p>
     </div>
   </div>
 </section>
 
 <style>
   /* ───── Display headline — fluid clamp, magazine-cover scale ─────
-     ENORMOUS so it dominates. Mobile 3.5rem (56px), 1440px ~10rem (160px) */
+     Large but no longer overpowering the image stage. */
   .hero-headline {
-    font-size: clamp(3.25rem, 11vw, 10.5rem);
+    font-size: clamp(2.85rem, 8vw, 8.5rem);
+    max-width: min(100%, 12ch);
+    overflow-wrap: anywhere;
   }
 
   .hero-period {
@@ -129,18 +159,117 @@ const headAccent = lastSpace === -1 ? headlineRaw : headlineRaw.slice(lastSpace 
     margin-inline-start: 0.04em;
   }
 
-  /* ───── Ambient halo (always-on backdrop) ───── */
-  .hero-ambient {
+  .hero-bg {
+    transform: scale(1.03);
+    animation: hero-bg-settle 1800ms cubic-bezier(0.22, 0.72, 0.22, 1) forwards;
+  }
+  @keyframes hero-bg-settle { to { transform: scale(1); } }
+
+  .hero-product-stage {
+    position: absolute;
+    inset-inline-end: clamp(-15rem, -10vw, -7rem);
+    top: 50%;
+    z-index: 1;
+    width: min(58vw, 46rem);
+    aspect-ratio: 1;
+    transform: translateY(-48%);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .hero-product-stage::before {
+    content: '';
+    position: absolute;
+    inset: -8%;
+    border-radius: 999px;
     background:
-      radial-gradient(ellipse 60% 70% at 30% 30%, rgba(0, 172, 175, 0.10), transparent 65%),
-      radial-gradient(ellipse 50% 60% at 75% 80%, rgba(246, 139, 92, 0.10), transparent 65%);
+      radial-gradient(circle at 36% 34%, rgba(246, 139, 92, 0.34), transparent 32%),
+      radial-gradient(circle at 64% 68%, rgba(0, 172, 175, 0.24), transparent 34%);
+    filter: blur(26px);
+    opacity: 0.78;
+  }
+
+  .hero-product-stage__orbit {
+    position: absolute;
+    inset: 6%;
+    border-radius: 999px;
+    animation: product-stage-turn 28s linear infinite;
+  }
+
+  .hero-product-stage__item {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 999px;
+    opacity: 0;
+    transform: rotate(calc(var(--i) * 8deg)) scale(0.92);
+    animation: product-stage-fade 18s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 6s);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.14),
+      0 50px 120px rgba(0,0,0,0.34);
+  }
+
+  .hero-product-stage__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.95) contrast(1.08);
+    transform: scale(1.16);
+    mix-blend-mode: screen;
+  }
+
+  .hero-ledger {
+    position: relative;
+    z-index: 3;
+    transform: translateY(2rem);
+  }
+
+  .hero-ledger__logo {
+    filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.28));
+  }
+
+  .hero-ledger__panel {
+    margin-inline-start: auto;
+    max-width: 22rem;
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.28);
+    background: linear-gradient(90deg, rgba(20, 17, 13, 0.72), rgba(20, 17, 13, 0.46));
+    padding: 0 0 0.75rem 0;
+    backdrop-filter: blur(10px);
+  }
+
+  [dir='rtl'] .hero-ledger__panel {
+    padding-inline: 0;
+  }
+
+  .hero-bottom__item {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-end: 0.7rem;
+    line-height: 1.8;
+    white-space: nowrap;
+  }
+
+  .hero-bottom__dot {
+    margin-inline-start: 0.7rem;
+    color: var(--color-orange);
+  }
+
+  @keyframes product-stage-turn {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes product-stage-fade {
+    0%, 100% { opacity: 0; transform: rotate(calc(var(--i) * 8deg)) scale(0.9); }
+    7%, 29% { opacity: 0.88; transform: rotate(calc(var(--i) * 8deg)) scale(1); }
+    38% { opacity: 0; transform: rotate(calc(var(--i) * 8deg)) scale(1.04); }
   }
 
   /* ───── Cursor-follow halo (desktop only) ───── */
   .hero-cursor-halo {
     background: radial-gradient(550px circle at var(--mx, 50%) var(--my, 50%),
-                                rgba(0, 172, 175, 0.16) 0%,
-                                rgba(0, 172, 175, 0.05) 30%,
+                                rgba(246, 139, 92, 0.16) 0%,
+                                rgba(246, 139, 92, 0.05) 30%,
                                 transparent 70%);
   }
   .hero-cursor-halo.is-active { opacity: 1; }
@@ -160,7 +289,9 @@ const headAccent = lastSpace === -1 ? headlineRaw : headlineRaw.slice(lastSpace 
   .hero-line--lead,
   .hero-line--accent,
   .hero-lead,
-  .hero-cta {
+  .hero-cta,
+  .hero-ledger,
+  .hero-bottom {
     opacity: 0;
     transform: translateY(32px);
     animation: hero-rise 1100ms cubic-bezier(0.22, 0.72, 0.22, 1) forwards;
@@ -170,19 +301,9 @@ const headAccent = lastSpace === -1 ? headlineRaw : headlineRaw.slice(lastSpace 
   .hero-line--accent { animation-delay: 460ms; }
   .hero-lead         { animation-delay: 720ms; }
   .hero-cta          { animation-delay: 940ms; }
+  .hero-ledger        { animation-delay: 1080ms; }
+  .hero-bottom        { animation-delay: 1160ms; }
   @keyframes hero-rise { to { opacity: 1; transform: translateY(0); } }
-
-  /* ───── Image curtain reveal ───── */
-  .hero-photo {
-    clip-path: inset(100% 0 0 0);
-    animation: hero-curtain 1400ms cubic-bezier(0.7, 0, 0.18, 1) 460ms forwards;
-  }
-  @keyframes hero-curtain { to { clip-path: inset(0 0 0 0); } }
-  .hero-photo > img {
-    transform: scale(1.08);
-    animation: hero-photo-settle 2400ms cubic-bezier(0.22, 0.72, 0.22, 1) 460ms forwards;
-  }
-  @keyframes hero-photo-settle { to { transform: scale(1); } }
 
   /* ───── Reduced motion ───── */
   @media (prefers-reduced-motion: reduce) {
@@ -190,11 +311,52 @@ const headAccent = lastSpace === -1 ? headlineRaw : headlineRaw.slice(lastSpace 
     .hero-eyebrow,
     .hero-line--lead, .hero-line--accent,
     .hero-lead, .hero-cta,
-    .hero-photo, .hero-photo > img {
+    .hero-ledger, .hero-bottom,
+    .hero-bg,
+    .hero-product-stage__orbit,
+    .hero-product-stage__item {
       animation: none;
       opacity: 1;
       transform: none;
-      clip-path: none;
+    }
+    .hero-product-stage__item:not(:first-child) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .hero-product-stage {
+      inset-inline-end: -11rem;
+      top: 42%;
+      width: min(80vw, 32rem);
+      opacity: 0.34;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-headline {
+      font-size: clamp(2.55rem, 13vw, 4.6rem);
+      max-width: 9.5ch;
+    }
+
+    .hero-product-stage {
+      inset-inline-end: -10rem;
+      top: 36%;
+      width: 30rem;
+      opacity: 0.22;
+    }
+
+    .hero-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .hero-bottom__item {
+      margin-inline-end: 0.35rem;
+      white-space: normal;
+    }
+
+    .hero-bottom__dot {
+      margin-inline-start: 0.35rem;
     }
   }
 </style>

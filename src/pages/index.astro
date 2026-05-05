@@ -3,7 +3,5 @@
  * Root index - redirects to default locale.
  * This ensures visitors hitting kismetfoods.com get sent to /tr/.
  */
-import { defaultLocale } from '@/i18n';
-
-return Astro.redirect(`/${defaultLocale}/`, 302);
+return Astro.redirect('/tr/', 302);
 ---

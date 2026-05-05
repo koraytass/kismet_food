@@ -12,7 +12,7 @@
  *   5. Leadership   — Dark band, 3 portrait cards with grayscale → color hover.
  */
 import type { Locale } from '@/i18n';
-import { t, localePath } from '@/i18n';
+import { t } from '@/i18n';
 import { stitchSrc } from '@/lib/stitch';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
@@ -59,16 +59,16 @@ const copy = {
       { y: '2019', t: 'Kuruluş', d: 'İstanbul’da Kısmet Foods kuruldu; ilk yıl Avrupa pazarı için premium Türk fındığı ve kuru kayısıya odaklandı.' },
       { y: '2021', t: 'Afrika Atağı', d: 'Etiyopya ve Gana’da doğrudan tedarik kanalları güvence altına alındı; portföye ham kakao ve spesiyalite kahve eklendi.' },
       { y: '2023', t: 'Çok Dilli Büyüme', d: 'Türkçe, İngilizce ve Arapça tam operasyonel kapasite; MENA ve EU arasında bire bir müşteri ilişkisi.' },
-      { y: 'Bugün', t: 'Küresel Küratör', d: '32 ülkede, her bölgede yerel uzmanlıkla, yılda 50.000 tondan fazla ham gıda ihracatı yönetiyoruz.' },
+      { y: 'Bugün', t: 'Küresel Küratör', d: 'Türkiye merkezli, Avrupa, Orta Doğu ve Asya pazarlarına odaklanan çok dilli bir B2B ham madde kürasyon masası olarak çalışıyoruz.' },
     ],
     leadershipEyebrow: 'LİDERLİK',
-    leadershipTitle: 'Vizyoner Kadromuz',
+    leadershipTitle: 'Uzmanlık Masamız',
     leadershipLead:
       'Ekibimiz on yılların lojistik uzmanlığını ürünlerimizin sanatsal doğasına duyulan derin saygıyla birleştirir.',
     leaders: [
-      { role: 'Kurucu & CEO', name: 'Aras Kısmet' },
-      { role: 'Operasyonlar Direktörü', name: 'Leyla Demir' },
-      { role: 'Global Tedarik Başkanı', name: 'Sami Al-Said' },
+      { role: 'Tedarik', name: 'Menşe Kürasyonu' },
+      { role: 'Operasyon', name: 'Lojistik Kontrol' },
+      { role: 'Ticaret', name: 'B2B İlişki Yönetimi' },
     ],
   },
   en: {
@@ -102,16 +102,16 @@ const copy = {
       { y: '2019', t: 'The Foundation', d: 'Kismet Foods established in Istanbul; focused in year one on premium Turkish hazelnuts and dried apricots for the European market.' },
       { y: '2021', t: 'The African Pivot', d: 'Secured direct sourcing channels in Ethiopia and Ghana; expanded the portfolio to include raw cocoa and specialty coffee.' },
       { y: '2023', t: 'Multilingual Growth', d: 'Full operational capacity in Turkish, English, and Arabic; direct relationship management between MENA and EU.' },
-      { y: 'Today', t: 'Global Curator Status', d: 'Facilitating over 50,000 tons of raw food exports annually across 32 countries with localized expertise in every region.' },
+      { y: 'Today', t: 'Global Curator Desk', d: 'Operating as a Türkiye-based, multilingual B2B raw-material curation desk for European, Middle Eastern and Asian markets.' },
     ],
     leadershipEyebrow: 'LEADERSHIP',
-    leadershipTitle: 'Guided by Visionaries',
+    leadershipTitle: 'Specialist Desk',
     leadershipLead:
       'Our team combines decades of logistics expertise with a profound respect for the artisanal nature of our products.',
     leaders: [
-      { role: 'Founder & CEO', name: 'Aras Kismet' },
-      { role: 'Chief Operations', name: 'Leyla Demir' },
-      { role: 'Head of Global Sourcing', name: 'Sami Al-Said' },
+      { role: 'Sourcing', name: 'Origin Curation' },
+      { role: 'Operations', name: 'Logistics Control' },
+      { role: 'Trade', name: 'B2B Relationship Management' },
     ],
   },
   ar: {
@@ -145,21 +145,19 @@ const copy = {
       { y: '2019', t: 'التأسيس', d: 'تأسست كسمت فودز في إسطنبول؛ وركزت في عامها الأول على البندق التركي الفاخر والمشمش المجفف للسوق الأوروبية.' },
       { y: '2021', t: 'الانعطاف الأفريقي', d: 'تأمين قنوات توريد مباشرة في إثيوبيا وغانا؛ توسيع المحفظة لتشمل الكاكاو الخام والقهوة المتخصصة.' },
       { y: '2023', t: 'نمو متعدد اللغات', d: 'قدرة تشغيلية كاملة بالتركية والإنجليزية والعربية؛ إدارة علاقة مباشرة بين الشرق الأوسط وشمال أفريقيا والاتحاد الأوروبي.' },
-      { y: 'اليوم', t: 'مكانة القيّم العالمي', d: 'تسهيل أكثر من 50,000 طن من صادرات الأغذية الخام سنوياً عبر 32 دولة بخبرة محلية في كل منطقة.' },
+      { y: 'اليوم', t: 'مكتب القيّم العالمي', d: 'نعمل من تركيا كمكتب B2B متعدد اللغات لاختيار المواد الخام لأسواق أوروبا والشرق الأوسط وآسيا.' },
     ],
     leadershipEyebrow: 'القيادة',
-    leadershipTitle: 'بقيادة أصحاب رؤية',
+    leadershipTitle: 'مكتب متخصص',
     leadershipLead:
       'يجمع فريقنا بين عقود من الخبرة اللوجستية والاحترام العميق للطبيعة الحرفية لمنتجاتنا.',
     leaders: [
-      { role: 'المؤسس والرئيس التنفيذي', name: 'آراس كسمت' },
-      { role: 'مدير العمليات', name: 'ليلى ديمير' },
-      { role: 'رئيس التوريد العالمي', name: 'سامي السعيد' },
+      { role: 'التوريد', name: 'اختيار المناشئ' },
+      { role: 'العمليات', name: 'ضبط اللوجستيات' },
+      { role: 'التجارة', name: 'إدارة علاقات B2B' },
     ],
   },
 }[locale];
-
-const contactHref = localePath('/contact/', locale);
 
 /* Stitch images — all 6 used on this page */
 const heroImg = stitchSrc(
@@ -372,32 +370,32 @@ const leaderImgs = [
   </section>
 
   {/* ========== 5. LEADERSHIP — dark band with portraits ========== */}
-  <section class="overflow-hidden bg-surface-deep px-4 py-24 text-white md:px-8 md:py-32">
+  <section class="overflow-hidden bg-surface-low px-4 py-24 md:px-8 md:py-32">
     <div class="mx-auto w-full max-w-7xl">
       <div class="mb-16 flex flex-col items-start justify-between gap-8 md:mb-20 md:flex-row md:items-end">
         <div class="max-w-2xl">
-          <span class="eyebrow mb-4 block text-teal">{copy.leadershipEyebrow}</span>
-          <h2 class="serif-display text-4xl font-bold md:text-5xl">{copy.leadershipTitle}</h2>
+          <span class="eyebrow mb-4 block text-orange">{copy.leadershipEyebrow}</span>
+          <h2 class="serif-display text-4xl font-bold text-on-surface md:text-5xl">{copy.leadershipTitle}</h2>
         </div>
-        <p class="max-w-sm text-sm text-white/70">{copy.leadershipLead}</p>
+        <p class="max-w-sm text-sm text-on-surface-muted">{copy.leadershipLead}</p>
       </div>
 
       <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-3">
         {copy.leaders.map((ld, idx) => (
-          <article class="group relative aspect-[3/4] cursor-pointer overflow-hidden">
+          <article class="group relative aspect-[3/4] cursor-pointer overflow-hidden border border-outline/20 bg-surface">
             <img
               src={leaderImgs[idx]}
               alt=""
-              class="h-full w-full object-cover brightness-75 grayscale transition-all duration-700 group-hover:brightness-100 group-hover:grayscale-0"
+              class="h-full w-full object-cover brightness-95 grayscale-[0.35] transition-all duration-700 group-hover:brightness-100 group-hover:grayscale-0"
               loading="lazy"
               decoding="async"
               width="600"
               height="800"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/90 via-transparent to-transparent opacity-80"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface/95 via-surface/20 to-transparent opacity-90"></div>
             <div class="absolute bottom-10 start-8 transition-transform duration-500 group-hover:-translate-y-1">
-              <p class="eyebrow mb-2 text-teal">{ld.role}</p>
-              <h3 class="serif-display text-2xl font-bold md:text-3xl">{ld.name}</h3>
+              <p class="eyebrow mb-2 text-orange">{ld.role}</p>
+              <h3 class="serif-display text-2xl font-bold text-on-surface md:text-3xl">{ld.name}</h3>
             </div>
           </article>
         ))}

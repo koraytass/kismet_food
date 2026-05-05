@@ -1,17 +1,10 @@
 ---
 /**
- * OriginsMap — Interactive world map with hover/tap-driven origin info card.
+ * OriginsMap — static-first equirectangular origin desk.
  *
- * Behavior:
- *   - Desktop: hovering a marker reveals a side info card (top-right of map);
- *     leaving the marker fades it out after a short grace, unless the cursor
- *     moves onto the card (which keeps it open).
- *   - Mobile / touch: tapping a marker pins the card as a bottom sheet with
- *     an explicit close button; tapping outside dismisses.
- *   - Keyboard: tab through markers, focus opens the card, Esc closes it.
- *
- * Editorial styling: minimal Carto Positron tiles, small ringed-dot markers
- * in Kismet brand colors, custom HTML card (no Leaflet popups).
+ * No external map tiles or client library. Pins are projected from lat/lng into
+ * a simple equirectangular canvas, then synced with the side ledger through a
+ * tiny inline script.
  */
 export type OriginMarker = {
   k: string;
@@ -21,7 +14,8 @@ export type OriginMarker = {
   lat: number;
   lng: number;
   href?: string;
-  category: 'coffee' | 'cocoa' | 'nuts' | 'spices' | 'mixed';
+  category: 'coffee' | 'cocoa' | 'nuts' | 'spices' | 'ingredients' | 'mixed';
+  featured?: boolean;
 };
 
 interface Props {
@@ -31,405 +25,463 @@ interface Props {
     mapAria: string;
     panelHint?: string;
     closeLabel?: string;
+    filters?: Record<'all' | 'coffee' | 'cocoa' | 'nuts' | 'spices' | 'ingredients', string>;
+    listTitle?: string;
+    productPrefix?: string;
   };
-  height?: string; // legacy single-value fallback (used as desktop height)
+  height?: string;
 }
 
-const { markers, labels, height = '560px' } = Astro.props;
+const { markers, labels, height = '620px' } = Astro.props;
 
-/* Category → color mapping (Kismet brand-adjacent) */
 const categoryColor: Record<OriginMarker['category'], string> = {
-  coffee: '#9b451c',
-  cocoa: '#5c403a',
+  coffee: '#7d3f20',
+  cocoa: '#4b3027',
   nuts: '#f68b5c',
-  spices: '#ca2030',
+  spices: '#bf4a35',
+  ingredients: '#00acaf',
   mixed: '#00696b',
 };
+
+const filterLabels = labels.filters ?? {
+  all: 'All',
+  coffee: 'Coffee',
+  cocoa: 'Cocoa',
+  nuts: 'Nuts',
+  spices: 'Spices',
+  ingredients: 'Ingredients',
+};
+
+const filterOrder = ['all', 'coffee', 'cocoa', 'nuts', 'spices', 'ingredients'] as const;
+
+const projectedMarkers = markers.map((marker, index) => ({
+  ...marker,
+  index: String(index + 1).padStart(2, '0'),
+  x: ((marker.lng + 180) / 360) * 100,
+  y: ((90 - marker.lat) / 180) * 100,
+  color: categoryColor[marker.category],
+}));
+
+const initialMarker = projectedMarkers[0];
+const listTitle = labels.listTitle ?? 'Origin ledger';
+const productPrefix = labels.productPrefix ?? 'Products';
 ---
 
-<div class="kismet-map-wrap relative">
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
-
-  <div
-    id="origins-map"
-    role="region"
-    aria-label={labels.mapAria}
-    tabindex="0"
-    class="shadow-editorial relative w-full overflow-hidden rounded-lg bg-surface-low"
-    style={`height: clamp(320px, 48vh, ${height});`}
-  ></div>
-
-  {/* Idle hint — fades out on first marker interaction */}
-  {labels.panelHint && (
-    <div
-      id="origins-map-hint"
-      class="pointer-events-none absolute bottom-3 left-1/2 z-[400] -translate-x-1/2 whitespace-nowrap rounded-full bg-white/85 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-on-surface-muted shadow backdrop-blur transition-opacity duration-300 md:text-[11px]"
-    >
-      {labels.panelHint}
-    </div>
-  )}
-
-  {/* Info card — bottom sheet on mobile, floating top-right card on md+ */}
-  <aside
-    id="origins-map-panel"
-    role="dialog"
-    aria-live="polite"
-    aria-label="Origin detail"
-    class="kismet-map-panel pointer-events-none absolute bottom-3 left-3 right-3 z-[500] opacity-0 invisible transition-all duration-300 md:bottom-auto md:left-auto md:right-3 md:top-3 md:w-[300px] lg:right-4 lg:top-4 lg:w-[320px]"
-  >
-    <div class="relative rounded-xl bg-white/95 p-5 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm">
+<section class="origin-desk" data-origin-desk>
+  <div class="origin-desk__filters" aria-label="Origin category filters">
+    {filterOrder.map((filter) => (
       <button
-        id="origins-map-panel-close"
         type="button"
-        class="absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-full text-on-surface-subtle transition hover:bg-black/5 md:hidden"
-        aria-label={labels.closeLabel ?? 'Close'}
+        class={`origin-filter ${filter === 'all' ? 'is-active' : ''}`}
+        data-origin-filter={filter}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
+        {filterLabels[filter]}
       </button>
-      <span id="origins-map-panel-region" class="block text-[10px] font-bold uppercase tracking-[0.22em] text-orange"></span>
-      <h4 id="origins-map-panel-name" class="serif-display mt-1 pr-7 text-[1.4rem] font-bold leading-tight text-teal md:text-[1.5rem]"></h4>
-      <p id="origins-map-panel-products" class="mt-2 text-sm leading-relaxed text-on-surface-muted"></p>
-      <a
-        id="origins-map-panel-link"
-        class="mt-4 hidden items-center gap-1 text-[11px] font-bold uppercase tracking-[0.18em] text-teal transition hover:text-orange"
-        href="#"
-      >
-        <span id="origins-map-panel-link-label"></span>
-        <span aria-hidden="true">→</span>
-      </a>
+    ))}
+  </div>
+
+  <div class="origin-desk__grid">
+    <div
+      class="origin-map"
+      role="region"
+      aria-label={labels.mapAria}
+      style={`min-height: clamp(420px, 58vw, ${height});`}
+    >
+      <svg class="origin-map__canvas" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <pattern id="origin-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+            <path d="M80 0H0V80" fill="none" stroke="rgba(20,17,13,.08)" stroke-width="1" />
+          </pattern>
+          <linearGradient id="origin-ocean" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#f4efe6" />
+            <stop offset="1" stop-color="#ede3d4" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="520" fill="url(#origin-ocean)" />
+        <rect width="1000" height="520" fill="url(#origin-grid)" />
+        <path class="origin-land" d="M116 140c44-36 108-32 156-8 42 21 79 16 118 4 37-11 63 9 67 43 5 39-33 65-81 58-43-7-74 4-111 25-48 28-128 20-166-21-30-33-20-72 17-101Z" />
+        <path class="origin-land" d="M282 302c38-31 91-22 116 14 28 41 6 99-42 121-58 26-123-5-132-57-5-31 17-59 58-78Z" />
+        <path class="origin-land" d="M474 132c62-36 159-36 217-2 44 26 43 70-3 92-39 19-85 15-128 31-62 22-136 3-156-41-13-29 10-58 70-80Z" />
+        <path class="origin-land" d="M596 242c55-21 124-8 159 31 36 40 21 88-33 107-55 20-125 5-160-34-34-39-20-84 34-104Z" />
+        <path class="origin-land" d="M748 166c45-31 115-29 147 8 24 28 7 64-39 80-48 17-111 1-136-34-18-26-7-43 28-54Z" />
+        <path class="origin-land" d="M790 348c33-23 86-20 117 6 25 22 20 55-12 72-36 19-94 10-119-19-20-24-15-43 14-59Z" />
+        <path class="origin-route" d="M604 175C536 190 504 224 480 267S421 327 327 360" />
+        <path class="origin-route" d="M604 175C661 185 703 207 760 250s95 72 123 121" />
+      </svg>
+
+      {projectedMarkers.map((marker) => (
+        <button
+          type="button"
+          class={`origin-pin ${marker.featured ? 'origin-pin--featured' : ''}`}
+          style={`--x:${marker.x}%; --y:${marker.y}%; --pin:${marker.color};`}
+          data-origin-pin={marker.k}
+          data-category={marker.category}
+          aria-label={`${marker.name} - ${marker.products.join(', ')}`}
+        >
+          <span class="origin-pin__ring"></span>
+          <span class="origin-pin__core"></span>
+          <span class="origin-pin__label">{marker.index}</span>
+        </button>
+      ))}
+
+      {initialMarker && (
+        <aside class="origin-panel" data-origin-panel>
+          <span class="origin-panel__eyebrow" data-origin-region>{initialMarker.region}</span>
+          <h3 data-origin-name>{initialMarker.name}</h3>
+          <p data-origin-products>{productPrefix}: {initialMarker.products.join(' · ')}</p>
+          <a
+            href={initialMarker.href ?? '#'}
+            class={`origin-panel__link ${initialMarker.href ? '' : 'is-hidden'}`}
+            data-origin-link
+          >
+            <span>{labels.viewDetail}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </aside>
+      )}
     </div>
-  </aside>
-</div>
 
-{/* Legend */}
-<ul class="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-on-surface-subtle">
-  {Object.entries(categoryColor).map(([cat, color]) => (
-    <li class="flex items-center gap-2">
-      <span aria-hidden="true" class="inline-block h-2.5 w-2.5 rounded-full ring-2 ring-white" style={`background:${color}`}></span>
-      <span class="eyebrow text-[10px]">
-        {cat === 'coffee' && 'KAHVE / COFFEE / قهوة'}
-        {cat === 'cocoa' && 'KAKAO / COCOA / كاكاو'}
-        {cat === 'nuts' && 'KURUYEMİŞ / NUTS / مكسرات'}
-        {cat === 'spices' && 'BAHARAT / SPICES / توابل'}
-        {cat === 'mixed' && 'KARIŞIK / MIXED / مختلط'}
-      </span>
-    </li>
-  ))}
-</ul>
+    <aside class="origin-ledger" aria-label={listTitle}>
+      <div class="origin-ledger__head">
+        <span class="eyebrow text-orange">N° ORIGIN DESK</span>
+        <h3>{listTitle}</h3>
+      </div>
+      <div class="origin-ledger__list">
+        {projectedMarkers.map((marker) => (
+          <button
+            type="button"
+            class="origin-ledger__row"
+            data-origin-row={marker.k}
+            data-category={marker.category}
+          >
+            <span class="origin-ledger__index">{marker.index}</span>
+            <span class="origin-ledger__body">
+              <strong>{marker.name}</strong>
+              <span>{marker.products.join(' · ')}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </aside>
+  </div>
+</section>
 
-<style is:global>
-  /* Tile / chrome restyles */
-  .leaflet-container {
-    background: #f4f3f2;
-    font-family: inherit;
-  }
-  .leaflet-control-zoom a {
-    background: #ffffff !important;
-    color: #00696b !important;
-    border-color: rgba(187, 201, 201, 0.5) !important;
-  }
-  .leaflet-control-zoom a:hover {
-    background: #00acaf !important;
-    color: #ffffff !important;
-  }
-  .leaflet-control-attribution {
-    font-size: 10px;
-    background: rgba(255, 255, 255, 0.75) !important;
-  }
-
-  /* Ring-dot marker (uses currentColor → category fill) */
-  .kismet-dot {
+<style>
+  .origin-desk {
     position: relative;
-    display: block;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    color: inherit;
   }
-  .kismet-dot__ring,
-  .kismet-dot__core {
-    position: absolute;
-    border-radius: 50%;
+  .origin-desk__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-bottom: 1rem;
   }
-  .kismet-dot__ring {
-    inset: -4px;
-    border: 1.5px solid currentColor;
-    opacity: 0.35;
-    transition:
-      transform 240ms cubic-bezier(0.22, 0.72, 0.22, 1),
-      opacity 240ms;
+  .origin-filter {
+    border: 1px solid rgba(20, 17, 13, 0.16);
+    background: rgba(244, 239, 230, 0.72);
+    color: rgba(20, 17, 13, 0.72);
+    padding: 0.7rem 0.95rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
   }
-  .kismet-dot__core {
-    inset: 4px;
-    background: currentColor;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    transition: transform 240ms cubic-bezier(0.22, 0.72, 0.22, 1);
+  .origin-filter:hover,
+  .origin-filter.is-active {
+    border-color: #00acaf;
+    background: #00acaf;
+    color: #ffffff;
   }
-  .kismet-dot:hover .kismet-dot__ring,
-  .kismet-dot:focus-visible .kismet-dot__ring,
-  .kismet-dot.is-active .kismet-dot__ring {
-    transform: scale(1.45);
-    opacity: 0.6;
+  .origin-desk__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    gap: 1rem;
+    align-items: stretch;
   }
-  .kismet-dot:hover .kismet-dot__core,
-  .kismet-dot:focus-visible .kismet-dot__core,
-  .kismet-dot.is-active .kismet-dot__core {
-    transform: scale(1.2);
+  .origin-map,
+  .origin-ledger {
+    border: 1px solid rgba(20, 17, 13, 0.12);
+    background: #f4efe6;
+    box-shadow: 0 30px 80px rgba(20, 17, 13, 0.08);
   }
-
-  /* Featured anchor — Türkiye gets a soft pulse */
-  .kismet-dot--featured {
-    width: 22px;
-    height: 22px;
+  .origin-map {
+    position: relative;
+    overflow: hidden;
   }
-  .kismet-dot--featured .kismet-dot__ring {
-    inset: -6px;
-    border-width: 2px;
-    opacity: 0.5;
-  }
-  .kismet-dot--featured .kismet-dot__core {
-    box-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.25),
-      0 0 0 2px rgba(255, 255, 255, 0.9);
-  }
-  @keyframes kismet-pulse {
-    0%   { transform: scale(1);   opacity: 0.45; }
-    60%  { transform: scale(1.6); opacity: 0.18; }
-    100% { transform: scale(2.2); opacity: 0;    }
-  }
-  .kismet-dot--featured::after {
-    content: '';
+  .origin-map__canvas {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-    pointer-events: none;
-    animation: kismet-pulse 2.6s ease-out infinite;
+    width: 100%;
+    height: 100%;
   }
-
-  /* Panel transitions */
-  .kismet-map-panel {
-    transform: translateY(8px);
+  .origin-land {
+    fill: rgba(20, 17, 13, 0.075);
+    stroke: rgba(20, 17, 13, 0.16);
+    stroke-width: 1;
   }
-  .kismet-map-panel.is-open {
-    pointer-events: auto;
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
+  .origin-route {
+    fill: none;
+    stroke: rgba(0, 172, 175, 0.28);
+    stroke-width: 2;
+    stroke-dasharray: 7 10;
   }
-
-  @media (prefers-reduced-motion: reduce) {
-    .kismet-dot--featured::after { animation: none; opacity: 0; }
-    .kismet-dot__ring,
-    .kismet-dot__core,
-    .kismet-map-panel { transition: none !important; }
+  .origin-pin {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 2.35rem;
+    height: 2.35rem;
+    transform: translate(-50%, -50%);
+    color: var(--pin);
+    z-index: 2;
+  }
+  .origin-pin__ring,
+  .origin-pin__core,
+  .origin-pin__label {
+    position: absolute;
+    border-radius: 999px;
+  }
+  .origin-pin__ring {
+    inset: 0;
+    border: 1px solid currentColor;
+    background: rgba(244, 239, 230, 0.58);
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+  .origin-pin__core {
+    inset: 0.72rem;
+    background: currentColor;
+    box-shadow: 0 0 0 3px rgba(244, 239, 230, 0.94);
+  }
+  .origin-pin__label {
+    left: 1.88rem;
+    top: -0.2rem;
+    color: #14110d;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .origin-pin:hover .origin-pin__ring,
+  .origin-pin.is-active .origin-pin__ring,
+  .origin-pin:focus-visible .origin-pin__ring {
+    opacity: 0.72;
+    transform: scale(1.55);
+  }
+  .origin-pin.is-muted,
+  .origin-ledger__row.is-muted {
+    opacity: 0.22;
+  }
+  .origin-pin--featured .origin-pin__ring {
+    border-width: 2px;
+  }
+  .origin-pin--featured::after {
+    content: '';
+    position: absolute;
+    inset: -0.25rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    opacity: 0.4;
+  }
+  .origin-panel {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 3;
+    width: min(21rem, calc(100% - 2rem));
+    border-left: 2px solid #f68b5c;
+    background: rgba(20, 17, 13, 0.92);
+    color: #f4efe6;
+    padding: 1.2rem;
+  }
+  .origin-panel__eyebrow {
+    display: block;
+    color: #f68b5c;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .origin-panel h3 {
+    margin-top: 0.4rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    line-height: 0.98;
+  }
+  .origin-panel p {
+    margin-top: 0.75rem;
+    color: rgba(244, 239, 230, 0.76);
+    line-height: 1.55;
+  }
+  .origin-panel__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1rem;
+    color: #00acaf;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .origin-panel__link.is-hidden {
+    display: none;
+  }
+  .origin-ledger {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  .origin-ledger__head {
+    padding: 1.2rem 1.2rem 0.6rem;
+  }
+  .origin-ledger__head h3 {
+    margin-top: 0.4rem;
+    font-family: var(--font-serif);
+    font-size: 1.9rem;
+    line-height: 1;
+    color: #14110d;
+  }
+  .origin-ledger__list {
+    overflow: auto;
+    padding: 0.35rem;
+  }
+  .origin-ledger__row {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.8rem;
+    border-top: 1px solid rgba(20, 17, 13, 0.11);
+    padding: 0.9rem 0.85rem;
+    text-align: start;
+    transition: background 180ms ease, opacity 180ms ease;
+  }
+  .origin-ledger__row:hover,
+  .origin-ledger__row.is-active {
+    background: rgba(0, 172, 175, 0.08);
+  }
+  .origin-ledger__index {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: #f68b5c;
+  }
+  .origin-ledger__body {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .origin-ledger__body strong {
+    font-family: var(--font-serif);
+    font-size: 1.08rem;
+    line-height: 1.05;
+    color: #14110d;
+  }
+  .origin-ledger__body span {
+    color: rgba(20, 17, 13, 0.58);
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
+  @media (max-width: 900px) {
+    .origin-desk__grid {
+      grid-template-columns: 1fr;
+    }
+    .origin-ledger__list {
+      max-height: 360px;
+    }
+  }
+  @media (max-width: 640px) {
+    .origin-filter {
+      flex: 1 1 auto;
+      padding-inline: 0.7rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+    }
+    .origin-pin {
+      width: 1.9rem;
+      height: 1.9rem;
+    }
+    .origin-pin__core {
+      inset: 0.58rem;
+    }
+    .origin-pin__label {
+      display: none;
+    }
+    .origin-panel {
+      left: 0.75rem;
+      right: 0.75rem;
+      bottom: 0.75rem;
+      width: auto;
+    }
   }
 </style>
 
-<script is:inline define:vars={{ markers, categoryColor, viewDetailLabel: labels.viewDetail }}>
-  (function () {
-    function load() {
-      if (typeof window === 'undefined') return;
-      if (!window.L) {
-        var s = document.createElement('script');
-        s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        s.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-        s.crossOrigin = '';
-        s.onload = init;
-        document.head.appendChild(s);
-      } else {
-        init();
-      }
-    }
+<script is:inline define:vars={{ markers: projectedMarkers, productPrefix }}>
+  (() => {
+    const desks = document.querySelectorAll('[data-origin-desk]');
+    desks.forEach((desk) => {
+      const pins = Array.from(desk.querySelectorAll('[data-origin-pin]'));
+      const rows = Array.from(desk.querySelectorAll('[data-origin-row]'));
+      const filters = Array.from(desk.querySelectorAll('[data-origin-filter]'));
+      const panel = desk.querySelector('[data-origin-panel]');
+      const region = desk.querySelector('[data-origin-region]');
+      const name = desk.querySelector('[data-origin-name]');
+      const products = desk.querySelector('[data-origin-products]');
+      const link = desk.querySelector('[data-origin-link]');
 
-    function init() {
-      var el = document.getElementById('origins-map');
-      if (!el || el.dataset.initialized) return;
-      el.dataset.initialized = 'true';
-
-      var panel = document.getElementById('origins-map-panel');
-      var panelRegion = document.getElementById('origins-map-panel-region');
-      var panelName = document.getElementById('origins-map-panel-name');
-      var panelProducts = document.getElementById('origins-map-panel-products');
-      var panelLink = document.getElementById('origins-map-panel-link');
-      var panelLinkLabel = document.getElementById('origins-map-panel-link-label');
-      var panelClose = document.getElementById('origins-map-panel-close');
-      var hint = document.getElementById('origins-map-hint');
-
-      var hideTimer = null;
-      var pinned = false; // touch / click locks the panel open
-
-      function clearActiveDots() {
-        var dots = document.querySelectorAll('.kismet-dot.is-active');
-        for (var i = 0; i < dots.length; i++) dots[i].classList.remove('is-active');
+      function markerByKey(key) {
+        return markers.find((marker) => marker.k === key);
       }
 
-      function setActive(marker) {
-        clearActiveDots();
-        var elDot = marker.getElement() && marker.getElement().querySelector('.kismet-dot');
-        if (elDot) elDot.classList.add('is-active');
-      }
-
-      function showPanel(m) {
-        if (!panel) return;
-        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
-        panelRegion.textContent = m.region || '';
-        panelName.textContent = m.name || '';
-        panelProducts.textContent = (m.products || []).join(' · ');
-        if (m.href && panelLink) {
-          panelLink.href = m.href;
-          panelLink.classList.remove('hidden');
-          panelLink.classList.add('inline-flex');
-          panelLinkLabel.textContent = viewDetailLabel;
-        } else if (panelLink) {
-          panelLink.classList.add('hidden');
-          panelLink.classList.remove('inline-flex');
-        }
-        panel.classList.add('is-open');
-        if (hint) hint.style.opacity = '0';
-      }
-
-      function hidePanel() {
-        if (!panel) return;
-        panel.classList.remove('is-open');
-        clearActiveDots();
-        pinned = false;
-      }
-
-      function scheduleHide() {
-        if (pinned) return;
-        if (hideTimer) clearTimeout(hideTimer);
-        hideTimer = setTimeout(hidePanel, 280);
-      }
-
-      function cancelHide() {
-        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
-      }
-
-      if (panel) {
-        panel.addEventListener('mouseenter', cancelHide);
-        panel.addEventListener('mouseleave', function () {
-          if (!pinned) scheduleHide();
-        });
-      }
-      if (panelClose) {
-        panelClose.addEventListener('click', function (e) {
-          e.stopPropagation();
-          hidePanel();
-        });
-      }
-
-      // Esc closes
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && panel && panel.classList.contains('is-open')) {
-          hidePanel();
-        }
-      });
-
-      var map = L.map(el, {
-        center: [22, 18],
-        zoom: 2,
-        minZoom: 2,
-        maxZoom: 6,
-        worldCopyJump: true,
-        scrollWheelZoom: false,
-        keyboard: true,
-        attributionControl: true,
-      });
-
-      L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-        {
-          subdomains: 'abcd',
-          maxZoom: 19,
-          attribution:
-            '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        },
-      ).addTo(map);
-
-      // Tapping the bare map (not a marker / not the panel) closes the pinned card.
-      map.on('click', function () {
-        if (pinned) hidePanel();
-        map.scrollWheelZoom.enable();
-      });
-      map.on('mouseout', function () {
-        map.scrollWheelZoom.disable();
-      });
-
-      markers.forEach(function (m) {
-        var color = categoryColor[m.category] || '#00696b';
-        var featured = m.k === 'turkiye';
-        var nameEsc = (m.name || '').replace(/"/g, '&quot;');
-        var html =
-          '<span class="kismet-dot' + (featured ? ' kismet-dot--featured' : '') +
-          '" style="color:' + color + '" tabindex="0" role="button" aria-label="' + nameEsc + '">' +
-            '<span class="kismet-dot__ring"></span>' +
-            '<span class="kismet-dot__core"></span>' +
-          '</span>';
-
-        var size = featured ? 22 : 18;
-        var icon = L.divIcon({
-          className: '',
-          html: html,
-          iconSize: [size, size],
-          iconAnchor: [size / 2, size / 2],
-        });
-
-        var marker = L.marker([m.lat, m.lng], { icon: icon, title: m.name, alt: m.name }).addTo(map);
-
-        marker.on('mouseover', function () {
-          if (pinned) return;
-          setActive(marker);
-          showPanel(m);
-        });
-        marker.on('mouseout', function () {
-          if (!pinned) scheduleHide();
-        });
-        // Click / tap pins the panel
-        marker.on('click', function (e) {
-          if (e && e.originalEvent && e.originalEvent.stopPropagation) {
-            e.originalEvent.stopPropagation();
+      function activate(key) {
+        const marker = markerByKey(key);
+        if (!marker) return;
+        pins.forEach((pin) => pin.classList.toggle('is-active', pin.dataset.originPin === key));
+        rows.forEach((row) => row.classList.toggle('is-active', row.dataset.originRow === key));
+        if (region) region.textContent = marker.region;
+        if (name) name.textContent = marker.name;
+        if (products) products.textContent = productPrefix + ': ' + marker.products.join(' · ');
+        if (link) {
+          if (marker.href) {
+            link.setAttribute('href', marker.href);
+            link.classList.remove('is-hidden');
+          } else {
+            link.classList.add('is-hidden');
           }
-          setActive(marker);
-          showPanel(m);
-          pinned = true;
+        }
+        if (panel) panel.classList.add('is-open');
+      }
+
+      function applyFilter(filter) {
+        filters.forEach((button) => button.classList.toggle('is-active', button.dataset.originFilter === filter));
+        const visible = [];
+        [...pins, ...rows].forEach((node) => {
+          const match = filter === 'all' || node.dataset.category === filter;
+          node.classList.toggle('is-muted', !match);
+          if (match && node.dataset.originPin) visible.push(node.dataset.originPin);
         });
-        marker.on('focus', function () {
-          if (pinned) return;
-          setActive(marker);
-          showPanel(m);
-        });
-        marker.on('blur', function () {
-          if (!pinned) scheduleHide();
-        });
+        if (visible[0]) activate(visible[0]);
+      }
+
+      pins.forEach((pin) => {
+        const key = pin.dataset.originPin;
+        pin.addEventListener('mouseenter', () => activate(key));
+        pin.addEventListener('focus', () => activate(key));
+        pin.addEventListener('click', () => activate(key));
       });
-
-      // Hide hint after first user motion over the map
-      el.addEventListener('mousemove', function () {
-        if (hint) hint.style.opacity = '0';
-      }, { once: true, passive: true });
-      el.addEventListener('touchstart', function () {
-        if (hint) hint.style.opacity = '0';
-      }, { once: true, passive: true });
-
-      // Re-flow tiles after font/layout settle (Astro hydration race-safe)
-      setTimeout(function () { try { map.invalidateSize(); } catch (_) {} }, 60);
-      window.addEventListener('resize', function () {
-        try { map.invalidateSize(); } catch (_) {}
+      rows.forEach((row) => {
+        const key = row.dataset.originRow;
+        row.addEventListener('mouseenter', () => activate(key));
+        row.addEventListener('focus', () => activate(key));
+        row.addEventListener('click', () => activate(key));
       });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', load);
-    } else {
-      load();
-    }
+      filters.forEach((button) => {
+        button.addEventListener('click', () => applyFilter(button.dataset.originFilter || 'all'));
+      });
+      if (markers[0]) activate(markers[0].k);
+    });
   })();
 </script>

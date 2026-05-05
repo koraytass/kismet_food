@@ -80,7 +80,7 @@ const copy = {
       'İşleme Lojistiği: Rotterdam, Hollanda',
     ],
     ctaTitle: 'Kahve ve kakao için özel teklif alın.',
-    ctaLead: 'Tek bir konteyner ya da yıllık tedarik sözleşmesi — ticaret masamız hacim ve sevkiyat hedefinize göre 24 saat içinde özel fiyat matrisi hazırlar.',
+    ctaLead: 'Tek bir konteyner ya da yıllık tedarik sözleşmesi — ticaret masamız hacim ve sevkiyat hedefinize göre kısa süre içinde özel fiyat matrisi hazırlar.',
     ctaBtn: 'Teklif Al',
   },
   en: {
@@ -141,7 +141,7 @@ const copy = {
       'Processing Logistics: Rotterdam, Netherlands',
     ],
     ctaTitle: 'Request a coffee & cocoa quote.',
-    ctaLead: 'One container or a yearly supply contract — our trade desk returns a custom pricing matrix tailored to your volume and destination within 24 hours.',
+    ctaLead: 'One container or a yearly supply contract — our trade desk returns a custom pricing matrix tailored to your volume, destination and commercial context.',
     ctaBtn: 'Request Quote',
   },
   ar: {
@@ -202,13 +202,21 @@ const copy = {
       'لوجستيات المعالجة: روتردام، هولندا',
     ],
     ctaTitle: 'اطلب عرض سعر للقهوة والكاكاو.',
-    ctaLead: 'حاوية واحدة أو عقد توريد سنوي — يعد مكتبنا التجاري مصفوفة تسعير مخصصة لحجمك ووجهتك خلال 24 ساعة.',
+    ctaLead: 'حاوية واحدة أو عقد توريد سنوي — يعد مكتبنا التجاري مصفوفة تسعير مخصصة لحجمك ووجهتك وسياقك التجاري.',
     ctaBtn: 'اطلب عرض سعر',
   },
 }[locale];
 
 const contactHref = localePath('/contact/', locale);
 const productsHref = localePath('/products/', locale);
+/* Sidamo "Profili İncele" → Etiyopya menşe sayfası (kahve karakter dosyası).
+   Forastero "Teknik Özellikler" → aynı sayfanın altındaki #specs bölümü
+   (kakao kuru çekirdek nem, kalibre, defekt, yağ tablosu).
+   Locale-bazlı türetildiği için aynı index dizilimi 3 dilde de geçerli. */
+const originHrefs = [
+  localePath('/origins/ethiopia/', locale),
+  '#specs',
+];
 
 /* Images */
 const imgHero = stitchSrc(
@@ -285,33 +293,30 @@ const mapAlt =
 
 <main id="main" class="bg-surface">
   {/* Editorial hero */}
-  <section class="relative overflow-hidden">
-    <div class="absolute inset-0">
-      <img
-        src={imgHero}
-        alt={heroImgAlt}
-        width="1920"
-        height="1080"
-        class="h-full w-full object-cover"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      />
-      <div class="absolute inset-0 bg-surface-deep/55"></div>
-    </div>
-    <div class="relative z-10 px-4 pb-24 pt-16 md:px-8 md:pb-32 md:pt-24">
-      <div class="mx-auto max-w-7xl">
-        <span class="eyebrow mb-4 block text-orange/90">{copy.eyebrow}</span>
-        <h1 class="serif-display mb-8 max-w-4xl text-5xl font-bold leading-none tracking-tight text-white md:text-7xl lg:text-8xl">
+  <section class="relative overflow-hidden px-4 py-16 md:px-8 md:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 items-end gap-10 md:grid-cols-12 md:gap-14">
+      <div class="md:col-span-7">
+        <span class="eyebrow mb-4 block text-orange-dark">{copy.eyebrow}</span>
+        <h1 class="serif-display mb-8 max-w-4xl text-5xl font-bold leading-none tracking-tight text-on-surface md:text-7xl lg:text-8xl">
           {copy.heroTitle}
         </h1>
-        <div class="flex flex-col items-start gap-8 md:flex-row">
-          <p class="max-w-xl text-lg leading-relaxed text-white/85">{copy.heroLead}</p>
-          <div class="glass-dark rounded-lg border border-white/10 p-6 text-white md:max-w-sm">
-            <p class="eyebrow mb-2 text-orange/90">{copy.verifiedTitle}</p>
-            <p class="text-sm leading-relaxed text-white/85">{copy.verifiedBody}</p>
-          </div>
-        </div>
+        <p class="max-w-2xl text-lg leading-relaxed text-on-surface-muted">{copy.heroLead}</p>
+      </div>
+      <figure class="photo-grade photo-grade--warm overflow-hidden shadow-editorial md:col-span-5">
+        <img
+          src={imgHero}
+          alt={heroImgAlt}
+          width="1200"
+          height="1400"
+          class="aspect-[4/5] w-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+      <div class="border-s-2 border-orange bg-surface-low p-6 md:col-span-5 md:col-start-8">
+        <p class="eyebrow mb-2 text-orange-dark">{copy.verifiedTitle}</p>
+        <p class="text-sm leading-relaxed text-on-surface-muted">{copy.verifiedBody}</p>
       </div>
     </div>
   </section>
@@ -331,7 +336,7 @@ const mapAlt =
 
       <div class="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
         <article class="group md:col-span-7">
-          <div class="shadow-editorial relative overflow-hidden rounded-lg bg-surface-mid">
+          <div class="shadow-editorial relative overflow-hidden bg-surface-mid">
             <img
               src={imgEthiopia}
               alt={ethiopiaAlt}
@@ -341,7 +346,7 @@ const mapAlt =
               loading="lazy"
               decoding="async"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/70 via-surface-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/72 via-surface-deep/8 to-transparent"></div>
             <div class="absolute inset-x-0 bottom-0 p-6 text-white md:p-10">
               <span class="eyebrow mb-3 inline-block bg-orange/90 px-3 py-1 text-white">
                 {copy.origins[0].badge}
@@ -352,15 +357,19 @@ const mapAlt =
               <p class="max-w-md text-sm leading-relaxed text-white/85 md:text-base">
                 {copy.origins[0].body}
               </p>
-              <span class="mt-4 inline-block border-b-2 border-orange pb-1 text-xs font-bold uppercase tracking-widest">
-                {copy.origins[0].link}
-              </span>
+              <a
+                href={originHrefs[0]}
+                class="mt-4 inline-flex items-center gap-2 border-b-2 border-orange pb-1 text-xs font-bold uppercase tracking-widest text-white transition-colors duration-300 hover:text-orange focus-visible:text-orange"
+              >
+                <span>{copy.origins[0].link}</span>
+                <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </article>
 
         <article class="group md:col-span-5">
-          <div class="shadow-editorial relative overflow-hidden rounded-lg bg-surface-mid">
+          <div class="shadow-editorial relative overflow-hidden bg-surface-mid">
             <img
               src={imgGhana}
               alt={ghanaAlt}
@@ -370,7 +379,7 @@ const mapAlt =
               loading="lazy"
               decoding="async"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/70 via-surface-deep/10 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/72 via-surface-deep/8 to-transparent"></div>
             <div class="absolute inset-x-0 bottom-0 p-6 text-white md:p-10">
               <span class="eyebrow mb-3 inline-block bg-teal px-3 py-1 text-white">
                 {copy.origins[1].badge}
@@ -381,9 +390,13 @@ const mapAlt =
               <p class="max-w-md text-sm leading-relaxed text-white/85 md:text-base">
                 {copy.origins[1].body}
               </p>
-              <span class="mt-4 inline-block border-b-2 border-orange pb-1 text-xs font-bold uppercase tracking-widest">
-                {copy.origins[1].link}
-              </span>
+              <a
+                href={originHrefs[1]}
+                class="mt-4 inline-flex items-center gap-2 border-b-2 border-orange pb-1 text-xs font-bold uppercase tracking-widest text-white transition-colors duration-300 hover:text-orange focus-visible:text-orange"
+              >
+                <span>{copy.origins[1].link}</span>
+                <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </article>
@@ -403,7 +416,7 @@ const mapAlt =
           {copy.grades.map((g, idx) => (
             <div
               class:list={[
-                'rounded-lg border-s-4 bg-surface-lowest p-6 shadow-editorial',
+                'border-s-4 bg-surface-lowest p-6 shadow-editorial',
                 idx === 0 ? 'border-orange' : 'border-teal',
               ]}
             >
@@ -419,7 +432,7 @@ const mapAlt =
           alt={labAlt}
           width="600"
           height="800"
-          class="mt-12 aspect-[3/4] w-full rounded-lg object-cover shadow-editorial"
+          class="mt-12 aspect-[3/4] w-full object-cover shadow-editorial"
           loading="lazy"
           decoding="async"
         />
@@ -428,7 +441,7 @@ const mapAlt =
           alt={roastAlt}
           width="600"
           height="800"
-          class="aspect-[3/4] w-full rounded-lg object-cover shadow-editorial"
+          class="aspect-[3/4] w-full object-cover shadow-editorial"
           loading="lazy"
           decoding="async"
         />
@@ -437,7 +450,7 @@ const mapAlt =
   </section>
 
   {/* Specifications */}
-  <section class="px-4 py-20 md:px-8 md:py-24">
+  <section id="specs" class="scroll-mt-24 px-4 py-20 md:px-8 md:py-24">
     <div class="mx-auto max-w-7xl">
       <div class="mb-12">
         <span class="eyebrow mb-2 block text-teal-dark">{copy.specEyebrow}</span>
@@ -445,7 +458,7 @@ const mapAlt =
           {copy.specTitle}
         </h2>
       </div>
-      <div class="overflow-x-auto rounded-lg border border-outline/40 bg-surface-lowest">
+      <div class="overflow-x-auto border border-outline/40 bg-surface-lowest">
         <table class="w-full min-w-[640px] text-start">
           <thead>
             <tr class="bg-surface-mid">
@@ -483,14 +496,14 @@ const mapAlt =
   </section>
 
   {/* Equatorial supply chain */}
-  <section class="bg-surface-deep px-4 py-20 text-white md:px-8 md:py-24">
+  <section class="bg-surface-low px-4 py-20 md:px-8 md:py-24">
     <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
       <div>
-        <span class="eyebrow mb-2 block text-orange/90">{copy.supplyEyebrow}</span>
-        <h2 class="serif-display mb-6 text-3xl font-bold md:text-4xl lg:text-5xl">
+        <span class="eyebrow mb-2 block text-orange-dark">{copy.supplyEyebrow}</span>
+        <h2 class="serif-display mb-6 text-3xl font-bold text-on-surface md:text-4xl lg:text-5xl">
           {copy.supplyTitle}
         </h2>
-        <p class="mb-8 text-lg leading-relaxed text-white/80">{copy.supplyBody}</p>
+        <p class="mb-8 text-lg leading-relaxed text-on-surface-muted">{copy.supplyBody}</p>
         <ul class="space-y-4">
           {copy.supplyPoints.map((p, idx) => (
             <li class="flex items-center gap-3">
@@ -501,18 +514,18 @@ const mapAlt =
                 ]}
                 aria-hidden="true"
               ></span>
-              <span class="text-white/90">{p}</span>
+              <span class="text-on-surface-muted">{p}</span>
             </li>
           ))}
         </ul>
       </div>
-      <div class="relative aspect-video overflow-hidden rounded-lg border border-white/10 bg-black/40">
+      <div class="relative aspect-video overflow-hidden border border-outline/30 bg-surface">
         <img
           src={imgMap}
           alt={mapAlt}
           width="1200"
           height="675"
-          class="h-full w-full object-cover opacity-50 mix-blend-luminosity"
+          class="h-full w-full object-cover opacity-70"
           loading="lazy"
           decoding="async"
         />
@@ -521,13 +534,13 @@ const mapAlt =
   </section>
 
   {/* CTA */}
-  <section class="cta-gradient px-4 py-20 text-white md:px-8">
+  <section class="bg-surface px-4 py-20 md:px-8">
     <div class="mx-auto max-w-4xl text-center">
-      <h2 class="serif-display mb-4 text-3xl font-bold md:text-4xl">{copy.ctaTitle}</h2>
-      <p class="mb-8 text-lg leading-relaxed text-white/85">{copy.ctaLead}</p>
+      <h2 class="serif-display mb-4 text-3xl font-bold text-on-surface md:text-4xl">{copy.ctaTitle}</h2>
+      <p class="mb-8 text-lg leading-relaxed text-on-surface-muted">{copy.ctaLead}</p>
       <a
         href={contactHref}
-        class="inline-block rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
+        class="btn btn--primary"
       >
         {copy.ctaBtn}
       </a>

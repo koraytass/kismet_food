@@ -72,11 +72,7 @@ export function organizationSchema(locale: Locale): JsonLd {
       'Cold-chain and dry-bulk maritime shipping',
       'Fair Trade and organic certification',
     ],
-    award: [
-      'Member, Global Food Security Initiative',
-      'ISO 9001 Quality Management',
-      'Fair Trade Certified Partner',
-    ],
+    award: ['ISO 9001 Quality Management', 'Fair Trade Certified Partner'],
     ...(Object.keys(brand.social).length > 0 && {
       sameAs: Object.values(brand.social),
     }),
@@ -84,14 +80,15 @@ export function organizationSchema(locale: Locale): JsonLd {
       {
         '@type': 'ContactPoint',
         contactType: 'sales',
-        email: 'trade@kismetfoods.com',
         availableLanguage: locales.map((l) => languageNames[l]),
         areaServed: 'Worldwide',
+        ...(brand.email && { email: brand.email }),
       },
       {
         '@type': 'ContactPoint',
         contactType: 'customer support',
         availableLanguage: locales.map((l) => languageNames[l]),
+        ...(brand.phone && { telephone: brand.phone }),
       },
     ],
   };

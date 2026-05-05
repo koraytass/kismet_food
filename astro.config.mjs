@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
+const tailwindPlugin = /** @type {any} */ (tailwindcss());
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.kismetfoods.com',
@@ -22,7 +24,7 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindPlugin],
   },
 
   integrations: [

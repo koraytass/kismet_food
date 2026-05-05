@@ -37,7 +37,7 @@ const frameUrls = Array.from({ length: frameCount }, (_, i) => {
   {frameUrls.map((url) => <link rel="preload" as="image" href={url} />)}
 </div>
 
-<script define:vars={{ frameUrls, fps }}>
+<script is:inline define:vars={{ frameUrls, fps }}>
   // Runs client-side
   const container = document.querySelector('.coffee-player');
   const canvas = document.querySelector('.coffee-canvas');

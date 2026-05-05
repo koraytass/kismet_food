@@ -25,7 +25,6 @@ import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
 import Breadcrumb from '../Breadcrumb.astro';
 import Button from '../Button.astro';
-import TextLink from '../TextLink.astro';
 import AmuletDivider from '../AmuletDivider.astro';
 import { stockImages } from '@/lib/images';
 
@@ -100,7 +99,7 @@ const copy = {
     shipmentDetail: 'Premium Kakao Yağı · Yolda',
     ctaTitle: 'Özel bir emtia tedariği için bizimle görüşün.',
     ctaLead:
-      'Tek bir konteyner ya da sürekli sevkiyat — yılların birikimiyle çalışan emtia uzmanlarımız 24 saat içinde size özel bir teklif hazırlar.',
+      'Tek bir konteyner ya da sürekli sevkiyat — yılların birikimiyle çalışan emtia uzmanlarımız kısa süre içinde size özel bir teklif hazırlar.',
     ctaBtn: 'Teklif Al',
   },
   en: {
@@ -164,7 +163,7 @@ const copy = {
     shipmentDetail: 'Premium Cocoa Butter · En Route',
     ctaTitle: 'Let\'s discuss a custom commodity supply.',
     ctaLead:
-      'A single container or recurring shipments — our trade experts, backed by years of expertise in every commodity group, prepare a tailored proposal within 24 hours.',
+      'A single container or recurring shipments — our trade experts, backed by years of expertise in every commodity group, prepare a tailored proposal with the right commercial context.',
     ctaBtn: 'Request Quote',
   },
   ar: {
@@ -228,12 +227,29 @@ const copy = {
     shipmentDetail: 'زبدة كاكاو فاخرة · في الطريق',
     ctaTitle: 'لنناقش توريد سلعة مخصصة.',
     ctaLead:
-      'حاوية واحدة أو شحنات متكررة — يُعدّ خبراؤنا، المدعومون بسنوات من الخبرة في كل مجموعة سلع، عرضًا مخصصًا خلال 24 ساعة.',
+      'حاوية واحدة أو شحنات متكررة — يُعدّ خبراؤنا، المدعومون بسنوات من الخبرة في كل مجموعة سلع، عرضًا مخصصًا بسياق تجاري دقيق.',
     ctaBtn: 'اطلب عرض سعر',
   },
 }[locale];
 
-const categoryLink = (slug: string) => localePath(`/products/${slug}/`, locale);
+/* Slug → URL map.
+   ProductsPage gösterimde 5 kart (coffee, cocoa, nuts, spices, industrial)
+   tutuyor ama backend yalnızca 4 detay sayfası ile besleniyor:
+     • /products/coffee-cocoa/        — birleşik kahve & kakao detayı
+     • /products/nuts/                — kuruyemiş & kuru meyve
+     • /products/spices/              — baharat & otlar
+     • /products/ingredients/         — endüstriyel hammadde
+   Bu yüzden coffee + cocoa kartları aynı coffee-cocoa sayfasına,
+   industrial-ingredients de ingredients sayfasına yönlendirilir. */
+const slugToPath: Record<string, string> = {
+  coffee: '/products/coffee-cocoa/',
+  cocoa: '/products/coffee-cocoa/',
+  nuts: '/products/nuts/',
+  spices: '/products/spices/',
+  'industrial-ingredients': '/products/ingredients/',
+};
+const categoryLink = (slug: string) =>
+  localePath(slugToPath[slug] ?? `/products/${slug}/`, locale);
 
 /* --- Stitch images (all 4 aida-public URLs from code.html used) --- */
 const imgCoffee = stitchSrc(
@@ -527,4 +543,3 @@ const rest = copy.categories.slice(1);
 </script>
 
 <SiteFooter locale={locale} />
-
