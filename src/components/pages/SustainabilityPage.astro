@@ -1,402 +1,199 @@
 ---
-/**
- * SustainabilityPage — Reusable section composition for /<locale>/sustainability/.
- * Sections: Hero · Farmer empowerment · Planet (metrics) · Certifications · CTA
- */
 import type { Locale } from '@/i18n';
-import { t, localePath } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
+import { localePath } from '@/i18n';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
-import Button from '../Button.astro';
-import AmuletDivider from '../AmuletDivider.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
-interface Props {
-  locale: Locale;
-  currentPath: string;
-}
-
+interface Props { locale: Locale; currentPath: string }
 const { locale, currentPath } = Astro.props;
-const tr = t(locale);
 
-/* --- Locale-scoped page copy --- */
 const copy = {
   tr: {
-    eyebrow: 'SÜRDÜRÜLEBİLİRLİK · 2026 ETKİ RAPORU',
-    heroTitle: 'Geleceğin dayanıklılığını birlikte yetiştiriyoruz.',
-    heroLead:
-      'Kısmet Foods, toprağın sağlığından topluluğun refahına uzanan rejeneratif bir küresel ticaret modeline bağlıdır. Yılların saha birikimiyle daha adil, daha izlenebilir bir gıda sistemi kuruyoruz.',
-    farmerEyebrow: 'BÖLÜM 01 · SOSYAL ETKİ',
-    farmerTitle: 'Çiftçi Güçlendirmesi & Doğrudan Kazanç',
-    farmerLead:
-      '12 ülkede 5.000’den fazla çiftçiyle doğrudan tedarik yürütüyoruz. Aracı katmanları aşarak, mahsulü hasat eden ellerin aynı zamanda en çok kazanan eller olmasını güvence altına alıyoruz. Doğrudan-ticaret protokollerimiz, adil-ticaret referansının %25 üzerinde prim garantisi verir.',
-    farmerStatsNumber: '5.000+',
-    farmerStatsLabel: 'Aktif Ortak Çiftçi',
-    farmerStatsNumber2: '12',
-    farmerStatsLabel2: 'Menşe Ülke',
-    farmerImgAlt: 'Etiyopyalı bir kahve çiftçisinin portresi; ellerinde olgun kahve kirazları',
-    planetEyebrow: 'BÖLÜM 02 · EKOLOJİK SORUMLULUK',
-    planetTitle: 'Küresel ayak izimizi nötralize ediyoruz.',
-    planetLead:
-      'Her sevkiyatı Amazon Havzası’ndaki doğrulanmış ağaçlandırma projeleri ile dengeliyoruz. Plastik-nötr gönderim için, kullandığımız her 1 kg ambalaja karşı 1,5 kg okyanus plastiğini geri kazanıyoruz.',
-    metrics: [
-      { n: '94%', l: 'Biyobazlı ambalaj' },
-      { n: '100%', l: 'Plastik-nötr sevkiyat' },
-      { n: '-22%', l: 'Su kullanımı düşüşü' },
-      { n: '2030', l: 'Sıfır-atık hedefi' },
+    eyebrow: 'ESG · ÖLÇÜLEBİLİR HEDEF',
+    heroTitle: 'Çiftçi · Toprak · Hesap verebilir hedef.',
+    heroLead: 'EU EUDR, Fair Trade, Rainforest Alliance ve ISO protokollerinin kesişiminde çalışıyoruz. Yıllık ESG raporu farmer-ID düzeyinde geo-traceability ile yayımlanır.',
+    pillarsEyebrow: 'ÜÇ PİLLAR', pillarsTitle: 'Sürdürülebilirliğin', pillarsItalic: 'üç ekseni.',
+    pillars: [
+      { h: 'Çiftçi Refahı', d: 'Adil fiyat, uzun vadeli sözleşme, eğitim ve tarım girdisi desteği.', kpi: '12.000+ ortak çiftçi' },
+      { h: 'Çevre & İklim', d: 'Karbon ölçümü/dengeleme, plastik-nötr ambalaj, rejeneratif tarım.', kpi: '0.34 t CO₂e/konteyner' },
+      { h: 'Yönetişim', d: 'ESG raporlama, üçüncü-taraf denetim, GFSI üyeliği.', kpi: '%92 EUDR uyumlu' },
     ],
-    planetImgAlt: 'Organik tarlalarda yeşeren fidan ve zengin toprak dokusu',
-    planetCardTitle: 'Rejeneratif Menşeler',
-    planetCardLead:
-      '“Önce Toprak” programımız; üreticilere karbonu doğrudan toprağa hapseden agroforestry tekniklerini öğretir ve verimi doğal yollarla artırır.',
-    certEyebrow: 'YÖNETİŞİM & ŞEFFAFLIK',
-    certTitle: 'Sertifikalı Uzmanlık',
-    certLead:
-      'Her iddiamız üçüncü taraf denetim ve gerçek zamanlı lojistik veriyle desteklenir. Her ürün grubunda derin uzmanlık, her partide kanıtlanmış kalite.',
-    certs: [
-      { t: 'Fair Trade', d: 'Çiftçi primlerinin ve adil ücretin bağımsız doğrulaması.' },
-      { t: 'ISO 9001', d: 'Uçtan uca kalite yönetim sistemi sertifikasyonu.' },
-      { t: 'USDA Organic', d: 'Organik üretim ve sertifikalı tedarik zinciri.' },
+    farmEyebrow: 'ÇİFTÇİ PROGRAMI', farmTitle: 'Doğrudan ortaklık,', farmItalic: 'düşen aracı.',
+    farmLead: 'YCFCU, SCFCU, FNC, COCOBOD ve doğrudan kooperatif ortaklarımızla çalışırız. Aracı zincir kısaltıldıkça çiftçiye dönen pay artar.',
+    farmStats: [
+      { v: '12.000+', l: 'Doğrudan ortak çiftçi' },
+      { v: '120+', l: 'Aktif kooperatif' },
+      { v: '%18', l: 'Ortalama prim payı' },
+      { v: '6', l: 'Yıllık eğitim modülü' },
     ],
-    ctaTitle: 'Küresel gıda lojistiğinde değişime öncülük edin.',
-    ctaLead:
-      '2030 sıfır-atık yol haritamız ve yıllık sürdürülebilirlik raporumuz için ticaret ekibimizle iletişime geçin.',
-    ctaBtn: 'İletişime Geç',
+    planetEyebrow: 'GEZEGEN', planetTitle: 'Karbon, plastik,', planetItalic: 'ölçülebilir hedef.',
+    planetPoints: [
+      { h: 'Karbon dengeleme', d: 'Konteyner başına 0.34 t CO₂e ölçümü ve onaylı carbon credit ile telafi.' },
+      { h: 'Plastik-nötr', d: 'Geri dönüşümlü FIBC ve karton ambalaj. PE astar minimum.' },
+      { h: 'Rota optimizasyonu', d: 'Konsolide sevkiyat, doğru liman seçimi ile %22 navlun emisyon azalımı.' },
+      { h: 'Fire kontrol', d: 'Nem + transit kontrolü ile %1.5\'in altında ürün kaybı.' },
+    ],
+    reportEyebrow: 'YILLIK RAPOR', reportTitle: '2025 Sürdürülebilirlik', reportItalic: 'Raporu.',
+    reportLead: 'Çiftçi erişimi, izlenebilir sevkiyat oranı, sertifikasyon kapsamı ve ambalaj/rota hedeflerinin tam ölçümü. PDF olarak yayında.',
+    ctaBtn: 'Raporu İndir',
   },
   en: {
-    eyebrow: 'SUSTAINABILITY · 2026 IMPACT REPORT',
-    heroTitle: 'Cultivating future resilience, together.',
-    heroLead:
-      'Kismet Foods is committed to a regenerative global trade model — from soil health to community wealth. With years of field expertise, we are building a fairer, more traceable food system.',
-    farmerEyebrow: 'SECTION 01 · SOCIAL IMPACT',
-    farmerTitle: 'Farmer Empowerment & Direct Wealth',
-    farmerLead:
-      'We work directly with more than 5,000 farmers across 12 origin countries. By bypassing predatory middle-layers, we ensure the hands that harvest the crop are the ones that prosper most. Our direct-trade protocols guarantee premiums 25% above the fair-trade benchmark.',
-    farmerStatsNumber: '5,000+',
-    farmerStatsLabel: 'Active Partner Farmers',
-    farmerStatsNumber2: '12',
-    farmerStatsLabel2: 'Origin Countries',
-    farmerImgAlt: 'Portrait of an Ethiopian coffee farmer holding ripe coffee cherries',
-    planetEyebrow: 'SECTION 02 · ECOLOGICAL STEWARDSHIP',
-    planetTitle: 'Neutralizing our global footprint.',
-    planetLead:
-      'Every shipment is offset through verified reforestation projects in the Amazon Basin. For plastic-neutral shipping, we recover 1.5 kg of ocean-bound plastic for every 1 kg of packaging we use.',
-    metrics: [
-      { n: '94%', l: 'Bio-based packaging' },
-      { n: '100%', l: 'Plastic-neutral shipping' },
-      { n: '-22%', l: 'Water usage reduction' },
-      { n: '2030', l: 'Zero-waste target' },
+    eyebrow: 'ESG · MEASURABLE TARGET',
+    heroTitle: 'Farmer · Soil · Accountable target.',
+    heroLead: 'We operate at the intersection of EU EUDR, Fair Trade, Rainforest Alliance and ISO protocols. The annual ESG report is published with farmer-ID-level geo-traceability.',
+    pillarsEyebrow: 'THREE PILLARS', pillarsTitle: 'Three axes of', pillarsItalic: 'sustainability.',
+    pillars: [
+      { h: 'Farmer welfare', d: 'Fair price, long-term contract, training and agricultural inputs.', kpi: '12,000+ partner farmers' },
+      { h: 'Environment & Climate', d: 'Carbon measurement/offset, plastic-neutral packaging, regenerative agriculture.', kpi: '0.34 t CO₂e/container' },
+      { h: 'Governance', d: 'ESG reporting, third-party audit, GFSI membership.', kpi: '92% EUDR-compliant' },
     ],
-    planetImgAlt: 'Overhead shot of organic soil and young seedlings',
-    planetCardTitle: 'Regenerative Origins',
-    planetCardLead:
-      'Our “Soil-First” program trains producers in agroforestry techniques that sequester carbon directly into the earth while naturally increasing yield.',
-    certEyebrow: 'GOVERNANCE & TRANSPARENCY',
-    certTitle: 'Certified Expertise',
-    certLead:
-      'Every claim is backed by third-party audits and real-time logistics data. Deep expertise in every product group, proven quality in every batch.',
-    certs: [
-      { t: 'Fair Trade', d: 'Independent verification of farmer premiums and fair pay.' },
-      { t: 'ISO 9001', d: 'End-to-end quality-management-system certification.' },
-      { t: 'USDA Organic', d: 'Certified organic production and supply chain.' },
+    farmEyebrow: 'FARMER PROGRAMME', farmTitle: 'Direct partnership,', farmItalic: 'fewer middlemen.',
+    farmLead: 'We work with YCFCU, SCFCU, FNC, COCOBOD and direct cooperative partners. Shorter chain, larger share for the farmer.',
+    farmStats: [
+      { v: '12,000+', l: 'Direct partner farmers' },
+      { v: '120+', l: 'Active cooperatives' },
+      { v: '18%', l: 'Average premium share' },
+      { v: '6', l: 'Annual training modules' },
     ],
-    ctaTitle: 'Lead the change in global food logistics.',
-    ctaLead:
-      'Contact our trade team for the 2030 zero-waste roadmap and our annual sustainability report.',
-    ctaBtn: 'Contact Us',
+    planetEyebrow: 'PLANET', planetTitle: 'Carbon, plastic,', planetItalic: 'measurable target.',
+    planetPoints: [
+      { h: 'Carbon offset', d: '0.34 t CO₂e per container measured and offset via verified carbon credits.' },
+      { h: 'Plastic-neutral', d: 'Recyclable FIBC and carton. Minimal PE liner.' },
+      { h: 'Route optimisation', d: 'Consolidated shipments + right port choice = 22% freight emission reduction.' },
+      { h: 'Loss control', d: 'Moisture + transit control keeps loss under 1.5%.' },
+    ],
+    reportEyebrow: 'ANNUAL REPORT', reportTitle: '2025 Sustainability', reportItalic: 'Report.',
+    reportLead: 'Full measurement of farmer reach, traceable shipment rate, certification scope and packaging/route targets. Available as PDF.',
+    ctaBtn: 'Download Report',
   },
   ar: {
-    eyebrow: 'الاستدامة · تقرير الأثر 2026',
-    heroTitle: 'نزرع مرونة المستقبل معاً.',
-    heroLead:
-      'تلتزم كسمت فودز بنموذج تجارة عالمية تجديدي — من صحة التربة إلى رخاء المجتمعات. بسنوات من الخبرة الميدانية، نبني نظاماً غذائياً أكثر عدالة وقابلية للتتبع.',
-    farmerEyebrow: 'القسم 01 · الأثر الاجتماعي',
-    farmerTitle: 'تمكين المزارعين والثروة المباشرة',
-    farmerLead:
-      'نعمل مباشرة مع أكثر من 5000 مزارع في 12 بلد منشأ. بتجاوز الوسطاء الاستغلاليين، نضمن أن الأيدي التي تحصد المحصول هي نفسها التي تزدهر أكثر. تضمن بروتوكولات التجارة المباشرة لدينا علاوات تفوق معيار التجارة العادلة بنسبة 25%.',
-    farmerStatsNumber: '5000+',
-    farmerStatsLabel: 'مزارع شريك نشط',
-    farmerStatsNumber2: '12',
-    farmerStatsLabel2: 'دولة منشأ',
-    farmerImgAlt: 'صورة قريبة لمزارع قهوة إثيوبي يحمل كرز قهوة ناضج',
-    planetEyebrow: 'القسم 02 · الرعاية البيئية',
-    planetTitle: 'نحيّد بصمتنا الكربونية العالمية.',
-    planetLead:
-      'نُعوّض كل شحنة من خلال مشاريع إعادة تشجير موثقة في حوض الأمازون. وللشحن المحايد بلاستيكياً، نستعيد 1.5 كغ من البلاستيك البحري مقابل كل 1 كغ من التغليف الذي نستخدمه.',
-    metrics: [
-      { n: '94%', l: 'تغليف حيوي' },
-      { n: '100%', l: 'شحن محايد بلاستيكياً' },
-      { n: '-22%', l: 'انخفاض استهلاك الماء' },
-      { n: '2030', l: 'هدف صفر نفايات' },
+    eyebrow: 'ESG · هدف قابل للقياس',
+    heroTitle: 'مزارع · تربة · هدف خاضع للمساءلة.',
+    heroLead: 'نعمل عند تقاطع EU EUDR وFair Trade وRainforest Alliance وISO. تقرير ESG السنوي يُنشر بتتبع جغرافي على مستوى المعرّف.',
+    pillarsEyebrow: 'ثلاثة محاور', pillarsTitle: 'ثلاثة محاور', pillarsItalic: 'للاستدامة.',
+    pillars: [
+      { h: 'رفاه المزارع', d: 'سعر عادل، عقد طويل الأمد، تدريب ودعم بالمدخلات.', kpi: '+١٢٠٠٠ مزارع' },
+      { h: 'البيئة والمناخ', d: 'قياس وموازنة الكربون، تعبئة خالية من البلاستيك.', kpi: '٠٫٣٤ طن CO₂e/حاوية' },
+      { h: 'الحوكمة', d: 'تقارير ESG، تدقيق طرف ثالث، عضوية GFSI.', kpi: '٪٩٢ متوافق EUDR' },
     ],
-    planetImgAlt: 'لقطة علوية لتربة عضوية وشتلات ناشئة',
-    planetCardTitle: 'مناشئ تجديدية',
-    planetCardLead:
-      'يدرّب برنامج "التربة أولاً" المنتجين على تقنيات الحراجة الزراعية التي تحتجز الكربون مباشرة في التربة وترفع الإنتاجية طبيعياً.',
-    certEyebrow: 'الحوكمة والشفافية',
-    certTitle: 'خبرة معتمدة',
-    certLead:
-      'كل ادعاء مدعوم بتدقيق طرف ثالث وبيانات لوجستية فورية. خبرة عميقة في كل فئة منتج، وجودة مثبتة في كل دفعة.',
-    certs: [
-      { t: 'Fair Trade', d: 'تحقق مستقل من علاوات المزارعين والأجور العادلة.' },
-      { t: 'ISO 9001', d: 'شهادة نظام إدارة الجودة الشامل من المنشأ إلى الوجهة.' },
-      { t: 'USDA Organic', d: 'إنتاج عضوي معتمد وسلسلة توريد معتمدة.' },
+    farmEyebrow: 'برنامج المزارعين', farmTitle: 'شراكة مباشرة،', farmItalic: 'وسطاء أقل.',
+    farmLead: 'نعمل مع YCFCU وSCFCU وFNC وCOCOBOD وشركاء تعاونيات مباشرة.',
+    farmStats: [
+      { v: '+١٢٠٠٠', l: 'مزارع شريك مباشر' },
+      { v: '+١٢٠', l: 'تعاونية نشطة' },
+      { v: '٪١٨', l: 'متوسط حصة العلاوة' },
+      { v: '٦', l: 'وحدات تدريب سنوية' },
     ],
-    ctaTitle: 'قُد التغيير في الخدمات اللوجستية الغذائية العالمية.',
-    ctaLead:
-      'تواصل مع فريقنا التجاري للحصول على خارطة طريق صفر نفايات 2030 وتقرير الاستدامة السنوي.',
-    ctaBtn: 'تواصل معنا',
+    planetEyebrow: 'الكوكب', planetTitle: 'كربون، بلاستيك،', planetItalic: 'هدف قابل للقياس.',
+    planetPoints: [
+      { h: 'موازنة كربون', d: '٠٫٣٤ طن CO₂e لكل حاوية مع موازنة معتمدة.' },
+      { h: 'خالٍ من البلاستيك', d: 'FIBC وكرتون قابلان للتدوير.' },
+      { h: 'تحسين المسار', d: 'تجميع الشحنات + ميناء صحيح = خفض ٢٢٪ في الانبعاثات.' },
+      { h: 'ضبط الفاقد', d: 'فاقد أقل من ١٫٥٪.' },
+    ],
+    reportEyebrow: 'تقرير سنوي', reportTitle: 'تقرير استدامة', reportItalic: '٢٠٢٥.',
+    reportLead: 'قياس كامل لوصول المزارعين، نسبة الشحنات القابلة للتتبع، نطاق الشهادات.',
+    ctaBtn: 'تحميل التقرير',
   },
 }[locale];
 
-const contactHref = localePath('/contact/', locale);
-
-const heroImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAohqkNYOKdlysbkxMYZJFlb6ppPT4KCWsCS5RURyvo63WJQLj6aYQ-NTYEYlktkbgz2U0aON8rHDogb0Ijog2HLzd_hADpMjyIs6YE_IonBGgBTe26PK8VyxDJd33uAfOtTy6_hSKDiqDnS0uHAN5TyE_z8wo6TbCZv_uZRfmqB1X_B01CmyJVMc1DosjfJk84V9lLjhNi-s7aDXQMj-E5CNlJ3YmMA_8hcAqWwNDTMHA7qNtynuxCt7Z3A4QkN6rtUQmITCBOBtM',
-);
-const farmerImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDQPHr7UEPw-MYNmEf2OUXw8dwHJzjgasQbi6WcFjgCvNY0HX-Pzdy1qbEITqd9n3h75eqMtEzeUnPJzUMvKCeNOR1F7J9q_7UsLI_q82R2wdZraaqmYqnfvr8RtKW7CtCtwXAHSaRE7NZP4wUXn6ggndFfwGj9zvVEPAKusbjNLtABGnjlWtOOQwyPsaH2crHU2fK6jJZ8xb_Ts9R5I0KbbsxdbyEKihK3uA9-9BYgupBJKx-gPuxgkVYcbaNVybCbk2R5ot6B928',
-);
-const planetImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCiQXxeknVJoNtxDEy9VDL41-wM4brLHNwA_sfOuImBCcz_6RHIs0pUlj41zLpJnvpbT6J904tAMgASUjZmS3eCjAjgyr6G3dj_e188JmMvQpMd-0zHmy8PUB7FBf364lrF3KuJFyhjeCgXMiiE2yAK5NZIsK0G_cE6GeuX3j3xmktkuZGBCcODiGxXGav8O-N69y2rZYKQjvYYHP6CzVMDj09LqyzSLAoAlLvqRHn-DkQpJONZY0zLikWQE1HxNu1vR2b0739YYjo',
-);
+const heroBg = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2400&q=80';
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: tr.nav.sustainability }]} />
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    background={heroBg}
+    meta={[
+      { label: 'EUDR', value: '92% compliant' },
+      { label: 'Carbon', value: '0.34 t / TEU' },
+      { label: 'Farmers', value: '12,000+' },
+      { label: 'Audit', value: 'GFSI · 3P' },
+    ]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* Hero — typography-first, small framed photograph, soft halo */}
-  <section class="hero relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-20 md:pt-20 md:pb-28 lg:pt-24 lg:pb-32">
-    <div
-      aria-hidden="true"
-      class="hero-halo pointer-events-none absolute -top-24 left-1/2 h-[640px] w-[1200px] -translate-x-1/2 opacity-50"
-    ></div>
-
-    <div class="relative mx-auto grid max-w-7xl grid-cols-1 items-end gap-8 px-5 sm:gap-10 sm:px-6 md:px-8 lg:grid-cols-12 lg:gap-14">
-      <div class="lg:col-span-7" data-reveal>
-        <span class="eyebrow mb-5 block text-orange">{copy.eyebrow}</span>
-        <h1 class="serif-display text-[2rem] font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-[2.5rem] md:text-[3.4rem] lg:text-[4.2rem]">
-          {copy.heroTitle}
-        </h1>
-        <p class="mt-6 max-w-[36rem] text-[15px] leading-[1.7] text-on-surface-muted md:text-lg">
-          {copy.heroLead}
-        </p>
-      </div>
-
-      <div class="lg:col-span-5" data-reveal>
-        <figure class="photo-grade photo-grade--cool relative ms-auto overflow-hidden rounded-sm shadow-editorial">
-          <img
-            src={heroImg}
-            alt=""
-            width="800"
-            height="1000"
-            class="aspect-[4/5] w-full max-w-[14rem] object-cover sm:max-w-[20rem] md:max-w-[24rem] lg:max-w-none"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </figure>
-      </div>
+  <CorpSection variant="white" eyebrow={copy.pillarsEyebrow} title={copy.pillarsTitle} italic={copy.pillarsItalic}>
+    <div class="su-pillars">
+      {copy.pillars.map((p, i) => (
+        <article class="su-pillar">
+          <span class="co-num su-pillar__num">0{i + 1}</span>
+          <h3 class="co-h3">{p.h}</h3>
+          <p>{p.d}</p>
+          <span class="su-pillar__kpi">{p.kpi}</span>
+        </article>
+      ))}
     </div>
-  </section>
+  </CorpSection>
 
-  <AmuletDivider compact />
-
-  {/* Farmer empowerment — asymmetric editorial */}
-  <section class="px-5 py-14 sm:px-6 sm:py-16 md:py-24">
-    <div class="mx-auto w-full max-w-7xl">
-      <div class="mb-10 grid grid-cols-1 gap-6 md:mb-14 md:grid-cols-[5fr_7fr] md:gap-14" data-reveal>
-        <div>
-          <span class="eyebrow mb-4 block text-orange">{copy.farmerEyebrow}</span>
-          <h2 class="serif-display text-3xl font-semibold leading-tight text-on-surface md:text-4xl lg:text-[2.6rem]">
-            {copy.farmerTitle}
-          </h2>
+  <CorpSection variant="navy" id="farmers" eyebrow={copy.farmEyebrow} title={copy.farmTitle} italic={copy.farmItalic} lede={copy.farmLead}>
+    <div class="su-stats">
+      {copy.farmStats.map((s) => (
+        <div class="su-stat">
+          <span class="co-num su-stat__v">{s.v}</span>
+          <span class="su-stat__l">{s.l}</span>
         </div>
-        <p class="border-s-2 border-orange/60 ps-5 text-base leading-[1.7] text-on-surface-muted sm:ps-6 md:text-lg">
-          {copy.farmerLead}
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-8" data-reveal>
-        <figure class="photo-grade photo-grade--warm overflow-hidden rounded-sm md:col-span-8">
-          <img
-            src={farmerImg}
-            alt={copy.farmerImgAlt}
-            class="aspect-[4/3] w-full object-cover md:aspect-[16/10]"
-            width="1200"
-            height="900"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-        <div class="flex flex-col justify-center gap-8 md:col-span-4">
-          <div>
-            <span class="serif-display block text-4xl font-semibold text-teal md:text-5xl">
-              {copy.farmerStatsNumber}
-            </span>
-            <span class="eyebrow mt-2 block text-on-surface-subtle">
-              {copy.farmerStatsLabel}
-            </span>
-          </div>
-          <div class="border-t border-outline/30 pt-6">
-            <span class="serif-display block text-4xl font-semibold text-orange md:text-5xl">
-              {copy.farmerStatsNumber2}
-            </span>
-            <span class="eyebrow mt-2 block text-on-surface-subtle">
-              {copy.farmerStatsLabel2}
-            </span>
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
-  </section>
+  </CorpSection>
 
-  <AmuletDivider />
-
-  {/* Planet metrics — stat row, light, framed image */}
-  <section class="px-5 py-14 sm:px-6 sm:py-16 md:py-24">
-    <div class="mx-auto w-full max-w-7xl">
-      <div class="mb-10 grid grid-cols-1 gap-6 md:mb-14 md:grid-cols-2 md:gap-14" data-reveal>
-        <div>
-          <span class="eyebrow mb-4 block text-orange">{copy.planetEyebrow}</span>
-          <h2 class="serif-display text-3xl font-semibold leading-tight text-on-surface md:text-4xl lg:text-[2.6rem]">
-            {copy.planetTitle}
-          </h2>
-        </div>
-        <p class="text-base leading-[1.7] text-on-surface-muted md:text-lg">
-          {copy.planetLead}
-        </p>
-      </div>
-
-      <div
-        class="mb-12 grid grid-cols-2 gap-y-6 border-y border-outline/30 py-8 sm:gap-8 md:mb-16 md:grid-cols-4 md:py-10"
-        data-reveal
-      >
-        {copy.metrics.map((m, i) => (
-          <div class:list={['ps-4 sm:ps-5', i > 0 ? 'border-s border-outline/30' : '']}>
-            <span class="serif-display text-2xl font-semibold text-teal md:text-3xl">{m.n}</span>
-            <p class="eyebrow mt-2 text-[10px] text-on-surface-subtle">{m.l}</p>
-          </div>
-        ))}
-      </div>
-
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-8" data-reveal>
-        <figure class="photo-grade overflow-hidden rounded-sm md:col-span-7">
-          <img
-            src={planetImg}
-            alt={copy.planetImgAlt}
-            class="aspect-[16/10] w-full object-cover"
-            width="1600"
-            height="900"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-        <div class="md:col-span-5 md:self-center">
-          <h3 class="serif-display text-2xl font-semibold text-on-surface md:text-[1.8rem]">
-            {copy.planetCardTitle}
-          </h3>
-          <p class="mt-4 max-w-prose text-base leading-[1.7] text-on-surface-muted">
-            {copy.planetCardLead}
-          </p>
-        </div>
-      </div>
+  <CorpSection variant="snow" id="planet" eyebrow={copy.planetEyebrow} title={copy.planetTitle} italic={copy.planetItalic}>
+    <div class="su-grid">
+      {copy.planetPoints.map((p, i) => (
+        <article class="su-card">
+          <span class="co-num su-card__num">0{i + 1}</span>
+          <h3 class="co-h3">{p.h}</h3>
+          <p>{p.d}</p>
+        </article>
+      ))}
     </div>
-  </section>
+  </CorpSection>
 
-  <AmuletDivider compact />
-
-  {/* Certifications — light editorial cards */}
-  <section class="px-5 py-14 sm:px-6 sm:py-16 md:py-24">
-    <div class="mx-auto max-w-5xl">
-      <header class="mb-12 text-center md:mb-16" data-reveal>
-        <span class="eyebrow mb-4 block text-orange">{copy.certEyebrow}</span>
-        <h2 class="serif-display text-3xl font-semibold text-on-surface md:text-4xl lg:text-[2.6rem]">
-          {copy.certTitle}
-        </h2>
-        <p class="mx-auto mt-5 max-w-2xl text-base leading-[1.7] text-on-surface-muted md:text-lg">
-          {copy.certLead}
-        </p>
-      </header>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-10">
-        {copy.certs.map((c, i) => (
-          <article data-reveal style={`transition-delay:${i * 100}ms`}>
-            <h3 class="serif-display mb-3 text-xl font-semibold text-teal">{c.t}</h3>
-            <p class="text-sm leading-[1.7] text-on-surface-muted">{c.d}</p>
-          </article>
-        ))}
+  <CorpSection variant="white" id="report" compact>
+    <div class="su-report">
+      <div>
+        <span class="co-eyebrow">{copy.reportEyebrow}</span>
+        <h2 class="co-h2">{copy.reportTitle} <em>{copy.reportItalic}</em></h2>
+        <p>{copy.reportLead}</p>
       </div>
+      <a href={localePath('/sustainability/report/', locale)} class="co-btn co-btn--primary">{copy.ctaBtn} <span aria-hidden="true">→</span></a>
     </div>
-  </section>
-
-  <AmuletDivider />
-
-  {/* Closing — light editorial CTA */}
-  <section class="px-5 pb-20 sm:px-6 sm:pb-28 md:pb-36">
-    <div class="mx-auto max-w-3xl text-center" data-reveal>
-      <span class="eyebrow text-orange">Trade · Trust · Kismet</span>
-      <h2 class="serif-display mt-4 text-3xl font-semibold leading-[1.1] tracking-tight text-on-surface md:text-[2.4rem]">
-        {copy.ctaTitle}
-      </h2>
-      <p class="mx-auto mt-5 max-w-xl text-base leading-[1.7] text-on-surface-muted md:text-lg">
-        {copy.ctaLead}
-      </p>
-      <div class="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
-        <Button href={contactHref} variant="primary">{copy.ctaBtn}</Button>
-      </div>
-    </div>
-  </section>
+  </CorpSection>
 </main>
 
-<style>
-  .hero-halo {
-    background:
-      radial-gradient(closest-side, rgba(0, 172, 175, 0.08), transparent 70%),
-      radial-gradient(closest-side at 70% 60%, rgba(246, 139, 92, 0.07), transparent 70%);
-  }
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity 800ms cubic-bezier(0.22, 0.72, 0.22, 1),
-      transform 800ms cubic-bezier(0.22, 0.72, 0.22, 1);
-  }
-  [data-reveal].is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
-</style>
-
-<script>
-  const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
-  if (items.length) {
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              e.target.classList.add('is-visible');
-              io.unobserve(e.target);
-            }
-          }
-        },
-        { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
-      );
-      items.forEach((el) => io.observe(el));
-    } else {
-      items.forEach((el) => el.classList.add('is-visible'));
-    }
-  }
-</script>
-
 <SiteFooter locale={locale} />
+
+<style>
+  .su-pillars { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  @media (min-width: 880px) { .su-pillars { grid-template-columns: repeat(3, 1fr); } }
+  .su-pillar { padding-top: 24px; border-top: 2px solid var(--co-amber); display: flex; flex-direction: column; gap: 10px; }
+  .su-pillar__num { font-size: 32px; color: var(--co-amber); line-height: 1; }
+  .su-pillar h3 { color: var(--co-ink); margin: 0; }
+  .su-pillar p { font-family: var(--co-sans); font-size: 14px; color: var(--co-mute); margin: 0; line-height: 1.6; }
+  .su-pillar__kpi { font-family: var(--co-sans); font-size: 13px; font-weight: 700; color: var(--co-navy); padding-top: 8px; border-top: 1px solid var(--co-line); margin-top: 6px; }
+
+  .su-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); }
+  @media (min-width: 880px) { .su-stats { grid-template-columns: repeat(4, 1fr); } }
+  .su-stat { background: rgba(255,255,255,0.02); padding: 28px 22px; display: flex; flex-direction: column; gap: 6px; }
+  .su-stat__v { font-size: clamp(28px, 3vw, 44px); color: var(--co-white); line-height: 1; }
+  .su-stat__l { font-family: var(--co-sans); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--co-amber); text-transform: uppercase; }
+
+  .su-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 720px) { .su-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+  @media (min-width: 1080px) { .su-grid { grid-template-columns: repeat(4, 1fr); } }
+  .su-card { background: var(--co-white); border: 1px solid var(--co-line); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .su-card__num { font-size: 22px; color: var(--co-amber); line-height: 1; }
+  .su-card h3 { color: var(--co-ink); margin: 0; font-size: 17px; }
+  .su-card p { font-family: var(--co-sans); font-size: 13px; color: var(--co-mute); margin: 0; line-height: 1.55; }
+
+  .su-report { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; max-width: 800px; }
+  @media (min-width: 720px) { .su-report { flex-direction: row; align-items: center; justify-content: space-between; gap: 48px; max-width: none; } }
+  .su-report h2 { color: var(--co-ink); margin: 8px 0; }
+  .su-report p { font-family: var(--co-sans); font-size: 17px; color: var(--co-mute); margin: 0; line-height: 1.6; }
+</style>

@@ -1,732 +1,178 @@
 ---
-/**
- * InsightsPage — faithful to Stitch design (insights_market_reports_kismet_foods).
- *
- * Sections:
- *   1. Hero                 — large italic serif headline, editorial side image with
- *                             "Latest Update" overlap note.
- *   2. News ticker          — dark horizontal marquee with 4 market-pulse items.
- *   3. Featured report      — full-width lead article card with cover image.
- *   4. Market reports grid  — 6 report teasers; filter chips (All / Coffee / Cocoa /
- *                             Hazelnuts / Spices / Logistics / Sustainability).
- *   5. Origin stories       — sticky left column + 2-column story grid (4 stories).
- *   6. Global reach map     — decorative world-map band with live fleet card.
- *   7. Newsletter band      — email CTA gradient with form shell.
- *
- * All 9 Stitch images on the source page are used:
- *   · Hero portrait         (coffee bean close-up)
- *   · 3 market-report cards (cocoa, coffee, hazelnuts)
- *   · 4 origin stories      (Ghana, Anatolia, Vietnam, container ship)
- *   · Global map            (world map with pinpoints)
- */
 import type { Locale } from '@/i18n';
-import { t } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
+import { localePath } from '@/i18n';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
-interface Props {
-  locale: Locale;
-  currentPath: string;
-}
-
+interface Props { locale: Locale; currentPath: string }
 const { locale, currentPath } = Astro.props;
-const tr = t(locale);
 
-/* --- Locale-scoped page copy --- */
 const copy = {
   tr: {
-    eyebrow: 'KÜRATE EDİLMİŞ ZEKÂ · YILLARIN BİRİKİMİ',
-    heroTitle1: 'Piyasa Zekâsı ve',
-    heroTitleItalic: 'Küresel Hikâyeler',
-    heroLead:
-      'Menşe hasatları ile küresel talep arasındaki hassas dengeyi analiz ediyoruz. Yıllara yayılmış ticaret deneyimimiz size her sevkiyatın ardındaki ham veriyi ve insan hikâyesini kayıtsız şartsız aktarır.',
-    latestLabel: 'SON ANALİZ',
-    latestQuote: '"Sürdürülebilirlik artık bir seçenek değil; emtia piyasasının merkezidir."',
-    ticker: [
-      'KAKAO VADELİLERİ %2,4 YÜKSELDİ',
-      'MOMBASA LİMAN YOĞUNLUĞU HAFİFLİYOR',
-      'ETİYOPYA HASAT TAHMİNLERİ YAYINLANDI',
-      'AB SÜRDÜRÜLEBİLİRLİK DÜZENLEMELERİ ERTELENDİ',
+    eyebrow: 'GÖRÜŞ & PİYASA',
+    heroTitle: 'Editör masamızdan.',
+    heroLead: 'Aylık piyasa raporları, çiftçi portreleri ve regülasyon yorumları. Yatırımcı ve alıcı tarafına aynı veri seti.',
+    featuredEyebrow: 'ÖNE ÇIKAN', featuredTitle: 'Mayıs 2026', featuredItalic: 'piyasa raporu.',
+    featuredCat: 'Piyasa Raporu',
+    featuredHead: 'Arabica fiyatlarında 18 aylık zirve: 2026 hasat sezonu öngörüleri.',
+    featuredBody: 'Brezilya kuraklığı, Etiyopya hasadı ve dolar paritesi — Q3 için bekleyen 3 senaryoyu inceledik. Haziran-Eylül penceresinde alıcı stratejisi ve EUDR uyumlu Etiyopya hattının kritik noktaları.',
+    featuredRead: '12 dk · 04 May 2026',
+    listEyebrow: 'TÜM YAYINLAR',
+    listTitle: 'Sektör görüşü,', listItalic: 'pazarlama değil.',
+    listLead: 'ICCO, ICO, FAO, USDA-FAS ve menşe ülke raporlarının sentezi. Senaryolar; tavsiyeler değil bağlam.',
+    items: [
+      { date: '21 Nis 2026', cat: 'Saha', read: '8 dk', t: 'Antep’te üç nesil: bir fıstık ailesinin portresi.', d: 'Gaziantep platosunda 1962’den bu yana fıstık yetiştiren bir ailenin yıllık tedarik döngüsü.' },
+      { date: '15 Nis 2026', cat: 'Regülasyon', read: '14 dk', t: 'EU EUDR Aralık 2024 sonrası: ilk altı ayın bilançosu.', d: 'Geo-trace + farmer-ID uygulamasında Türkiye, Etiyopya ve Gana hatlarının uyum oranları.' },
+      { date: '03 Nis 2026', cat: 'Pazar', read: '6 dk', t: 'Vietnam robusta hasadı: küresel kahve fiyatlarına etkisi.', d: 'USDA-FAS Mart raporu üzerinden Q2 robusta öngörüleri ve LIFFE diferansiyel hareketi.' },
+      { date: '28 Mar 2026', cat: 'Saha', read: '7 dk', t: 'Yirgacheffe washing station ziyareti.', d: 'YCFCU kooperatifinin 2026 hasat sezonu hazırlıkları, parche kurutma yatakları ve cup score profilleri.' },
+      { date: '14 Mar 2026', cat: 'Pazar', read: '10 dk', t: 'Kakao fiyat şoku: ICCO Mart raporunun okunması.', d: 'Batı Afrika hasadı ve dolar/USD-EUR paritesi nedenleri; çikolata sanayisinin 2026 stok stratejisi.' },
+      { date: '02 Mar 2026', cat: 'Lojistik', read: '5 dk', t: 'Süveyş Kanalı yeniden açıldı: gıda navlununa etkisi.', d: 'Kakao, kahve ve baharat hatlarında Tema-Hamburg ve Cat Lai-Hamburg navlun değişimi.' },
     ],
-    featuredKicker: 'KAPAK DOSYASI · Ç1 2026',
-    featuredTitle: 'Q1 2026 Kahve Piyasası Görünümü',
-    featuredExcerpt:
-      'Latin Amerika don riski, Vietnam Robusta arzı ve Türk Lirası paritesinin spesiyalite kahve fiyatlaması üzerindeki birleşik etkisine 36 sayfalık analitik bir bakış.',
-    featuredMeta: '18 Mart 2026 · 18 dk okuma · PDF rapor',
-    featuredCta: 'Tam Raporu Oku',
-    reportsEyebrow: 'PİYASA RAPORLARI',
-    reportsTitle: 'Öne Çıkan Raporlar',
-    reportsLead:
-      'Ticaret uzmanlarımızın çeyrek dönemlik piyasa analizleri — fiyat dalgalanmaları, arz eğilimleri, kalite kriterleri.',
-    filterLabel: 'Kategori',
-    filters: ['Tümü', 'Kahve', 'Kakao', 'Fındık', 'Baharat', 'Lojistik', 'Sürdürülebilirlik'],
-    downloadCta: 'PDF İndir',
-    archiveCta: 'Arşivi Gör',
-    readMore: 'Hikâyeyi Oku',
-    reports: [
-      {
-        category: 'Fildişi Sahili · Kakao',
-        title: 'Batı Afrika Kakao Veriminde Süreklilik',
-        date: '2026-03-18',
-        dateLabel: '18 Mart 2026',
-        excerpt: '2026 sezonu için fiyat dalgalanmaları ve çiftlik kapısı tedarik zinciri optimizasyonlarına derin bir bakış.',
-        originLabel: 'Ç2 ANALİZ',
-        size: '4,2 MB',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAm4jWw0eriR5Egye3xaJthK3YeyUfSZwJsTzX3dM6JmPAVmaWK5hMSdvJDs0BHj9-BBQ3OFLBG1S8LwCdYlRLxraVTHkbaeSNTD-JilrnTWampD3bcjD3Jl__1wXoGidHmVDeyC2cSE-Nec2NTJOgI6zKuvQSOhBAoMrXUr3VzD9rk5qva6hBFH1g9Th_zK1mYsLPs2IVQP1CN7VxBCCNw5ct-hDtxY3FtOLhgY48Zh4iFk1-UoeCcePfTywqALakHLSdp348AnFg',
-        imgAlt: 'Jüt çuval üzerinde kurutulmuş kakao kapsülleri.',
-      },
-      {
-        category: 'Etiyopya · Kahve',
-        title: 'Arabika Menşei ve Fiyat Endeksi',
-        date: '2026-02-24',
-        dateLabel: '24 Şubat 2026',
-        excerpt: 'Yirgacheffe bölgesindeki iklim değişikliklerinin küresel kahve vadeli işlemleri ve kalite ölçütlerine etkisi.',
-        originLabel: 'ŞUBAT RAPOR',
-        size: '3,8 MB',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuATNENMMnVQCZfEoByWOAHNyZ_LShKbl0QiJoZg4lsHI8kSzsZ8rVoXZs2j2GMXc7VDX26ieOuP7mcC9ZLSRxGBjYscE2YIHD320ykrbD6X1IrpsTCc4ZbVcRskXCtVXpGMxUkPxB4s50mgxLAlBEKq8FFmiYwCb19L_bro5rJViH7Up27LMKrSsj_DOe4Ww1OBwnrU6ATJ8imkM2RLalZoLJMjLzwwjkS74sVnRZExFU3qRUThCoFYwjGlgo65sYVcVxKl9tX7wZg',
-        imgAlt: 'Uzmanın elle ayırdığı ham yeşil kahve çekirdekleri.',
-      },
-      {
-        category: 'Türkiye · Fındık',
-        title: '2025-26 Fındık Hasat Raporu',
-        date: '2026-01-12',
-        dateLabel: '12 Ocak 2026',
-        excerpt: 'Karadeniz bölgesi ihracat hacimleri ve döviz oynaklığının fındık fiyatlaması üzerindeki etkisi.',
-        originLabel: 'Ç2 TAHMİN',
-        size: '5,1 MB',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDCjATLqk18UYfjlpEOhkGTKdj8GKp22CjpX-7yjx-QO9zNEBeSsrUHNIwaSgnlSucSfS4VZ_hd-Ae73JB43CEGwpbTQzuRW82Ewfr307N8UO7e-WeT2y82Xr4uAsml4FYwEzXCBKw_ev6jbd9Lf9xTqQl95vDRfhJlGurZiDyG4-xWHJHTfuiLjOGhMEw9FzTy1-BrWiKjQTNbjpPb-8w44Rr6kjcgHkmbjOqhfeYfMEZ3i2dV27hV7VgFsnI_kAEW95LKtxVe4k',
-        imgAlt: 'Ahşap masada yeşil yapraklarıyla taze fındıklar.',
-      },
-    ],
-    storiesEyebrow: 'TARLADAN',
-    storiesTitle: 'Menşe Hikâyeleri',
-    storiesLead:
-      'Küratörlerimizle birlikte mükemmelliğin köklerine yolculuk edin. Bunlar, tedarik zincirimizin kalbindeki insan, toprak ve geleneklerin hikâyeleridir.',
-    storyTabs: ['Hasatçılar', 'Tarımsal İnovasyon', 'Yerel Gelenekler'],
-    stories: [
-      {
-        category: 'Gana · Topluluk',
-        title: 'Gana’da Hasat Mevsimi: İşbirliğinin Dokusu',
-        excerpt: 'Gana’yı sürdürülebilir kakao hasadında dünya liderine dönüştüren topluluk kooperatiflerini keşfediyoruz.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjLJXeact6O9mnmY14dTbvI7LVWobCQwLac9LqFEbcTqhpoAG8MiV8tlf647Tk7IMAFhkH0U_FZ8VxmZhJ7du2MjF05ajvYaAamZL0alKOfepcTh2qi8hdoawhv8AvnfECEvPaIrIIvlNeyGm3G_1vO-KJ3G76rcrZN9ooeY8nq9BbXuFmmEv2PoIEH93XYIHAR2m2rUsOY2GJ1cpjrV-Bew-Hu3soW2WlR3joXkuu4CcNUCNt-0Et0lDl-tM6QsAILezQsOQL32k',
-        imgAlt: 'Gana’da günbatımında yemyeşil kakao plantasyonu.',
-      },
-      {
-        category: 'Türkiye · İnovasyon',
-        title: 'Anadolu’da Rejeneratif Tarımın Geleceği',
-        excerpt: 'Uydu görüntüleme ile yeniden canlandırılan kadim teknikler; toprağın nesiller boyu sağlığı için.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_CQNLVNX4mPvEq-0FQRE4rLJhCRWDG8wtEhBUM1mjAc_zcXH4axExQo4cMNlv20idwkP6bTRrgR_3_wcieDdnFaIG0GxKwTicZa6dd3vYynFWkt7cYcI3Au6OBJFN6xskqMlaPJkjsfEJvfxG7fNPk9RmSEh35wxXZxl2gY1n-qx7CcP68m-ND7s89lvsvi6ONrk6Ix3mibkPk-R9sesEoo4QxcmJ3CrZ2g6xSIBUCUxUJlGpni0pkcsj6gTbDcoPHLQXYoEJR4A',
-        imgAlt: 'Anadolu’da geometrik desenli tarım arazilerinin drone görüntüsü.',
-      },
-      {
-        category: 'Vietnam · Tedarik',
-        title: 'Siyah Altın: Dak Lak’ın Baharat Rotaları',
-        excerpt: 'Vietnam karabiberinin titiz işleme standartlarını dağ trelislerinden küresel kilerlere kadar belgeliyoruz.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4WuACYXARhmHfVQV1QzCeNqFwxCPNg46278srByFBtM5RHsUUe3WCpN6NJ2kZkISwdbCNYOM8lLIW8hYOYfZax3GYQvqhggwu7ISzuBBRJGbUWVbfGg-IrHsnH-1nlOUJPOdljnb3VEiCsNDA7uGJjkEwyY5vKRfRMLXI2oznNbTEVTxugjRX6gXp9Ajgdpo_PxPM8Dtp5-oDv5MqqSqpJ22-J1MgSFcKKG7cFo0Lo_jkFbGwu2NEasRFfjrMS795HlYeb67RCxs',
-        imgAlt: 'Vietnam’da avluda kuruyan karabiberler.',
-      },
-      {
-        category: 'Küresel · Lojistik',
-        title: 'Görünmez Köprü: Küresel Ticaret Lojistiği',
-        excerpt: 'Değişen jeopolitik manzarada ham maddelerin okyanus ötesi yolculuğuna özenle hazırlanmış bir bakış.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBhh7i1gcgB8l32Q5aAqpdNuRug717QjJ49g6i4znwmO1ttZf0Um5DSG8f-dSmrF2moUAcs9awq50Ebo63oTWsSTk0nph8TGoc-PEmIEDJlWLyd-H63PpoMncZsDjsf-Shk7Pd46BcfoLp2uk5x8V8OvVJgak9n3yqtbJ2mdWmVW1JS-S-jcDYPo97SXjFCVla-8t_hsRJ2hizaxq_42hTOVRzjeQfjaSfskYMAGYxu2ddSswA3UVCx4YXXZwvl2JgphzF5N7Z5r4E',
-        imgAlt: 'Tropikal denizlerde ilerleyen konteyner gemisi.',
-      },
-    ],
-    extraReports: [
-      { cat: 'Kakao', title: 'Kakao Fiyat Oynaklığı: 2026 Takvimi', meta: '9 Mart 2026 · 12 dk' },
-      { cat: 'Türkiye', title: 'Türkiye İhracat Eğilimleri ve Yeni Pazarlar', meta: '27 Şubat 2026 · 9 dk' },
-      { cat: 'Sürdürülebilirlik', title: 'Kahve Sektöründe Sürdürülebilirlik Standartları', meta: '14 Şubat 2026 · 14 dk' },
-    ],
-    mapTitle: 'Gerçek Zamanlı Küresel Erişim',
-    mapLead: 'Aktif menşelerimizi ve başlıca dağıtım noktalarımızı dünya çapında izliyoruz.',
-    fleetLabel: 'CANLI FİLO DURUMU',
-    fleetA: '24 Aktif Sevkiyat',
-    fleetB: '12 Bekleyen Menşe',
-    newsletterEyebrow: 'AYLIK BÜLTEN',
-    newsletterTitle: 'Piyasa raporları doğrudan gelen kutunuza',
-    newsletterLead:
-      'Aylık yayınlanan özel analizlerimizi, menşe brifinglerini ve çeyrek dönemlik piyasa rehberlerini takip etmek için ticari iletişim listemize katılın.',
-    emailPlaceholder: 'çalışma-eposta@firmanız.com',
-    newsletterCta: 'Abone Ol',
+    archiveBtn: 'Arşivin tamamı',
+    subEyebrow: 'BÜLTEN', subTitle: 'Aylık piyasa raporu', subItalic: 'doğrudan kutunuza.',
+    subBody: 'Her ayın ilk pazartesi günü piyasa görüşü, EUDR güncellemesi ve Kismet menşe notları.',
+    subPlaceholder: 'kurumsal@sirket.com', subBtn: 'Abone Ol',
   },
   en: {
-    eyebrow: 'CURATED INTELLIGENCE · YEARS OF EXPERTISE',
-    heroTitle1: 'Market Intelligence &',
-    heroTitleItalic: 'Global Stories',
-    heroLead:
-      'We analyse the delicate equilibrium between origin harvests and global demand. Backed by years of operational trade experience, we bring you the raw data and the human story behind every shipment.',
-    latestLabel: 'LATEST UPDATE',
-    latestQuote: '"Sustainability is no longer an option; it is the core of the commodity market."',
-    ticker: [
-      'COCOA FUTURES UP 2.4%',
-      'PORT CONGESTION AT MOMBASA EASING',
-      'ETHIOPIAN HARVEST ESTIMATES RELEASED',
-      'NEW EU SUSTAINABILITY REGULATIONS DEFERRED',
+    eyebrow: 'INSIGHTS & MARKETS',
+    heroTitle: 'From the editor’s desk.',
+    heroLead: 'Monthly market reports, farmer portraits and regulation commentary. Same data set for investors and buyers.',
+    featuredEyebrow: 'FEATURED', featuredTitle: 'May 2026', featuredItalic: 'market report.',
+    featuredCat: 'Market Report',
+    featuredHead: '18-month high in arabica prices: 2026 harvest outlook.',
+    featuredBody: 'Brazilian drought, Ethiopian harvest and the dollar parity — three scenarios pending for Q3. Buyer strategy in the Jun-Sep window and the critical points of EUDR-compliant Ethiopian line.',
+    featuredRead: '12 min · 04 May 2026',
+    listEyebrow: 'ALL PUBLICATIONS',
+    listTitle: 'Sector view,', listItalic: 'not marketing.',
+    listLead: 'Synthesis of ICCO, ICO, FAO, USDA-FAS and country reports. Scenarios — context, not advice.',
+    items: [
+      { date: '21 Apr 2026', cat: 'Field', read: '8 min', t: 'Three generations in Antep: portrait of a pistachio family.', d: 'A family on the Gaziantep plateau growing pistachios since 1962 — their annual sourcing cycle.' },
+      { date: '15 Apr 2026', cat: 'Regulation', read: '14 min', t: 'After EU EUDR Dec 2024: a six-month balance sheet.', d: 'Türkiye, Ethiopia and Ghana compliance rates with geo-trace + farmer-ID.' },
+      { date: '03 Apr 2026', cat: 'Market', read: '6 min', t: 'Vietnam robusta harvest: impact on global coffee prices.', d: 'Q2 robusta outlook and LIFFE differential moves through the USDA-FAS March report.' },
+      { date: '28 Mar 2026', cat: 'Field', read: '7 min', t: 'A visit to a Yirgacheffe washing station.', d: 'YCFCU cooperative’s 2026 harvest prep, parche drying beds and cup score profiles.' },
+      { date: '14 Mar 2026', cat: 'Market', read: '10 min', t: 'Cocoa price shock: reading the ICCO March report.', d: 'West African harvest and USD/EUR parity drivers; chocolate industry 2026 stock strategy.' },
+      { date: '02 Mar 2026', cat: 'Logistics', read: '5 min', t: 'Suez Canal reopened: impact on food freight.', d: 'Tema-Hamburg and Cat Lai-Hamburg freight changes for cocoa, coffee and spice lines.' },
     ],
-    featuredKicker: 'COVER STORY · Q1 2026',
-    featuredTitle: 'Q1 2026 Coffee Market Outlook',
-    featuredExcerpt:
-      'A 36-page analytical view of the combined effect of Latin American frost risk, Vietnamese Robusta supply, and the Turkish Lira parity on specialty coffee pricing.',
-    featuredMeta: 'March 18, 2026 · 18 min read · PDF report',
-    featuredCta: 'Read Full Report',
-    reportsEyebrow: 'MARKET REPORTS',
-    reportsTitle: 'Featured Market Reports',
-    reportsLead:
-      'Quarterly market analyses from our trade experts — price movements, supply trends, and quality benchmarks.',
-    filterLabel: 'Category',
-    filters: ['All', 'Coffee', 'Cocoa', 'Hazelnuts', 'Spices', 'Logistics', 'Sustainability'],
-    downloadCta: 'Download PDF',
-    archiveCta: 'View Archive',
-    readMore: 'Read the story',
-    reports: [
-      {
-        category: 'Côte d’Ivoire · Cocoa',
-        title: 'The Resilience of the West African Yield',
-        date: '2026-03-18',
-        dateLabel: 'March 18, 2026',
-        excerpt: 'A deep dive into price fluctuations and farm-gate supply-chain optimisations for the 2026 season.',
-        originLabel: 'Q2 ANALYSIS',
-        size: '4.2 MB',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAm4jWw0eriR5Egye3xaJthK3YeyUfSZwJsTzX3dM6JmPAVmaWK5hMSdvJDs0BHj9-BBQ3OFLBG1S8LwCdYlRLxraVTHkbaeSNTD-JilrnTWampD3bcjD3Jl__1wXoGidHmVDeyC2cSE-Nec2NTJOgI6zKuvQSOhBAoMrXUr3VzD9rk5qva6hBFH1g9Th_zK1mYsLPs2IVQP1CN7VxBCCNw5ct-hDtxY3FtOLhgY48Zh4iFk1-UoeCcePfTywqALakHLSdp348AnFg',
-        imgAlt: 'Dried cocoa pods on a burlap sack.',
-      },
-      {
-        category: 'Ethiopia · Coffee',
-        title: 'Arabica Origin & Pricing Index',
-        date: '2026-02-24',
-        dateLabel: 'February 24, 2026',
-        excerpt: 'How regional climate shifts in the Yirgacheffe region are impacting global coffee futures and quality benchmarks.',
-        originLabel: 'FEBRUARY REPORT',
-        size: '3.8 MB',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuATNENMMnVQCZfEoByWOAHNyZ_LShKbl0QiJoZg4lsHI8kSzsZ8rVoXZs2j2GMXc7VDX26ieOuP7mcC9ZLSRxGBjYscE2YIHD320ykrbD6X1IrpsTCc4ZbVcRskXCtVXpGMxUkPxB4s50mgxLAlBEKq8FFmiYwCb19L_bro5rJViH7Up27LMKrSsj_DOe4Ww1OBwnrU6ATJ8imkM2RLalZoLJMjLzwwjkS74sVnRZExFU3qRUThCoFYwjGlgo65sYVcVxKl9tX7wZg',
-        imgAlt: 'Hand sorting raw green coffee beans.',
-      },
-      {
-        category: 'Türkiye · Hazelnuts',
-        title: 'Hazelnut Harvest Report 2025-26',
-        date: '2026-01-12',
-        dateLabel: 'January 12, 2026',
-        excerpt: 'Black Sea region export volumes and the effect of currency volatility on hazelnut pricing.',
-        originLabel: 'Q2 FORECAST',
-        size: '5.1 MB',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDCjATLqk18UYfjlpEOhkGTKdj8GKp22CjpX-7yjx-QO9zNEBeSsrUHNIwaSgnlSucSfS4VZ_hd-Ae73JB43CEGwpbTQzuRW82Ewfr307N8UO7e-WeT2y82Xr4uAsml4FYwEzXCBKw_ev6jbd9Lf9xTqQl95vDRfhJlGurZiDyG4-xWHJHTfuiLjOGhMEw9FzTy1-BrWiKjQTNbjpPb-8w44Rr6kjcgHkmbjOqhfeYfMEZ3i2dV27hV7VgFsnI_kAEW95LKtxVe4k',
-        imgAlt: 'Fresh hazelnuts with green leaves on a wooden table.',
-      },
-    ],
-    storiesEyebrow: 'FROM THE FIELDS',
-    storiesTitle: 'Origin Stories',
-    storiesLead:
-      'Travel with our curators to the roots of excellence. These are the stories of the people, the soil, and the traditions at the heart of our supply chain.',
-    storyTabs: ['The Harvesters', 'Agricultural Innovation', 'Local Traditions'],
-    stories: [
-      {
-        category: 'Ghana · Community',
-        title: 'Harvest Season in Ghana: A Tapestry of Cooperation',
-        excerpt: 'Exploring the community cooperatives that made Ghana a world leader in sustainable cocoa harvesting.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjLJXeact6O9mnmY14dTbvI7LVWobCQwLac9LqFEbcTqhpoAG8MiV8tlf647Tk7IMAFhkH0U_FZ8VxmZhJ7du2MjF05ajvYaAamZL0alKOfepcTh2qi8hdoawhv8AvnfECEvPaIrIIvlNeyGm3G_1vO-KJ3G76rcrZN9ooeY8nq9BbXuFmmEv2PoIEH93XYIHAR2m2rUsOY2GJ1cpjrV-Bew-Hu3soW2WlR3joXkuu4CcNUCNt-0Et0lDl-tM6QsAILezQsOQL32k',
-        imgAlt: 'Cocoa plantation in Ghana at sunset.',
-      },
-      {
-        category: 'Türkiye · Innovation',
-        title: 'The Future of Regenerative Farming in Anatolia',
-        excerpt: 'Ancient techniques revitalised with modern satellite imagery to ensure soil health for generations.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_CQNLVNX4mPvEq-0FQRE4rLJhCRWDG8wtEhBUM1mjAc_zcXH4axExQo4cMNlv20idwkP6bTRrgR_3_wcieDdnFaIG0GxKwTicZa6dd3vYynFWkt7cYcI3Au6OBJFN6xskqMlaPJkjsfEJvfxG7fNPk9RmSEh35wxXZxl2gY1n-qx7CcP68m-ND7s89lvsvi6ONrk6Ix3mibkPk-R9sesEoo4QxcmJ3CrZ2g6xSIBUCUxUJlGpni0pkcsj6gTbDcoPHLQXYoEJR4A',
-        imgAlt: 'Geometric agricultural fields across Anatolia from above.',
-      },
-      {
-        category: 'Vietnam · Sourcing',
-        title: 'Black Gold: The Spice Routes of Dak Lak',
-        excerpt: 'Documenting the rigorous processing standards of Vietnamese pepper from mountain trellis to global pantry.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4WuACYXARhmHfVQV1QzCeNqFwxCPNg46278srByFBtM5RHsUUe3WCpN6NJ2kZkISwdbCNYOM8lLIW8hYOYfZax3GYQvqhggwu7ISzuBBRJGbUWVbfGg-IrHsnH-1nlOUJPOdljnb3VEiCsNDA7uGJjkEwyY5vKRfRMLXI2oznNbTEVTxugjRX6gXp9Ajgdpo_PxPM8Dtp5-oDv5MqqSqpJ22-J1MgSFcKKG7cFo0Lo_jkFbGwu2NEasRFfjrMS795HlYeb67RCxs',
-        imgAlt: 'Peppercorns drying on mats in a Vietnamese courtyard.',
-      },
-      {
-        category: 'Global · Logistics',
-        title: 'The Invisible Bridge: Global Trade Logistics',
-        excerpt: 'A curated look at the ocean journey of raw materials across an ever-changing geopolitical landscape.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBhh7i1gcgB8l32Q5aAqpdNuRug717QjJ49g6i4znwmO1ttZf0Um5DSG8f-dSmrF2moUAcs9awq50Ebo63oTWsSTk0nph8TGoc-PEmIEDJlWLyd-H63PpoMncZsDjsf-Shk7Pd46BcfoLp2uk5x8V8OvVJgak9n3yqtbJ2mdWmVW1JS-S-jcDYPo97SXjFCVla-8t_hsRJ2hizaxq_42hTOVRzjeQfjaSfskYMAGYxu2ddSswA3UVCx4YXXZwvl2JgphzF5N7Z5r4E',
-        imgAlt: 'Container ship crossing tropical waters, aerial view.',
-      },
-    ],
-    extraReports: [
-      { cat: 'Cocoa', title: 'Cocoa Price Volatility: A 2026 Calendar', meta: 'March 9, 2026 · 12 min' },
-      { cat: 'Türkiye', title: 'Türkiye Export Trends & Emerging Markets', meta: 'February 27, 2026 · 9 min' },
-      { cat: 'Sustainability', title: 'Sustainability Standards in the Coffee Sector', meta: 'February 14, 2026 · 14 min' },
-    ],
-    mapTitle: 'Real-Time Global Reach',
-    mapLead: 'Tracking our active origins and major distribution hubs across the globe.',
-    fleetLabel: 'LIVE FLEET STATUS',
-    fleetA: '24 Active Shipments',
-    fleetB: '12 Pending Origins',
-    newsletterEyebrow: 'MONTHLY BRIEFING',
-    newsletterTitle: 'Market reports delivered to your inbox',
-    newsletterLead:
-      'Join our trade mailing list to receive our monthly analyses, origin briefings, and quarterly market guides.',
-    emailPlaceholder: 'work-email@yourcompany.com',
-    newsletterCta: 'Subscribe',
+    archiveBtn: 'Full archive',
+    subEyebrow: 'NEWSLETTER', subTitle: 'Monthly market report', subItalic: 'to your inbox.',
+    subBody: 'First Monday of every month: market view, EUDR update and Kismet origin notes.',
+    subPlaceholder: 'name@company.com', subBtn: 'Subscribe',
   },
   ar: {
-    eyebrow: 'ذكاء مُنتقى · حصيلة سنوات من الخبرة',
-    heroTitle1: 'ذكاء السوق',
-    heroTitleItalic: 'وقصص عالمية',
-    heroLead:
-      'نحلل التوازن الدقيق بين حصاد المنشأ والطلب العالمي. بفضل سنوات من الخبرة التشغيلية في التجارة، نقدم لكم البيانات الخام والقصة الإنسانية خلف كل شحنة.',
-    latestLabel: 'آخر تحليل',
-    latestQuote: '"الاستدامة لم تعد خياراً؛ بل جوهر سوق السلع."',
-    ticker: [
-      'العقود الآجلة للكاكاو ترتفع 2.4٪',
-      'انخفاض ازدحام ميناء مومباسا',
-      'صدور تقديرات الحصاد الإثيوبي',
-      'تأجيل لوائح الاستدامة الأوروبية الجديدة',
+    eyebrow: 'تحليلات وأسواق',
+    heroTitle: 'من مكتب التحرير.',
+    heroLead: 'تقارير سوق شهرية وصور للمزارعين وتعليقات تنظيمية.',
+    featuredEyebrow: 'مميز', featuredTitle: 'تقرير سوق', featuredItalic: 'مايو ٢٠٢٦.',
+    featuredCat: 'تقرير سوق',
+    featuredHead: 'أعلى أسعار للعربيكا منذ ١٨ شهراً: توقعات حصاد ٢٠٢٦.',
+    featuredBody: 'الجفاف البرازيلي وحصاد إثيوبيا وسعر الدولار — ثلاثة سيناريوهات للربع الثالث.',
+    featuredRead: '١٢ دقيقة · ٠٤ مايو ٢٠٢٦',
+    listEyebrow: 'كل المنشورات',
+    listTitle: 'رؤية قطاع،', listItalic: 'لا تسويق.',
+    listLead: 'تركيب لتقارير ICCO وICO وFAO وUSDA-FAS.',
+    items: [
+      { date: '٢١ أبريل', cat: 'ميدان', read: '٨ د', t: 'ثلاثة أجيال في عنتاب.', d: 'عائلة فستق منذ ١٩٦٢.' },
+      { date: '١٥ أبريل', cat: 'تنظيم', read: '١٤ د', t: 'بعد EU EUDR.', d: 'معدلات الامتثال في تركيا وإثيوبيا وغانا.' },
+      { date: '٠٣ أبريل', cat: 'سوق', read: '٦ د', t: 'حصاد روبوستا فيتنام.', d: 'توقعات Q2 وحركة فارق LIFFE.' },
+      { date: '٢٨ مارس', cat: 'ميدان', read: '٧ د', t: 'زيارة محطة غسيل يرغاشيف.', d: 'تحضيرات حصاد ٢٠٢٦.' },
+      { date: '١٤ مارس', cat: 'سوق', read: '١٠ د', t: 'صدمة سعر الكاكاو.', d: 'قراءة تقرير ICCO.' },
+      { date: '٠٢ مارس', cat: 'لوجستيات', read: '٥ د', t: 'إعادة فتح السويس.', d: 'تأثير على شحن الغذاء.' },
     ],
-    featuredKicker: 'موضوع الغلاف · الربع الأول 2026',
-    featuredTitle: 'نظرة على سوق القهوة للربع الأول 2026',
-    featuredExcerpt:
-      'نظرة تحليلية من 36 صفحة على الأثر المشترك لمخاطر الصقيع في أمريكا اللاتينية، وإمدادات روبوستا الفيتنامية، وسعر الليرة التركية على تسعير القهوة المتخصصة.',
-    featuredMeta: '18 مارس 2026 · 18 دقيقة قراءة · تقرير PDF',
-    featuredCta: 'اقرأ التقرير الكامل',
-    reportsEyebrow: 'تقارير السوق',
-    reportsTitle: 'أبرز تقارير السوق',
-    reportsLead:
-      'تحليلات فصلية من خبرائنا التجاريين — حركات الأسعار، اتجاهات العرض، ومعايير الجودة.',
-    filterLabel: 'الفئة',
-    filters: ['الكل', 'القهوة', 'الكاكاو', 'البندق', 'التوابل', 'اللوجستيات', 'الاستدامة'],
-    downloadCta: 'تحميل PDF',
-    archiveCta: 'استعرض الأرشيف',
-    readMore: 'اقرأ القصة',
-    reports: [
-      {
-        category: 'ساحل العاج · كاكاو',
-        title: 'متانة المحصول في غرب أفريقيا',
-        date: '2026-03-18',
-        dateLabel: '18 مارس 2026',
-        excerpt: 'نظرة معمّقة على تقلبات الأسعار وتحسينات سلسلة التوريد عند بوابة المزرعة لموسم 2026.',
-        originLabel: 'تحليل الربع الثاني',
-        size: '4.2 ميغابايت',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAm4jWw0eriR5Egye3xaJthK3YeyUfSZwJsTzX3dM6JmPAVmaWK5hMSdvJDs0BHj9-BBQ3OFLBG1S8LwCdYlRLxraVTHkbaeSNTD-JilrnTWampD3bcjD3Jl__1wXoGidHmVDeyC2cSE-Nec2NTJOgI6zKuvQSOhBAoMrXUr3VzD9rk5qva6hBFH1g9Th_zK1mYsLPs2IVQP1CN7VxBCCNw5ct-hDtxY3FtOLhgY48Zh4iFk1-UoeCcePfTywqALakHLSdp348AnFg',
-        imgAlt: 'ثمار كاكاو مجففة على جوال من الخيش.',
-      },
-      {
-        category: 'إثيوبيا · قهوة',
-        title: 'منشأ الأرابيكا ومؤشر الأسعار',
-        date: '2026-02-24',
-        dateLabel: '24 فبراير 2026',
-        excerpt: 'كيف تؤثر التحولات المناخية في منطقة يرغاتشيفي على العقود الآجلة للقهوة ومعايير الجودة عالمياً.',
-        originLabel: 'تقرير فبراير',
-        size: '3.8 ميغابايت',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuATNENMMnVQCZfEoByWOAHNyZ_LShKbl0QiJoZg4lsHI8kSzsZ8rVoXZs2j2GMXc7VDX26ieOuP7mcC9ZLSRxGBjYscE2YIHD320ykrbD6X1IrpsTCc4ZbVcRskXCtVXpGMxUkPxB4s50mgxLAlBEKq8FFmiYwCb19L_bro5rJViH7Up27LMKrSsj_DOe4Ww1OBwnrU6ATJ8imkM2RLalZoLJMjLzwwjkS74sVnRZExFU3qRUThCoFYwjGlgo65sYVcVxKl9tX7wZg',
-        imgAlt: 'يد تفرز حبوب بن خضراء خام.',
-      },
-      {
-        category: 'تركيا · بندق',
-        title: 'تقرير حصاد البندق 2025-26',
-        date: '2026-01-12',
-        dateLabel: '12 يناير 2026',
-        excerpt: 'حجم الصادرات من منطقة البحر الأسود وأثر تقلب العملة على تسعير البندق.',
-        originLabel: 'توقعات الربع الثاني',
-        size: '5.1 ميغابايت',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCDCjATLqk18UYfjlpEOhkGTKdj8GKp22CjpX-7yjx-QO9zNEBeSsrUHNIwaSgnlSucSfS4VZ_hd-Ae73JB43CEGwpbTQzuRW82Ewfr307N8UO7e-WeT2y82Xr4uAsml4FYwEzXCBKw_ev6jbd9Lf9xTqQl95vDRfhJlGurZiDyG4-xWHJHTfuiLjOGhMEw9FzTy1-BrWiKjQTNbjpPb-8w44Rr6kjcgHkmbjOqhfeYfMEZ3i2dV27hV7VgFsnI_kAEW95LKtxVe4k',
-        imgAlt: 'حبات بندق طازجة مع أوراق خضراء على طاولة خشبية.',
-      },
-    ],
-    storiesEyebrow: 'من الحقول',
-    storiesTitle: 'قصص المنشأ',
-    storiesLead:
-      'سافروا مع قيّمينا إلى جذور التميّز. هذه هي قصص الناس والتربة والتقاليد في قلب سلسلة التوريد لدينا.',
-    storyTabs: ['الحصّادون', 'الابتكار الزراعي', 'التقاليد المحلية'],
-    stories: [
-      {
-        category: 'غانا · مجتمع',
-        title: 'موسم الحصاد في غانا: نسيج من التعاون',
-        excerpt: 'نستكشف التعاونيات التي جعلت غانا رائدة عالمياً في الحصاد المستدام للكاكاو.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjLJXeact6O9mnmY14dTbvI7LVWobCQwLac9LqFEbcTqhpoAG8MiV8tlf647Tk7IMAFhkH0U_FZ8VxmZhJ7du2MjF05ajvYaAamZL0alKOfepcTh2qi8hdoawhv8AvnfECEvPaIrIIvlNeyGm3G_1vO-KJ3G76rcrZN9ooeY8nq9BbXuFmmEv2PoIEH93XYIHAR2m2rUsOY2GJ1cpjrV-Bew-Hu3soW2WlR3joXkuu4CcNUCNt-0Et0lDl-tM6QsAILezQsOQL32k',
-        imgAlt: 'مزرعة كاكاو في غانا عند الغروب.',
-      },
-      {
-        category: 'تركيا · ابتكار',
-        title: 'مستقبل الزراعة التجديدية في الأناضول',
-        excerpt: 'تقنيات قديمة يعاد إحياؤها بتصوير فضائي حديث لضمان صحة التربة للأجيال القادمة.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_CQNLVNX4mPvEq-0FQRE4rLJhCRWDG8wtEhBUM1mjAc_zcXH4axExQo4cMNlv20idwkP6bTRrgR_3_wcieDdnFaIG0GxKwTicZa6dd3vYynFWkt7cYcI3Au6OBJFN6xskqMlaPJkjsfEJvfxG7fNPk9RmSEh35wxXZxl2gY1n-qx7CcP68m-ND7s89lvsvi6ONrk6Ix3mibkPk-R9sesEoo4QxcmJ3CrZ2g6xSIBUCUxUJlGpni0pkcsj6gTbDcoPHLQXYoEJR4A',
-        imgAlt: 'حقول زراعية هندسية الشكل في الأناضول من الأعلى.',
-      },
-      {
-        category: 'فيتنام · التوريد',
-        title: 'الذهب الأسود: طرق التوابل في داك لاك',
-        excerpt: 'نوثّق معايير المعالجة الصارمة للفلفل الفيتنامي من عرائش الجبال إلى مخازن العالم.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4WuACYXARhmHfVQV1QzCeNqFwxCPNg46278srByFBtM5RHsUUe3WCpN6NJ2kZkISwdbCNYOM8lLIW8hYOYfZax3GYQvqhggwu7ISzuBBRJGbUWVbfGg-IrHsnH-1nlOUJPOdljnb3VEiCsNDA7uGJjkEwyY5vKRfRMLXI2oznNbTEVTxugjRX6gXp9Ajgdpo_PxPM8Dtp5-oDv5MqqSqpJ22-J1MgSFcKKG7cFo0Lo_jkFbGwu2NEasRFfjrMS795HlYeb67RCxs',
-        imgAlt: 'فلفل يُجفَّف على حصائر في فناء فيتنامي.',
-      },
-      {
-        category: 'عالمي · لوجستيات',
-        title: 'الجسر الخفي: اللوجستيات التجارية العالمية',
-        excerpt: 'نظرة منسقة على رحلة المواد الخام عبر المحيطات في مشهد جيوسياسي متغير.',
-        img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBhh7i1gcgB8l32Q5aAqpdNuRug717QjJ49g6i4znwmO1ttZf0Um5DSG8f-dSmrF2moUAcs9awq50Ebo63oTWsSTk0nph8TGoc-PEmIEDJlWLyd-H63PpoMncZsDjsf-Shk7Pd46BcfoLp2uk5x8V8OvVJgak9n3yqtbJ2mdWmVW1JS-S-jcDYPo97SXjFCVla-8t_hsRJ2hizaxq_42hTOVRzjeQfjaSfskYMAGYxu2ddSswA3UVCx4YXXZwvl2JgphzF5N7Z5r4E',
-        imgAlt: 'سفينة حاويات تعبر مياهاً استوائية، منظر جوي.',
-      },
-    ],
-    extraReports: [
-      { cat: 'كاكاو', title: 'تقلب أسعار الكاكاو: تقويم 2026', meta: '9 مارس 2026 · 12 دقيقة' },
-      { cat: 'تركيا', title: 'اتجاهات الصادرات التركية والأسواق الناشئة', meta: '27 فبراير 2026 · 9 دقائق' },
-      { cat: 'الاستدامة', title: 'معايير الاستدامة في قطاع القهوة', meta: '14 فبراير 2026 · 14 دقيقة' },
-    ],
-    mapTitle: 'وصول عالمي آني',
-    mapLead: 'نتابع منشأتنا الفاعلة ومراكز التوزيع الرئيسية حول العالم.',
-    fleetLabel: 'حالة الأسطول المباشرة',
-    fleetA: '24 شحنة نشطة',
-    fleetB: '12 منشأ قيد الانتظار',
-    newsletterEyebrow: 'نشرة شهرية',
-    newsletterTitle: 'تقارير السوق إلى بريدكم مباشرةً',
-    newsletterLead:
-      'انضموا إلى قائمتنا البريدية التجارية لتصلكم تحليلاتنا الشهرية، وإحاطات المنشأ، وأدلة السوق الفصلية.',
-    emailPlaceholder: 'البريد-المهني@شركتكم.com',
-    newsletterCta: 'اشترك',
+    archiveBtn: 'الأرشيف الكامل',
+    subEyebrow: 'النشرة', subTitle: 'تقرير شهري', subItalic: 'مباشرة.',
+    subBody: 'أول اثنين من كل شهر.',
+    subPlaceholder: 'name@company.com', subBtn: 'اشترك',
   },
 }[locale];
 
-/* --- Stitch imagery --- */
-const heroImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBMFBdJSurWIDbnnEvkuDPg65hi6uKVXmSWDRCuak7GI3lJ65N0GrOsk8vCwz2RFdnfMiRlJN73PuNho2dfC_SdFz2Lq8R8-q5kXCJoFGZNRK2yaMho9cY2AHvi740dULOB6iDfzByemu-OFbn7zESyy7U0DjjBMEfQeCgZuAfMssdaj9TpR0AH7qv8thMM67o3P2oAzzBiyXg1VZA6TZWDONDj3hKq-nYIsWYB3swa7B4MYftYlMYKhqPAbxTsoG_nrmqfUl-3oK8',
-);
-const mapImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCVjf4EpxEMqboDPczFNJKovP4imIp9MfO9WALZvdfqXGmuWxhEeU7YsVxBYAJyt7jzQqrzevjbCTSKVKOk7hm4aWPRrUpqCJat9Unz8FTm-BXPxITr86NmfI3vm6KuXgzbD_eQTCM86o0JL52U0eC_jOgHK9UOdMUKKD5lLUaV0tipDAIfXJzTB27ayy7NpLHqyondCJnEtVHVL2qBJkvbjkE1mig6JAd71jjqrCAr5hpNtCShQbAcGcWX-iGdKKDr0fLRPi2daFo',
-);
-// The featured (cover-story) card reuses the coffee-bean report image for editorial consistency.
-const featuredImg = copy.reports[1].img;
-
-const newsletterMail =
-  'mailto:insights@kismetfoods.com?subject=Market%20Reports%20Subscription';
+const heroBg = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2400&q=80';
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: tr.nav.insights }]} />
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    background={heroBg}
+    meta={[
+      { label: 'Cadence', value: 'monthly' },
+      { label: 'Sources', value: 'ICO · ICCO · FAO · USDA' },
+      { label: 'Format', value: 'PDF + web' },
+    ]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* ========== 1. HERO ========== */}
-  <section class="px-4 pb-16 pt-10 md:px-8 md:pb-24 md:pt-16">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 items-end gap-12 md:grid-cols-[3fr_2fr]">
+  <CorpSection variant="white" eyebrow={copy.featuredEyebrow} title={copy.featuredTitle} italic={copy.featuredItalic}>
+    <article class="ip-feat">
+      <figure>
+        <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=1600&q=80" alt={copy.featuredHead} loading="lazy" decoding="async" />
+      </figure>
       <div>
-        <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
-        <h1 class="serif-display mb-8 text-5xl font-bold leading-[0.95] tracking-tight text-on-surface md:text-6xl lg:text-7xl">
-          {copy.heroTitle1}
-          <br />
-          <span class="italic text-teal-dark">{copy.heroTitleItalic}</span>
-        </h1>
-        <p class="max-w-2xl text-lg leading-relaxed text-on-surface-muted md:text-xl">
-          {copy.heroLead}
-        </p>
+        <span class="co-eyebrow co-eyebrow--ink">{copy.featuredCat} · {copy.featuredRead}</span>
+        <h3 class="co-h2">{copy.featuredHead}</h3>
+        <p>{copy.featuredBody}</p>
+        <a href={localePath('/insights/market-reports/', locale)} class="co-link"><span>{locale === 'tr' ? 'Raporu Oku' : locale === 'ar' ? 'اقرأ التقرير' : 'Read Report'}</span><span class="co-link__arrow" aria-hidden="true">→</span></a>
       </div>
+    </article>
+  </CorpSection>
 
-      <div class="relative">
-        <div class="shadow-editorial aspect-[4/5] w-full -rotate-2 overflow-hidden rounded-lg bg-surface-low">
-          <img
-            src={heroImg}
-            alt=""
-            width="800"
-            height="1000"
-            class="h-full w-full object-cover"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </div>
-        <div class="shadow-editorial absolute -bottom-8 -start-8 hidden max-w-[240px] bg-surface-lowest p-6 md:block">
-          <span class="eyebrow mb-2 block text-orange-dark">{copy.latestLabel}</span>
-          <p class="serif-display text-lg italic leading-snug text-on-surface">
-            {copy.latestQuote}
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {/* ========== 2. NEWS TICKER ========== */}
-  <section
-    aria-label={copy.reportsEyebrow}
-    class="overflow-hidden whitespace-nowrap bg-on-surface py-4 text-surface"
-  >
-    <div class="flex items-center gap-12 px-4 md:px-8">
-      {copy.ticker.map((item, idx) => (
-        <div class="flex shrink-0 items-center gap-4">
-          <span class={idx % 2 === 0 ? 'font-bold text-teal' : 'font-bold text-orange'}>•</span>
-          <span class="eyebrow text-xs">{item}</span>
-        </div>
-      ))}
-      {copy.ticker.map((item, idx) => (
-        <div class="flex shrink-0 items-center gap-4" aria-hidden="true">
-          <span class={idx % 2 === 0 ? 'font-bold text-teal' : 'font-bold text-orange'}>•</span>
-          <span class="eyebrow text-xs">{item}</span>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  {/* ========== 3. FEATURED ARTICLE ========== */}
-  <section class="px-4 py-24 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <article class="grid grid-cols-1 overflow-hidden rounded-lg bg-surface-low md:grid-cols-[6fr_5fr]">
-        <div class="aspect-[4/3] overflow-hidden md:aspect-auto">
-          <img
-            src={stitchSrc(featuredImg)}
-            alt=""
-            width="1000"
-            height="800"
-            loading="lazy"
-            decoding="async"
-            class="h-full w-full object-cover"
-          />
-        </div>
-        <div class="flex flex-col justify-center gap-6 p-10 md:p-14">
-          <span class="eyebrow text-orange-dark">{copy.featuredKicker}</span>
-          <h2 class="serif-display text-3xl font-bold leading-tight text-on-surface md:text-4xl lg:text-5xl">
-            {copy.featuredTitle}
-          </h2>
-          <p class="text-lg leading-relaxed text-on-surface-muted">{copy.featuredExcerpt}</p>
-          <p class="eyebrow text-on-surface-subtle">{copy.featuredMeta}</p>
-          <div>
-            <a
-              href="#reports"
-              class="cta-gradient shadow-editorial inline-flex items-center rounded-md px-6 py-3 text-xs font-bold uppercase tracking-widest text-white"
-            >
-              {copy.featuredCta}
-            </a>
+  <CorpSection variant="snow" eyebrow={copy.listEyebrow} title={copy.listTitle} italic={copy.listItalic} lede={copy.listLead}>
+    <div class="ip-grid">
+      {copy.items.map((it) => (
+        <a class="ip-card" href={localePath('/insights/', locale)}>
+          <div class="ip-card__head">
+            <span class="co-eyebrow co-eyebrow--ink">{it.cat}</span>
+            <span class="ip-card__meta">{it.date} · {it.read}</span>
           </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  {/* ========== 4. MARKET REPORTS GRID ========== */}
-  <section id="reports" class="px-4 py-20 md:px-8 md:py-24">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-10 grid grid-cols-1 items-end gap-8 md:grid-cols-[7fr_5fr]">
-        <div>
-          <span class="eyebrow mb-4 block text-orange-dark">{copy.reportsEyebrow}</span>
-          <h2 class="serif-display text-4xl font-bold text-on-surface md:text-5xl">
-            {copy.reportsTitle}
-          </h2>
-        </div>
-        <p class="leading-relaxed text-on-surface-muted">{copy.reportsLead}</p>
-      </div>
-
-      {/* Filter chips */}
-      <div class="mb-12 flex flex-wrap items-center gap-3" role="group" aria-label={copy.filterLabel}>
-        <span class="eyebrow me-2 text-on-surface-subtle">{copy.filterLabel}:</span>
-        {copy.filters.map((f, idx) => (
-          <button
-            type="button"
-            aria-pressed={idx === 0 ? 'true' : 'false'}
-            class={
-              'eyebrow rounded-full border px-4 py-2 text-xs transition-colors ' +
-              (idx === 0
-                ? 'border-teal-dark bg-teal-dark text-white'
-                : 'border-outline/30 bg-surface-low text-on-surface-muted hover:border-teal-dark hover:text-teal-dark')
-            }
-          >
-            {f}
-          </button>
-        ))}
-        <a href="#" class="eyebrow ms-auto border-b-2 border-orange/30 pb-1 text-orange-dark hover:border-orange">
-          {copy.archiveCta}
+          <h3 class="co-h3">{it.t}</h3>
+          <p>{it.d}</p>
         </a>
-      </div>
-
-      {/* Top 3 report cards — with images */}
-      <div class="mb-16 grid grid-cols-1 gap-10 md:grid-cols-3">
-        {copy.reports.map((item) => (
-          <article class="group">
-            <div class="relative mb-6 aspect-[3/4] overflow-hidden rounded-md bg-surface-low">
-              <img
-                src={stitchSrc(item.img)}
-                alt={item.imgAlt}
-                width="600"
-                height="800"
-                loading="lazy"
-                decoding="async"
-                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div class="shadow-editorial absolute start-5 top-5 bg-surface-lowest p-3">
-                <span class="serif-display block text-xl font-bold text-orange-dark">
-                  {item.originLabel}
-                </span>
-              </div>
-            </div>
-            <span class="eyebrow mb-2 block text-on-surface-subtle">{item.category}</span>
-            <h3 class="serif-display mb-3 text-xl font-bold leading-snug text-on-surface md:text-2xl">
-              {item.title}
-            </h3>
-            <time datetime={item.date} class="eyebrow mb-3 block text-on-surface-subtle">
-              {item.dateLabel}
-            </time>
-            <p class="mb-6 leading-relaxed text-on-surface-muted">{item.excerpt}</p>
-            <a
-              href="#"
-              class="eyebrow inline-flex items-center gap-2 text-teal-dark hover:text-orange-dark"
-              aria-label={`${copy.downloadCta} — ${item.title}`}
-            >
-              <span aria-hidden="true">↓</span>
-              <span>{copy.downloadCta} · {item.size}</span>
-            </a>
-          </article>
-        ))}
-      </div>
-
-      {/* Extra teaser row — 3 text-only teasers to reach 6+ articles */}
-      <div class="grid grid-cols-1 gap-6 border-t border-outline/20 pt-10 md:grid-cols-3">
-        {copy.extraReports.map((r, idx) => (
-          <article class="group border-s-2 border-orange/40 ps-6 transition-all hover:border-orange">
-            <span class="eyebrow mb-2 block text-orange-dark">
-              {String(idx + 4).padStart(2, '0')} · {r.cat}
-            </span>
-            <h3 class="serif-display mb-2 text-lg font-bold leading-snug text-on-surface md:text-xl">
-              {r.title}
-            </h3>
-            <p class="eyebrow text-on-surface-subtle">{r.meta}</p>
-          </article>
-        ))}
-      </div>
+      ))}
     </div>
-  </section>
-
-  {/* ========== 5. ORIGIN STORIES ========== */}
-  <section class="bg-surface-low px-4 py-24 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <div class="grid grid-cols-1 items-start gap-12 md:grid-cols-[4fr_8fr] md:gap-16">
-        <aside class="md:sticky md:top-32">
-          <span class="eyebrow mb-4 block text-orange-dark">{copy.storiesEyebrow}</span>
-          <h2 class="serif-display mb-6 text-4xl font-bold leading-tight text-on-surface md:text-5xl">
-            {copy.storiesTitle}
-          </h2>
-          <p class="mb-8 text-lg leading-relaxed text-on-surface-muted">{copy.storiesLead}</p>
-          <ul class="space-y-3">
-            {copy.storyTabs.map((tab, idx) => (
-              <li class="flex items-center gap-4">
-                <span
-                  aria-hidden="true"
-                  class={'h-1 transition-all ' + (idx === 0 ? 'w-16 bg-teal-dark' : 'w-12 bg-outline/30')}
-                ></span>
-                <span
-                  class={
-                    'eyebrow ' + (idx === 0 ? 'text-on-surface' : 'text-on-surface-subtle')
-                  }
-                >
-                  {tab}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </aside>
-
-        <div class="grid grid-cols-1 gap-x-10 gap-y-16 md:grid-cols-2 md:gap-y-20">
-          {copy.stories.map((story, idx) => (
-            <article class={'flex flex-col ' + (idx % 2 === 1 ? 'md:mt-16' : '')}>
-              <div class="mb-6 aspect-video overflow-hidden rounded-md bg-surface-mid">
-                <img
-                  src={stitchSrc(story.img)}
-                  alt={story.imgAlt}
-                  width="960"
-                  height="540"
-                  loading="lazy"
-                  decoding="async"
-                  class="h-full w-full object-cover"
-                />
-              </div>
-              <span class="eyebrow mb-2 block text-orange-dark">{story.category}</span>
-              <h3 class="serif-display mb-3 text-2xl font-bold leading-snug text-on-surface">
-                {story.title}
-              </h3>
-              <p class="mb-4 leading-relaxed text-on-surface-muted">{story.excerpt}</p>
-              <a
-                href="#"
-                class="eyebrow mt-auto inline-flex items-center gap-2 text-teal-dark hover:text-orange-dark"
-              >
-                <span>{copy.readMore}</span>
-                <span aria-hidden="true">→</span>
-              </a>
-            </article>
-          ))}
-        </div>
-      </div>
+    <div class="ip-foot">
+      <a href={localePath('/insights/market-reports/', locale)} class="co-btn co-btn--ghost">{copy.archiveBtn} <span aria-hidden="true">→</span></a>
     </div>
-  </section>
+  </CorpSection>
 
-  {/* ========== 6. GLOBAL REACH MAP ========== */}
-  <section class="px-4 py-24 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-16 text-center">
-        <h2 class="serif-display mb-4 text-3xl font-bold text-on-surface md:text-4xl">
-          {copy.mapTitle}
-        </h2>
-        <p class="mx-auto max-w-2xl text-on-surface-muted">{copy.mapLead}</p>
-      </div>
-      <div class="relative mx-auto aspect-[2/1] max-w-6xl overflow-hidden rounded-lg bg-surface-mid shadow-inner">
-        <img
-          src={mapImg}
-          alt=""
-          width="1200"
-          height="600"
-          loading="lazy"
-          decoding="async"
-          class="h-full w-full object-cover opacity-25 grayscale"
-        />
-        {/* Pulse markers */}
-        <span aria-hidden="true" class="absolute left-[20%] top-1/2 h-4 w-4 animate-ping rounded-full bg-teal/60"></span>
-        <span aria-hidden="true" class="absolute left-[20.5%] top-[55%] h-3 w-3 rounded-full bg-teal-dark shadow-[0_0_15px_rgba(0,172,175,0.8)]"></span>
-        <span aria-hidden="true" class="absolute left-[45%] top-[45%] h-4 w-4 animate-ping rounded-full bg-teal/60"></span>
-        <span aria-hidden="true" class="absolute left-[45.5%] top-[50%] h-3 w-3 rounded-full bg-teal-dark shadow-[0_0_15px_rgba(0,172,175,0.8)]"></span>
-        <span aria-hidden="true" class="absolute left-[62%] top-[35%] h-4 w-4 animate-ping rounded-full bg-teal/60"></span>
-        <span aria-hidden="true" class="absolute left-[62.5%] top-[38%] h-3 w-3 rounded-full bg-teal-dark shadow-[0_0_15px_rgba(0,172,175,0.8)]"></span>
-
-        {/* Live fleet card */}
-        <div class="shadow-editorial absolute bottom-6 end-6 rounded-md bg-surface-lowest p-6 text-start">
-          <span class="eyebrow mb-3 block text-orange-dark">{copy.fleetLabel}</span>
-          <div class="mb-2 flex items-center gap-3">
-            <span aria-hidden="true" class="h-2 w-2 rounded-full bg-teal-dark"></span>
-            <span class="eyebrow text-on-surface">{copy.fleetA}</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <span aria-hidden="true" class="h-2 w-2 rounded-full bg-outline"></span>
-            <span class="eyebrow text-on-surface-subtle">{copy.fleetB}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {/* ========== 7. NEWSLETTER ========== */}
-  <section class="cta-gradient px-4 py-24 text-white md:px-8">
-    <div class="mx-auto max-w-4xl text-center">
-      <span class="eyebrow mb-4 block text-white/70">{copy.newsletterEyebrow}</span>
-      <h2 class="serif-display mb-4 text-3xl font-bold md:text-4xl">{copy.newsletterTitle}</h2>
-      <p class="mb-10 text-lg leading-relaxed text-white/85">{copy.newsletterLead}</p>
-
-      <form
-        action={newsletterMail}
-        method="get"
-        class="mx-auto flex max-w-xl flex-col gap-3 sm:flex-row"
-        aria-label={copy.newsletterTitle}
-      >
-        <label class="sr-only" for="newsletter-email">{copy.emailPlaceholder}</label>
-        <input
-          id="newsletter-email"
-          type="email"
-          name="subject"
-          required
-          placeholder={copy.emailPlaceholder}
-          class="flex-1 rounded-md bg-white/10 px-5 py-4 text-base text-white placeholder:text-white/60 backdrop-blur focus:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"
-        />
-        <button
-          type="submit"
-          class="rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
-        >
-          {copy.newsletterCta}
-        </button>
-      </form>
-    </div>
-  </section>
+  <CorpSection variant="navy" eyebrow={copy.subEyebrow} title={copy.subTitle} italic={copy.subItalic} lede={copy.subBody}>
+    <form class="ip-sub" method="post" action="#">
+      <input type="email" placeholder={copy.subPlaceholder} required />
+      <button type="submit" class="co-btn co-btn--amber">{copy.subBtn} <span aria-hidden="true">→</span></button>
+    </form>
+  </CorpSection>
 </main>
 
 <SiteFooter locale={locale} />
+
+<style>
+  .ip-feat { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: center; }
+  @media (min-width: 1024px) { .ip-feat { grid-template-columns: 1fr 1fr; gap: 56px; } }
+  .ip-feat figure { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+  .ip-feat figure img { width: 100%; height: 100%; object-fit: cover; }
+  .ip-feat > div { display: flex; flex-direction: column; gap: 16px; }
+  .ip-feat h3 { color: var(--co-ink); margin: 0; }
+  .ip-feat p { font-family: var(--co-sans); font-size: 17px; color: var(--co-mute); margin: 0; line-height: 1.65; }
+  .ip-feat .co-link { align-self: flex-start; margin-top: 8px; }
+
+  .ip-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 720px) { .ip-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+  @media (min-width: 1080px) { .ip-grid { grid-template-columns: repeat(3, 1fr); } }
+  .ip-card { background: var(--co-white); border: 1px solid var(--co-line); padding: 24px; text-decoration: none; color: var(--co-text); display: flex; flex-direction: column; gap: 14px; transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease; }
+  .ip-card:hover { border-color: var(--co-navy); box-shadow: 0 24px 48px -28px rgba(12,37,69,0.18); transform: translateY(-2px); }
+  .ip-card__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .ip-card__meta { font-family: var(--co-sans); font-size: 12px; color: var(--co-mute); font-weight: 500; }
+  .ip-card h3 { color: var(--co-ink); margin: 0; font-size: 18px; line-height: 1.3; }
+  .ip-card p { font-family: var(--co-sans); font-size: 14px; color: var(--co-mute); margin: 0; line-height: 1.6; }
+
+  .ip-foot { margin-top: 56px; display: flex; justify-content: center; }
+
+  .ip-sub { display: flex; flex-direction: column; gap: 12px; max-width: 540px; }
+  @media (min-width: 600px) { .ip-sub { flex-direction: row; } }
+  .ip-sub input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); padding: 14px 18px; color: var(--co-white); font-family: var(--co-sans); font-size: 15px; }
+  .ip-sub input::placeholder { color: rgba(255,255,255,0.5); }
+  .ip-sub input:focus { outline: none; border-color: var(--co-amber); }
+</style>

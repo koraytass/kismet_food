@@ -1,407 +1,273 @@
 ---
 /**
- * OriginsPage — Reusable section composition for /<locale>/origins/.
- * Shows static world-map context with linked country origin cards.
- * Sections: Hero w/ map · Country grid · Stats · CTA
+ * OriginsPage — v3 corporate.
+ * Hero · interaktif menşe haritası (mevcut OriginsMap korundu) · ülke kart grid · stats · CTA.
  */
 import type { Locale } from '@/i18n';
 import { t, localePath } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
 import OriginsMap, { type OriginMarker } from '../OriginsMap.astro';
-import Button from '../Button.astro';
-import AmuletDivider from '../AmuletDivider.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
-interface Props {
-  locale: Locale;
-  currentPath: string;
-}
-
+interface Props { locale: Locale; currentPath: string }
 const { locale, currentPath } = Astro.props;
 const tr = t(locale);
-
 const turkiyeHref = localePath('/origins/turkiye/', locale);
-
-/* Shared image URLs (stitchSrc applied) */
-const mapImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCKsY6NNpMYbIXsPzBSEBtwLLFRvdPQiElShl98zx1_hXRif_RLaRZnsqsVibKF2i0CkhUKP-I4f7zOXDDqruyb0VX8iLANZ8PcD7Xs3ITd696Jo2M5CBmOqb88aURsuE67mqqprAtQcb0zMcm77TGAyW46Jm3BBbm6lJ7wdLDmmBaSs-ymAIdB6FpBimtIpm_PwdePZ-mFPudMWYUW_lsX33Gz8umTBNldSlxBmgur-157c8_vDHdUmKTpp_DVS5EMrf2tqOh8t_w',
-);
-const turkiyeImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCp4b9SPax2mM_iqe8o83-Ft0EivW53iLJLQw6S71mLyRNbmNBmT3z52PuJcTAEx02oxfYF1Hd_4fqXiUHmFA7c5J4WDxO6c348vvSAlUxNIJ1GC2LQiRWF9wbFTSLIb9fxm5MfCGGssxLVcEdbGAw64ABLwcb6CWdDFdRRzHNoquLEYaiRjS4mGwCnEC8-feG6cI2Br6Kw4-bVsH0EJSkQxPSLTAsw1OVpIupgreL3z5ErpllgPJZCsrO2jfH_schQ8b790yMF9Y8',
-);
-const ethiopiaImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDXFGDdddtlGn4vjo596vpqW-0Nwh_kxb9eml7gOQdQG-lAML4TnmMMZKuyPN-oI8AydX5oldxK-6_kroKY2gAYRm7azgNVIMYQRzL9YyV_Lg5XT0y1gYVvmArRYR9E9sZzfrBthOsfAWBQ7r0aRh-SDjrzJhSosgc6Z3DJbMkvEfUIFxHK-WjQDfwF6L487wnJWz3xJ5H04UFitkfAon7fH0TeSd8SFRqPiJC7Ieg7efEltrjVTyDv0UNj41s8WhzzipR_yEsTpFM',
-);
-const ghanaImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBZDqrlB9gTmAAC1Th8UF59GfCavs9_OUZIzlAgxAh5h4xkpB-6l05lc1U53IVY9aRhRsjy3ztZnmVLLFYVB9lZnpOoTREHRIkitJIwUnltjfxjw_0-PS_PG-S2ohS9yJEYsnIGMUPzaZcvg0u_MBEI4UjS2X9Uf6jwm13Cfx2KwVf-yjwlKCbEMrlu_h6oHfYhiFdj1H9f-MW_bnISQ8hA2_Gojat-wJauIlw7LBcf2FJZ8YOnmy1IpvXa49GEEhNXIQmVYg3_-yM',
-);
-
-/* Country data — structure is locale-agnostic; labels filled per-locale below */
-const originImgs: Record<string, string> = {
-  turkiye: turkiyeImg,
-  ethiopia: ethiopiaImg,
-  colombia: ethiopiaImg,
-  vietnam: ghanaImg,
-  ghana: ghanaImg,
-  ivory: ghanaImg,
-  indonesia: ethiopiaImg,
-  brazil: ethiopiaImg,
-  uganda: ghanaImg,
-  kenya: ethiopiaImg,
-  rwanda: ethiopiaImg,
-};
 
 const copy = {
   tr: {
     eyebrow: 'MENŞELERİMİZ · DOĞRUDAN TEDARİK AĞI',
     heroTitle: 'Nadir toprak ürünlerinin küresel küratörü.',
-    heroLead:
-      'Etiyopya’nın volkanik topraklarından Türkiye’nin Karadeniz kıyılarına — her çekirdeği, her fıstığı kendi ata yurduna kadar izliyoruz. Yıllara yayılmış doğrudan tedarik ağımız; her menşede saha uzmanıyla çalışır.',
-    mapAlt: 'Kısmet Foods’un küresel tedarik ağını gösteren minimalist dünya haritası',
-    countriesTitle: 'Ülke ülke menşe ağımız',
-    countriesLead:
-      'Her menşede, kendi alanında uzmanlaşmış ticaret ekiplerimiz saha gerçeğinden ayrılmadan çalışır. İşte 11 ülkedeki ortaklığımız.',
+    heroLead: 'Etiyopya volkanik topraklarından Karadeniz kıyılarına — her çekirdeği, her fıstığı kendi ata yurduna kadar izliyoruz. Yıllara yayılmış doğrudan tedarik ağımız her menşede saha uzmanıyla çalışır.',
+    countriesEyebrow: 'ÜLKE AĞI', countriesTitle: 'Ülke ülke', countriesItalic: 'menşe ağımız.',
+    countriesLead: 'Her menşede kendi alanında uzmanlaşmış ticaret ekiplerimiz saha gerçeğinden ayrılmadan çalışır. 11 ülkedeki ortaklığımız.',
     countries: [
       { k: 'turkiye', name: 'Türkiye', region: 'Anadolu · Karadeniz · Ege', body: 'Giresun fındığı, Antep fıstığı, Ege inciri ve zeytini, Anadolu baharatları.', href: turkiyeHref, featured: true },
-      { k: 'ethiopia', name: 'Etiyopya', region: 'Yirgacheffe · Sidamo', body: 'Yüksek rakımlı arabica kahve — doğrudan-ticaret anlaşmaları ile.' },
+      { k: 'ethiopia', name: 'Etiyopya', region: 'Yirgacheffe · Sidamo', body: 'Yüksek rakımlı arabica kahve — doğrudan-ticaret anlaşmaları.' },
       { k: 'colombia', name: 'Kolombiya', region: 'Huila · Nariño', body: 'Dengeli asidite ve karamel notalı specialty kahve.' },
-      { k: 'vietnam', name: 'Vietnam', region: 'Dak Lak · Lam Dong', body: 'Robusta kahve, kaju ve kara biber; ölçekte sürekli tedarik.' },
+      { k: 'vietnam', name: 'Vietnam', region: 'Dak Lak · Lam Dong', body: 'Robusta kahve, kaju ve karabiber; ölçekte sürekli tedarik.' },
       { k: 'ghana', name: 'Gana', region: 'Ashanti · Western', body: 'Fermente kakao çekirdeği — çikolatacılar için premium seçim.' },
       { k: 'ivory', name: 'Fildişi Sahili', region: 'San-Pédro · Abidjan', body: 'Dünyanın en büyük kakao üreticisinden izlenebilir tedarik.' },
-      { k: 'indonesia', name: 'Endonezya', region: 'Sumatra · Sulawesi', body: 'Sumatra kahvesi, Hindistan cevizi ve baharatlar.' },
-      { k: 'brazil', name: 'Brezilya', region: 'Minas Gerais · Sul', body: 'Harman-tabanlı arabica ve specialty microlot kahveler.' },
+      { k: 'indonesia', name: 'Endonezya', region: 'Sumatra · Sulawesi', body: 'Sumatra kahvesi, hindistan cevizi ve baharatlar.' },
+      { k: 'brazil', name: 'Brezilya', region: 'Minas Gerais · Sul', body: 'Harman tabanlı arabica ve specialty mikrolot kahveler.' },
       { k: 'uganda', name: 'Uganda', region: 'Mount Elgon · Rwenzori', body: 'Organik arabica ve robusta — kooperatif kaynaklı.' },
-      { k: 'kenya', name: 'Kenya', region: 'Nyeri · Kirinyaga', body: 'SL28/SL34 arabica — parlak asidite, ikonik Kenya karakteri.' },
+      { k: 'kenya', name: 'Kenya', region: 'Nyeri · Kirinyaga', body: 'SL28/SL34 arabica — parlak asidite, ikonik karakter.' },
       { k: 'rwanda', name: 'Ruanda', region: 'Nyamasheke · Gakenke', body: 'Bourbon arabica — yıkanmış proseslerle zarif profiller.' },
     ],
     viewBtn: 'Menşe detayını incele',
-    statsTitle: 'Ağımız rakamlarla',
+    statsTitle: 'Ağımız', statsItalic: 'rakamlarla.',
     stats: [
       { n: '5.000+', l: 'Ortak çiftçi' },
       { n: '11', l: 'Menşe ülke' },
-      { n: '100%', l: 'İzlenebilir tedarik' },
+      { n: '%100', l: 'İzlenebilir tedarik' },
+      { n: '%92', l: 'EUDR uyumlu' },
     ],
-    ctaTitle: 'Kendi ihtiyacınıza özel menşe planı hazırlayalım.',
-    ctaLead:
-      'Tek bir konteyner ya da yıllık tedarik — ticaret uzmanlarımız kısa süre içinde özel menşe + lojistik teklifi hazırlar.',
+    ctaTitle: 'Sizin spec\'inize uygun menşe planı.',
+    ctaLead: 'Tek konteyner ya da yıllık tedarik — ticaret uzmanlarımız menşe + lojistik teklifini 24 saat içinde hazırlar.',
     ctaBtn: 'İletişime Geç',
   },
   en: {
     eyebrow: 'OUR ORIGINS · DIRECT-SOURCE NETWORK',
     heroTitle: 'The global curator of rare earth goods.',
-    heroLead:
-      'From the volcanic soils of Ethiopia to the Black Sea coast of Türkiye, we trace every bean and every nut back to its ancestral home. Our direct-source network is built on years of field expertise — a specialist in every origin.',
-    mapAlt: 'Minimalist world map showing the Kismet Foods global supply network',
-    countriesTitle: 'Country by country origin network',
-    countriesLead:
-      'In every origin, our commodity-specific trade teams operate on the ground — never removed from field reality. Here is our partnership across 11 countries.',
+    heroLead: 'From the volcanic soils of Ethiopia to the Black Sea coast of Türkiye, we trace every bean and nut to its ancestral home. Our direct-source network has a specialist on every origin.',
+    countriesEyebrow: 'COUNTRY NETWORK', countriesTitle: 'Country by country,', countriesItalic: 'our origin network.',
+    countriesLead: 'In every origin our commodity-specific trade teams operate on the ground. Our partnership across 11 countries.',
     countries: [
       { k: 'turkiye', name: 'Türkiye', region: 'Anatolia · Black Sea · Aegean', body: 'Giresun hazelnuts, Gaziantep pistachios, Aegean figs and olives, Anatolian spices.', href: turkiyeHref, featured: true },
-      { k: 'ethiopia', name: 'Ethiopia', region: 'Yirgacheffe · Sidamo', body: 'High-altitude arabica coffee — direct-trade contracts with washing stations.' },
+      { k: 'ethiopia', name: 'Ethiopia', region: 'Yirgacheffe · Sidamo', body: 'High-altitude arabica coffee — direct-trade with washing stations.' },
       { k: 'colombia', name: 'Colombia', region: 'Huila · Nariño', body: 'Specialty coffee with balanced acidity and caramel notes.' },
-      { k: 'vietnam', name: 'Vietnam', region: 'Dak Lak · Lam Dong', body: 'Robusta coffee, cashews and black pepper — continuous supply at scale.' },
-      { k: 'ghana', name: 'Ghana', region: 'Ashanti · Western', body: 'Fermented cocoa bean — the premium choice for chocolatiers.' },
-      { k: 'ivory', name: "Côte d'Ivoire", region: 'San-Pédro · Abidjan', body: 'Traceable supply from the world’s largest cocoa producer.' },
+      { k: 'vietnam', name: 'Vietnam', region: 'Dak Lak · Lam Dong', body: 'Robusta coffee, cashews and black pepper at continuous scale.' },
+      { k: 'ghana', name: 'Ghana', region: 'Ashanti · Western', body: 'Fermented cocoa bean — premium choice for chocolatiers.' },
+      { k: 'ivory', name: "Côte d'Ivoire", region: 'San-Pédro · Abidjan', body: 'Traceable supply from the world\'s largest cocoa producer.' },
       { k: 'indonesia', name: 'Indonesia', region: 'Sumatra · Sulawesi', body: 'Sumatran coffee, coconut and spice commodities.' },
       { k: 'brazil', name: 'Brazil', region: 'Minas Gerais · Sul', body: 'Blend-base arabica and specialty microlot coffees.' },
       { k: 'uganda', name: 'Uganda', region: 'Mount Elgon · Rwenzori', body: 'Organic arabica and robusta — cooperative-sourced.' },
-      { k: 'kenya', name: 'Kenya', region: 'Nyeri · Kirinyaga', body: 'SL28/SL34 arabica — bright acidity, iconic Kenyan character.' },
-      { k: 'rwanda', name: 'Rwanda', region: 'Nyamasheke · Gakenke', body: 'Bourbon arabica — elegant profiles from washed processing.' },
+      { k: 'kenya', name: 'Kenya', region: 'Nyeri · Kirinyaga', body: 'SL28/SL34 arabica — bright acidity, iconic character.' },
+      { k: 'rwanda', name: 'Rwanda', region: 'Nyamasheke · Gakenke', body: 'Bourbon arabica — elegant washed-process profiles.' },
     ],
     viewBtn: 'Explore origin',
-    statsTitle: 'Our network in numbers',
+    statsTitle: 'Our network', statsItalic: 'in numbers.',
     stats: [
       { n: '5,000+', l: 'Partner farmers' },
       { n: '11', l: 'Origin countries' },
       { n: '100%', l: 'Traceable supply' },
+      { n: '92%', l: 'EUDR-compliant' },
     ],
-    ctaTitle: 'Let’s build an origin plan matched to your spec.',
-    ctaLead:
-      'A single container or annual supply — our trade experts prepare a custom origin and logistics proposal with the right commercial context.',
+    ctaTitle: 'An origin plan matched to your spec.',
+    ctaLead: 'A single container or annual supply — our trade experts prepare an origin and logistics proposal within 24 hours.',
     ctaBtn: 'Contact Us',
   },
   ar: {
     eyebrow: 'مناشئنا · شبكة توريد مباشرة',
     heroTitle: 'القيّم العالمي على أثمن مواد الأرض.',
-    heroLead:
-      'من التربة البركانية في إثيوبيا إلى ساحل البحر الأسود في تركيا، نتتبع كل حبة بن وكل حبة مكسرات إلى موطنها الأصلي. شبكة التوريد المباشرة لدينا مبنية على سنوات من الخبرة الميدانية — متخصص في كل منشأ.',
-    mapAlt: 'خريطة عالم بسيطة تُظهر شبكة توريد كسمت فودز العالمية',
-    countriesTitle: 'شبكة المنشأ دولة بدولة',
-    countriesLead:
-      'في كل منشأ، تعمل فرقنا التجارية المتخصصة على الأرض مباشرة — بلا انفصال عن الواقع الميداني. هذه شراكتنا عبر 11 دولة.',
+    heroLead: 'من تربة إثيوبيا البركانية إلى البحر الأسود في تركيا، نتتبع كل حبة إلى موطنها الأصلي.',
+    countriesEyebrow: 'شبكة الدول', countriesTitle: 'دولة بدولة،', countriesItalic: 'شبكة المنشأ.',
+    countriesLead: 'في كل منشأ تعمل فرقنا التجارية على الأرض. شراكتنا في ١١ دولة.',
     countries: [
-      { k: 'turkiye', name: 'تركيا', region: 'الأناضول · البحر الأسود · بحر إيجة', body: 'بندق غيرسون، فستق غازي عنتاب، تين وزيتون إيجة، توابل الأناضول.', href: turkiyeHref, featured: true },
-      { k: 'ethiopia', name: 'إثيوبيا', region: 'يرغاشيف · سيدامو', body: 'بُن أرابيكا عالي الارتفاع — بعقود تجارة مباشرة مع محطات الغسيل.' },
-      { k: 'colombia', name: 'كولومبيا', region: 'هويلا · نارينيو', body: 'قهوة مختصة ذات حموضة متوازنة ونكهات كراميل.' },
-      { k: 'vietnam', name: 'فيتنام', region: 'داك لاك · لام دونغ', body: 'بُن روبوستا، كاجو وفلفل أسود — توريد مستمر بكميات كبيرة.' },
-      { k: 'ghana', name: 'غانا', region: 'أشانتي · الغربية', body: 'حبوب كاكاو مُخمّرة — الخيار الممتاز لصانعي الشوكولاتة.' },
-      { k: 'ivory', name: 'ساحل العاج', region: 'سان بيدرو · أبيدجان', body: 'توريد قابل للتتبع من أكبر منتج للكاكاو في العالم.' },
-      { k: 'indonesia', name: 'إندونيسيا', region: 'سومطرة · سولاوسي', body: 'قهوة سومطرة، جوز الهند والتوابل.' },
-      { k: 'brazil', name: 'البرازيل', region: 'ميناس جيرايس · الجنوب', body: 'أرابيكا للمزجات وقهوة مايكرولوت مختصة.' },
-      { k: 'uganda', name: 'أوغندا', region: 'جبل إلغون · روينزوري', body: 'أرابيكا وروبوستا عضوية — من التعاونيات.' },
-      { k: 'kenya', name: 'كينيا', region: 'نيري · كيرينياغا', body: 'أرابيكا SL28/SL34 — حموضة لامعة وطابع كيني أيقوني.' },
-      { k: 'rwanda', name: 'رواندا', region: 'نياماشيكي · غاكينكي', body: 'أرابيكا بوربون — ملامح أنيقة من المعالجة المغسولة.' },
+      { k: 'turkiye', name: 'تركيا', region: 'الأناضول · البحر الأسود · إيجة', body: 'بندق غيرسون، فستق غازي عنتاب، تين وزيتون إيجة.', href: turkiyeHref, featured: true },
+      { k: 'ethiopia', name: 'إثيوبيا', region: 'يرغاشيف · سيدامو', body: 'بُن أرابيكا عالي الارتفاع.' },
+      { k: 'colombia', name: 'كولومبيا', region: 'هويلا · نارينيو', body: 'قهوة مختصة بحموضة متوازنة.' },
+      { k: 'vietnam', name: 'فيتنام', region: 'داك لاك · لام دونغ', body: 'روبوستا، كاجو وفلفل أسود.' },
+      { k: 'ghana', name: 'غانا', region: 'أشانتي · الغربية', body: 'حبوب كاكاو مخمَّرة.' },
+      { k: 'ivory', name: 'ساحل العاج', region: 'سان بيدرو · أبيدجان', body: 'توريد قابل للتتبع.' },
+      { k: 'indonesia', name: 'إندونيسيا', region: 'سومطرة · سولاوسي', body: 'قهوة وجوز هند وتوابل.' },
+      { k: 'brazil', name: 'البرازيل', region: 'ميناس جيرايس', body: 'أرابيكا للمزجات.' },
+      { k: 'uganda', name: 'أوغندا', region: 'جبل إلغون', body: 'أرابيكا وروبوستا عضوية.' },
+      { k: 'kenya', name: 'كينيا', region: 'نيري', body: 'أرابيكا SL28/SL34.' },
+      { k: 'rwanda', name: 'رواندا', region: 'نياماشيكي', body: 'أرابيكا بوربون.' },
     ],
     viewBtn: 'استكشف المنشأ',
-    statsTitle: 'شبكتنا بالأرقام',
+    statsTitle: 'شبكتنا', statsItalic: 'بالأرقام.',
     stats: [
-      { n: '5000+', l: 'مزارع شريك' },
-      { n: '11', l: 'دولة منشأ' },
-      { n: '100%', l: 'توريد قابل للتتبع' },
+      { n: '+٥٠٠٠', l: 'مزارع شريك' },
+      { n: '١١', l: 'دولة منشأ' },
+      { n: '٪١٠٠', l: 'توريد قابل للتتبع' },
+      { n: '٪٩٢', l: 'متوافق EUDR' },
     ],
-    ctaTitle: 'لنبنِ خطة منشأ مخصصة لمواصفاتك.',
-    ctaLead:
-      'حاوية واحدة أو توريد سنوي — يُعد خبراؤنا التجاريون عرضاً مخصصاً للمنشأ واللوجستيات بسياق تجاري دقيق.',
+    ctaTitle: 'خطة منشأ مخصصة لمواصفاتك.',
+    ctaLead: 'حاوية أو توريد سنوي — يُعد خبراؤنا عرض المنشأ واللوجستيات خلال ٢٤ ساعة.',
     ctaBtn: 'تواصل معنا',
   },
 }[locale];
 
 const contactHref = localePath('/contact/', locale);
 
-const mapMarkersByLocale: Record<Locale, OriginMarker[]> = {
+const mapMarkers: Record<Locale, OriginMarker[]> = {
   tr: [
     { k: 'gaziantep-pistachio', name: 'Gaziantep, Türkiye', region: 'Antep platosu', products: ['Antep fıstığı'], lat: 37.0662, lng: 37.3833, category: 'nuts', href: turkiyeHref, featured: true },
     { k: 'malatya-apricot', name: 'Malatya, Türkiye', region: 'Doğu Anadolu', products: ['Gün kurusu kayısı'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
-    { k: 'giresun-hazelnut', name: 'Giresun, Türkiye', region: 'Karadeniz', products: ['Levant kalite fındık'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'giresun-hazelnut', name: 'Giresun, Türkiye', region: 'Karadeniz', products: ['Levant fındık'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
     { k: 'aydin-fig', name: 'Aydın, Türkiye', region: 'Ege', products: ['Sarı lop incir'], lat: 37.856, lng: 27.8416, category: 'nuts', href: turkiyeHref },
-    { k: 'ethiopia-coffee', name: 'Yirgacheffe, Etiyopya', region: 'Gedeo yüksek rakım', products: ['Arabica kahve'], lat: 6.1622, lng: 38.205, category: 'coffee' },
-    { k: 'colombia-coffee', name: 'Huila, Kolombiya', region: 'And etekleri', products: ['Specialty kahve'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
-    { k: 'brazil-coffee', name: 'Minas Gerais, Brezilya', region: 'Cerrado Mineiro', products: ['Harman arabica'], lat: -18.5122, lng: -44.555, category: 'coffee' },
-    { k: 'vietnam-coffee', name: 'Dak Lak, Vietnam', region: 'Central Highlands', products: ['Robusta kahve', 'Kaju'], lat: 12.71, lng: 108.2378, category: 'coffee' },
+    { k: 'ethiopia-coffee', name: 'Yirgacheffe, Etiyopya', region: 'Gedeo', products: ['Arabica kahve'], lat: 6.1622, lng: 38.205, category: 'coffee' },
+    { k: 'colombia-coffee', name: 'Huila, Kolombiya', region: 'And', products: ['Specialty kahve'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
+    { k: 'brazil-coffee', name: 'Minas Gerais, Brezilya', region: 'Cerrado', products: ['Harman arabica'], lat: -18.5122, lng: -44.555, category: 'coffee' },
+    { k: 'vietnam-coffee', name: 'Dak Lak, Vietnam', region: 'Central Highlands', products: ['Robusta', 'Kaju'], lat: 12.71, lng: 108.2378, category: 'coffee' },
     { k: 'ghana-cocoa', name: 'Ashanti, Gana', region: 'Kakao kuşağı', products: ['Fermente kakao'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
-    { k: 'ivory-cocoa', name: 'San-Pédro, Fildişi Sahili', region: 'Atlantik kakao hattı', products: ['Kakao çekirdeği'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
-    { k: 'ecuador-cocoa', name: 'Guayas, Ekvador', region: 'Arriba Nacional', products: ['Fine-flavour kakao'], lat: -1.8312, lng: -79.928, category: 'cocoa' },
-    { k: 'madagascar-vanilla', name: 'Sava, Madagaskar', region: 'Vanilya kıyısı', products: ['Vanilya', 'Karanfil'], lat: -14.2667, lng: 50.1667, category: 'spices' },
-    { k: 'india-spices', name: 'Kerala, Hindistan', region: 'Malabar hattı', products: ['Karabiber', 'Kakule'], lat: 10.8505, lng: 76.2711, category: 'spices' },
-    { k: 'sri-lanka-cinnamon', name: 'Galle, Sri Lanka', region: 'Seylan kıyısı', products: ['Tarçın'], lat: 6.0535, lng: 80.221, category: 'spices' },
-    { k: 'indonesia-spices', name: 'Sumatra, Endonezya', region: 'Takımada menşei', products: ['Kahve', 'Hindistan cevizi'], lat: 0.5897, lng: 101.3431, category: 'spices' },
-    { k: 'tanzania-cashew', name: 'Mtwara, Tanzanya', region: 'Hint Okyanusu hattı', products: ['Kaju'], lat: -10.2736, lng: 40.1828, category: 'nuts' },
-    { k: 'peru-quinoa', name: 'Puno, Peru', region: 'And yüksek platosu', products: ['Kinoa', 'Özel tahıllar'], lat: -15.8402, lng: -70.0219, category: 'ingredients' },
-    { k: 'ukraine-grain', name: 'Odesa, Ukrayna', region: 'Karadeniz tahıl koridoru', products: ['Tahıl', 'Yağlı tohum'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
+    { k: 'ivory-cocoa', name: 'San-Pédro, Fildişi', region: 'Atlantik', products: ['Kakao'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
+    { k: 'india-spices', name: 'Kerala, Hindistan', region: 'Malabar', products: ['Karabiber', 'Kakule'], lat: 10.8505, lng: 76.2711, category: 'spices' },
+    { k: 'indonesia-spices', name: 'Sumatra, Endonezya', region: 'Takımada', products: ['Kahve', 'Hindistan cevizi'], lat: 0.5897, lng: 101.3431, category: 'spices' },
+    { k: 'ukraine-grain', name: 'Odesa, Ukrayna', region: 'Karadeniz tahıl', products: ['Tahıl', 'Yağlı tohum'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
   ],
   en: [
     { k: 'gaziantep-pistachio', name: 'Gaziantep, Türkiye', region: 'Antep plateau', products: ['Antep pistachio'], lat: 37.0662, lng: 37.3833, category: 'nuts', href: turkiyeHref, featured: true },
-    { k: 'malatya-apricot', name: 'Malatya, Türkiye', region: 'Eastern Anatolia', products: ['Sun-dried apricot'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'malatya-apricot', name: 'Malatya, Türkiye', region: 'East Anatolia', products: ['Sun-dried apricot'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
     { k: 'giresun-hazelnut', name: 'Giresun, Türkiye', region: 'Black Sea', products: ['Levant hazelnut'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
     { k: 'aydin-fig', name: 'Aydın, Türkiye', region: 'Aegean', products: ['Sari lop fig'], lat: 37.856, lng: 27.8416, category: 'nuts', href: turkiyeHref },
-    { k: 'ethiopia-coffee', name: 'Yirgacheffe, Ethiopia', region: 'Gedeo highlands', products: ['Arabica coffee'], lat: 6.1622, lng: 38.205, category: 'coffee' },
-    { k: 'colombia-coffee', name: 'Huila, Colombia', region: 'Andean foothills', products: ['Specialty coffee'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
-    { k: 'brazil-coffee', name: 'Minas Gerais, Brazil', region: 'Cerrado Mineiro', products: ['Blend-base arabica'], lat: -18.5122, lng: -44.555, category: 'coffee' },
-    { k: 'vietnam-coffee', name: 'Dak Lak, Vietnam', region: 'Central Highlands', products: ['Robusta coffee', 'Cashew'], lat: 12.71, lng: 108.2378, category: 'coffee' },
+    { k: 'ethiopia-coffee', name: 'Yirgacheffe, Ethiopia', region: 'Gedeo', products: ['Arabica coffee'], lat: 6.1622, lng: 38.205, category: 'coffee' },
+    { k: 'colombia-coffee', name: 'Huila, Colombia', region: 'Andes', products: ['Specialty coffee'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
+    { k: 'brazil-coffee', name: 'Minas Gerais, Brazil', region: 'Cerrado', products: ['Blend arabica'], lat: -18.5122, lng: -44.555, category: 'coffee' },
+    { k: 'vietnam-coffee', name: 'Dak Lak, Vietnam', region: 'Central Highlands', products: ['Robusta', 'Cashew'], lat: 12.71, lng: 108.2378, category: 'coffee' },
     { k: 'ghana-cocoa', name: 'Ashanti, Ghana', region: 'Cocoa belt', products: ['Fermented cocoa'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
-    { k: 'ivory-cocoa', name: "San-Pédro, Côte d'Ivoire", region: 'Atlantic cocoa line', products: ['Cocoa bean'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
-    { k: 'ecuador-cocoa', name: 'Guayas, Ecuador', region: 'Arriba Nacional', products: ['Fine-flavour cocoa'], lat: -1.8312, lng: -79.928, category: 'cocoa' },
-    { k: 'madagascar-vanilla', name: 'Sava, Madagascar', region: 'Vanilla coast', products: ['Vanilla', 'Clove'], lat: -14.2667, lng: 50.1667, category: 'spices' },
-    { k: 'india-spices', name: 'Kerala, India', region: 'Malabar line', products: ['Black pepper', 'Cardamom'], lat: 10.8505, lng: 76.2711, category: 'spices' },
-    { k: 'sri-lanka-cinnamon', name: 'Galle, Sri Lanka', region: 'Ceylon coast', products: ['Cinnamon'], lat: 6.0535, lng: 80.221, category: 'spices' },
-    { k: 'indonesia-spices', name: 'Sumatra, Indonesia', region: 'Archipelago origin', products: ['Coffee', 'Coconut'], lat: 0.5897, lng: 101.3431, category: 'spices' },
-    { k: 'tanzania-cashew', name: 'Mtwara, Tanzania', region: 'Indian Ocean line', products: ['Cashew'], lat: -10.2736, lng: 40.1828, category: 'nuts' },
-    { k: 'peru-quinoa', name: 'Puno, Peru', region: 'Andean altiplano', products: ['Quinoa', 'Specialty grains'], lat: -15.8402, lng: -70.0219, category: 'ingredients' },
-    { k: 'ukraine-grain', name: 'Odesa, Ukraine', region: 'Black Sea grain corridor', products: ['Grain', 'Oilseed'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
+    { k: 'ivory-cocoa', name: "San-Pédro, Côte d'Ivoire", region: 'Atlantic', products: ['Cocoa'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
+    { k: 'india-spices', name: 'Kerala, India', region: 'Malabar', products: ['Black pepper', 'Cardamom'], lat: 10.8505, lng: 76.2711, category: 'spices' },
+    { k: 'indonesia-spices', name: 'Sumatra, Indonesia', region: 'Archipelago', products: ['Coffee', 'Coconut'], lat: 0.5897, lng: 101.3431, category: 'spices' },
+    { k: 'ukraine-grain', name: 'Odesa, Ukraine', region: 'Black Sea grain', products: ['Grain', 'Oilseed'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
   ],
   ar: [
     { k: 'gaziantep-pistachio', name: 'غازي عنتاب، تركيا', region: 'هضبة عنتاب', products: ['فستق عنتاب'], lat: 37.0662, lng: 37.3833, category: 'nuts', href: turkiyeHref, featured: true },
-    { k: 'malatya-apricot', name: 'ملاطية، تركيا', region: 'شرق الأناضول', products: ['مشمش مجفف بالشمس'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
+    { k: 'malatya-apricot', name: 'ملاطية، تركيا', region: 'شرق الأناضول', products: ['مشمش مجفف'], lat: 38.3552, lng: 38.3095, category: 'nuts', href: turkiyeHref, featured: true },
     { k: 'giresun-hazelnut', name: 'غيرسون، تركيا', region: 'البحر الأسود', products: ['بندق ليفانت'], lat: 40.9128, lng: 38.3895, category: 'nuts', href: turkiyeHref, featured: true },
-    { k: 'aydin-fig', name: 'آيدن، تركيا', region: 'إيجة', products: ['تين ساري لوب'], lat: 37.856, lng: 27.8416, category: 'nuts', href: turkiyeHref },
-    { k: 'ethiopia-coffee', name: 'يرغاشيف، إثيوبيا', region: 'مرتفعات غيديو', products: ['قهوة أرابيكا'], lat: 6.1622, lng: 38.205, category: 'coffee' },
-    { k: 'colombia-coffee', name: 'هويلا، كولومبيا', region: 'سفوح الأنديز', products: ['قهوة مختصة'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
-    { k: 'brazil-coffee', name: 'ميناس جيرايس، البرازيل', region: 'سيرادو مينيرو', products: ['أرابيكا للمزجات'], lat: -18.5122, lng: -44.555, category: 'coffee' },
-    { k: 'vietnam-coffee', name: 'داك لاك، فيتنام', region: 'المرتفعات الوسطى', products: ['قهوة روبوستا', 'كاجو'], lat: 12.71, lng: 108.2378, category: 'coffee' },
-    { k: 'ghana-cocoa', name: 'أشانتي، غانا', region: 'حزام الكاكاو', products: ['كاكاو مخمر'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
-    { k: 'ivory-cocoa', name: 'سان بيدرو، ساحل العاج', region: 'خط الكاكاو الأطلسي', products: ['حبوب كاكاو'], lat: 4.7485, lng: -6.6363, category: 'cocoa' },
-    { k: 'ecuador-cocoa', name: 'غواياس، الإكوادور', region: 'أريبا ناسيونال', products: ['كاكاو فاخر النكهة'], lat: -1.8312, lng: -79.928, category: 'cocoa' },
-    { k: 'madagascar-vanilla', name: 'سافا، مدغشقر', region: 'ساحل الفانيلا', products: ['فانيلا', 'قرنفل'], lat: -14.2667, lng: 50.1667, category: 'spices' },
-    { k: 'india-spices', name: 'كيرالا، الهند', region: 'خط مالابار', products: ['فلفل أسود', 'هيل'], lat: 10.8505, lng: 76.2711, category: 'spices' },
-    { k: 'sri-lanka-cinnamon', name: 'غالي، سريلانكا', region: 'ساحل سيلان', products: ['قرفة'], lat: 6.0535, lng: 80.221, category: 'spices' },
-    { k: 'indonesia-spices', name: 'سومطرة، إندونيسيا', region: 'منشأ أرخبيل', products: ['قهوة', 'جوز الهند'], lat: 0.5897, lng: 101.3431, category: 'spices' },
-    { k: 'tanzania-cashew', name: 'متوارا، تنزانيا', region: 'خط المحيط الهندي', products: ['كاجو'], lat: -10.2736, lng: 40.1828, category: 'nuts' },
-    { k: 'peru-quinoa', name: 'بونو، بيرو', region: 'هضبة الأنديز', products: ['كينوا', 'حبوب خاصة'], lat: -15.8402, lng: -70.0219, category: 'ingredients' },
-    { k: 'ukraine-grain', name: 'أوديسا، أوكرانيا', region: 'ممر حبوب البحر الأسود', products: ['حبوب', 'بذور زيتية'], lat: 46.4825, lng: 30.7233, category: 'ingredients' },
+    { k: 'ethiopia-coffee', name: 'يرغاشيف، إثيوبيا', region: 'غديو', products: ['أرابيكا'], lat: 6.1622, lng: 38.205, category: 'coffee' },
+    { k: 'colombia-coffee', name: 'هويلا، كولومبيا', region: 'الأنديز', products: ['قهوة مختصة'], lat: 2.5359, lng: -75.5277, category: 'coffee' },
+    { k: 'vietnam-coffee', name: 'داك لاك، فيتنام', region: 'المرتفعات', products: ['روبوستا', 'كاجو'], lat: 12.71, lng: 108.2378, category: 'coffee' },
+    { k: 'ghana-cocoa', name: 'أشانتي، غانا', region: 'حزام الكاكاو', products: ['كاكاو مخمَّر'], lat: 6.747, lng: -1.5209, category: 'cocoa' },
+    { k: 'india-spices', name: 'كيرلا، الهند', region: 'مالابار', products: ['فلفل أسود', 'هيل'], lat: 10.8505, lng: 76.2711, category: 'spices' },
   ],
 };
-
-const mapMarkers = mapMarkersByLocale[locale];
-
-const mapLabels = {
-  tr: {
-    title: 'Menşelerimize dokunun',
-    lead: 'Her nokta üzerine gelin — ürün, bölge ve menşe detayı yan kartta açılır.',
-    viewDetail: 'Detayı gör',
-    mapAria: 'Kısmet Foods menşe ağı interaktif haritası',
-    panelHint: 'Bir noktanın üzerine gelin · ya da dokunun',
-    closeLabel: 'Kapat',
-    filters: { all: 'Tümü', coffee: 'Kahve', cocoa: 'Kakao', nuts: 'Kuruyemiş', spices: 'Baharat', ingredients: 'Hammadde' },
-    listTitle: 'Ürün menşe defteri',
-    productPrefix: 'Ürün',
-  },
-  en: {
-    title: 'Hover into every origin',
-    lead: 'Move over any marker — product, region and origin detail open in the side card.',
-    viewDetail: 'View detail',
-    mapAria: 'Kismet Foods origin network interactive map',
-    panelHint: 'Hover a marker · or tap',
-    closeLabel: 'Close',
-    filters: { all: 'All', coffee: 'Coffee', cocoa: 'Cocoa', nuts: 'Nuts', spices: 'Spices', ingredients: 'Ingredient' },
-    listTitle: 'Product origin ledger',
-    productPrefix: 'Product',
-  },
-  ar: {
-    title: 'اقترب من كل منشأ',
-    lead: 'مرر فوق أي علامة — يفتح المنتج والمنطقة وتفاصيل المنشأ في البطاقة الجانبية.',
-    viewDetail: 'عرض التفاصيل',
-    mapAria: 'خريطة تفاعلية لشبكة مناشئ كسمت فودز',
-    panelHint: 'مرر فوق علامة · أو اضغط',
-    closeLabel: 'إغلاق',
-    filters: { all: 'الكل', coffee: 'القهوة', cocoa: 'الكاكاو', nuts: 'المكسرات', spices: 'التوابل', ingredients: 'المواد الخام' },
-    listTitle: 'سجل مناشئ المنتجات',
-    productPrefix: 'المنتج',
-  },
-}[locale];
+const heroBg = 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=2400&q=80';
+void tr;
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: tr.nav.origins }]} />
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    background={heroBg}
+    meta={[
+      { label: 'Continents', value: '5' },
+      { label: 'Countries', value: '11' },
+      { label: 'Specialists', value: 'on the ground' },
+    ]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* Hero — asymmetric 4/8 split, italic accent on title */}
-  <section class="relative overflow-hidden bg-surface-low px-4 py-20 md:px-8 md:py-28 lg:py-32">
-    <div class="mx-auto max-w-7xl">
-      <div class="grid grid-cols-1 items-center gap-10 md:grid-cols-12 md:gap-14">
-        <div class="md:col-span-5 lg:col-span-4">
-          <span class="eyebrow mb-6 block text-orange">{copy.eyebrow}</span>
-          <h1 class="serif-display mb-8 text-4xl font-semibold leading-[1.05] tracking-tight text-on-surface md:text-5xl lg:text-[3.5rem]">
-            {copy.heroTitle}
-          </h1>
-          <p class="max-w-prose text-base leading-[1.7] text-on-surface-muted md:text-lg">
-            {copy.heroLead}
-          </p>
-        </div>
-        <div class="md:col-span-7 lg:col-span-8">
-          <figure class="photo-grade photo-grade--cool relative overflow-hidden rounded-md shadow-editorial">
-            <img
-              src={mapImg}
-              alt={copy.mapAlt}
-              class="aspect-[16/10] w-full object-cover"
-              width="1600"
-              height="1000"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
-          </figure>
-        </div>
-      </div>
-    </div>
-  </section>
+  <CorpSection variant="snow" eyebrow="HARITA · INTERAKTİF" title="17 menşe" italic="tek dünya.">
+    <OriginsMap
+      markers={mapMarkers[locale]}
+      labels={{
+        viewDetail: copy.viewBtn,
+        mapAria: locale === 'ar' ? 'خريطة المناشئ' : locale === 'tr' ? 'Menşe haritası' : 'Origins map',
+        listTitle: locale === 'ar' ? 'سجل المناشئ' : locale === 'tr' ? 'Menşe defteri' : 'Origin ledger',
+        productPrefix: locale === 'ar' ? 'المنتجات' : locale === 'tr' ? 'Ürünler' : 'Products',
+        filters: locale === 'tr'
+          ? { all: 'Tümü', coffee: 'Kahve', cocoa: 'Kakao', nuts: 'Kuruyemiş', spices: 'Baharat', ingredients: 'Hammadde' }
+          : locale === 'ar'
+          ? { all: 'الكل', coffee: 'قهوة', cocoa: 'كاكاو', nuts: 'مكسرات', spices: 'توابل', ingredients: 'مكونات' }
+          : { all: 'All', coffee: 'Coffee', cocoa: 'Cocoa', nuts: 'Nuts', spices: 'Spices', ingredients: 'Ingredients' },
+      }}
+    />
+  </CorpSection>
 
-  <AmuletDivider compact ariaLabel="section divider" />
-
-  {/* Interactive world map */}
-  <section id="origins-interactive-map" class="px-4 py-20 md:px-8 md:py-24">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-10 max-w-3xl">
-        <h2 class="serif-display mb-3 text-3xl font-bold leading-tight text-on-surface md:text-4xl">
-          {mapLabels.title}
-        </h2>
-        <p class="text-base leading-relaxed text-on-surface-muted">{mapLabels.lead}</p>
-      </div>
-      <OriginsMap
-        markers={mapMarkers}
-        labels={{
-          viewDetail: mapLabels.viewDetail,
-          mapAria: mapLabels.mapAria,
-          panelHint: mapLabels.panelHint,
-          closeLabel: mapLabels.closeLabel,
-          filters: mapLabels.filters,
-          listTitle: mapLabels.listTitle,
-          productPrefix: mapLabels.productPrefix,
-        }}
-      />
-    </div>
-  </section>
-
-  {/* Country grid */}
-  <section class="bg-surface-low px-4 py-20 md:px-8 md:py-24">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-12 max-w-3xl">
-        <h2 class="serif-display mb-4 text-3xl font-bold leading-tight text-on-surface md:text-4xl lg:text-5xl">
-          {copy.countriesTitle}
-        </h2>
-        <p class="text-lg leading-relaxed text-on-surface-muted">{copy.countriesLead}</p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {copy.countries.map((c) => {
-          const isLink = Boolean((c as any).href);
-          const Tag: any = isLink ? 'a' : 'article';
-          const featured = (c as any).featured;
-          return (
-            <Tag
-              {...(isLink ? { href: (c as any).href } : {})}
-              class={`group relative block overflow-hidden rounded-lg bg-surface-lowest shadow-editorial transition-transform hover:-translate-y-1 ${featured ? 'md:col-span-2 lg:col-span-2' : ''}`}
-            >
-              <div class="relative overflow-hidden">
-                <img
-                  src={originImgs[c.k]}
-                  alt={c.name}
-                  class={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${featured ? 'aspect-[16/7]' : 'aspect-[4/3]'}`}
-                  width="1200"
-                  height="800"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-surface-deep/70 to-transparent"></div>
-                <div class="absolute bottom-0 start-0 p-6 text-white">
-                  <span class="eyebrow mb-1 block text-orange">{c.region}</span>
-                  <h3 class="serif-display text-2xl font-bold md:text-3xl">{c.name}</h3>
-                </div>
-              </div>
-              <div class="p-6">
-                <p class="leading-relaxed text-on-surface-muted">{c.body}</p>
-                {isLink && (
-                  <span class="eyebrow mt-4 inline-block text-teal group-hover:text-orange">
-                    {copy.viewBtn} →
-                  </span>
-                )}
-              </div>
-            </Tag>
-          );
-        })}
-      </div>
-    </div>
-  </section>
-
-  {/* Stats */}
-  <section class="cta-gradient px-4 py-20 text-white md:px-8">
-    <div class="mx-auto max-w-7xl">
-      <h2 class="serif-display mb-12 text-center text-3xl font-bold md:text-4xl">
-        {copy.statsTitle}
-      </h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {copy.stats.map((s) => (
-          <div class="text-center">
-            <span class="serif-display mb-2 block text-4xl font-bold md:text-5xl">{s.n}</span>
-            <span class="eyebrow block text-white/75">{s.l}</span>
+  <CorpSection variant="white" eyebrow={copy.countriesEyebrow} title={copy.countriesTitle} italic={copy.countriesItalic} lede={copy.countriesLead}>
+    <div class="op-grid">
+      {copy.countries.map((c) => (
+        <a href={(c as any).href ?? localePath(`/origins/${c.k}/`, locale)} class:list={['op-card', (c as any).featured && 'op-card--featured']}>
+          <div class="op-card__head">
+            <span class="co-eyebrow">{c.region}</span>
+            {(c as any).featured && <span class="op-card__badge">Öne çıkan menşe</span>}
           </div>
-        ))}
-      </div>
+          <h3 class="co-h3">{c.name}</h3>
+          <p>{c.body}</p>
+          <span class="co-link"><span>{copy.viewBtn}</span><span class="co-link__arrow" aria-hidden="true">→</span></span>
+        </a>
+      ))}
     </div>
-  </section>
+  </CorpSection>
 
-  {/* CTA */}
-  <section class="bg-surface-mid px-4 py-20 md:px-8">
-    <div class="mx-auto max-w-4xl text-center">
-      <h2 class="serif-display mb-4 text-3xl font-bold text-on-surface md:text-4xl">
-        {copy.ctaTitle}
-      </h2>
-      <p class="mb-8 text-lg leading-relaxed text-on-surface-muted">{copy.ctaLead}</p>
-      <Button href={contactHref} variant="primary">{copy.ctaBtn}</Button>
+  <CorpSection variant="navy" eyebrow="VERİ" title={copy.statsTitle} italic={copy.statsItalic}>
+    <div class="op-stats">
+      {copy.stats.map((s) => (
+        <div class="op-stat">
+          <span class="co-num op-stat__v">{s.n}</span>
+          <span class="op-stat__l">{s.l}</span>
+        </div>
+      ))}
     </div>
-  </section>
+  </CorpSection>
+
+  <CorpSection variant="snow" compact>
+    <div class="op-cta">
+      <h2 class="co-h2">{copy.ctaTitle}</h2>
+      <p>{copy.ctaLead}</p>
+      <a href={contactHref} class="co-btn co-btn--primary">{copy.ctaBtn} <span aria-hidden="true">→</span></a>
+    </div>
+  </CorpSection>
 </main>
 
 <SiteFooter locale={locale} />
+
+<style>
+  .op-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 720px) { .op-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .op-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+  .op-card {
+    background: var(--co-white);
+    border: 1px solid var(--co-line);
+    padding: 24px;
+    text-decoration: none;
+    color: var(--co-text);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+  }
+  .op-card:hover { border-color: var(--co-navy); box-shadow: 0 24px 48px -28px rgba(12,37,69,0.22); transform: translateY(-2px); }
+  .op-card--featured { border-color: var(--co-navy); border-top: 4px solid var(--co-amber); }
+  .op-card__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .op-card__badge {
+    font-family: var(--co-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--co-amber);
+  }
+  .op-card h3 { color: var(--co-ink); margin: 0; }
+  .op-card p { font-family: var(--co-sans); font-size: 14px; color: var(--co-mute); margin: 0; line-height: 1.6; }
+  .op-card .co-link { align-self: flex-start; margin-top: auto; }
+
+  .op-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); }
+  @media (min-width: 880px) { .op-stats { grid-template-columns: repeat(4, 1fr); } }
+  .op-stat { background: rgba(255,255,255,0.02); padding: 28px 22px; display: flex; flex-direction: column; gap: 6px; }
+  .op-stat__v { font-size: clamp(28px, 3vw, 44px); color: var(--co-white); line-height: 1; }
+  .op-stat__l { font-family: var(--co-sans); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--co-amber); text-transform: uppercase; }
+
+  .op-cta { display: flex; flex-direction: column; gap: 18px; align-items: flex-start; max-width: 60ch; }
+  .op-cta h2 { color: var(--co-ink); }
+  .op-cta p { font-family: var(--co-sans); font-size: 17px; color: var(--co-mute); margin: 0; line-height: 1.65; }
+</style>

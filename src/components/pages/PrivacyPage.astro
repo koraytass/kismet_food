@@ -1,15 +1,14 @@
 ---
 /**
- * PrivacyPage — Reusable section composition for /<locale>/privacy/.
- * Privacy Policy + Terms of Service in a single, long-form document.
- *
- * Sections: Hero · TOC sidebar · Document body (8 sections) · Legal contact
+ * PrivacyPage — v3 corporate.
+ * Hero · TOC sidebar (sticky) · Document body (8 sections) · Legal contact
+ * Copy block (TR/EN/AR) korundu; tüm sunum Corp primitive\'lere taşındı.
  */
 import type { Locale } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
 interface Props {
   locale: Locale;
@@ -18,7 +17,7 @@ interface Props {
 
 const { locale, currentPath } = Astro.props;
 
-/* --- Locale-scoped page copy --- */
+/* --- Locale-scoped page copy (mevcut metin bütününü koruduk) --- */
 const copy = {
   tr: {
     eyebrow: 'HUKUKİ BİLGİLENDİRME',
@@ -366,118 +365,80 @@ const copy = {
     ],
   },
 }[locale];
-
-/* Stitch image — vintage world map / logistics vignette */
-const mapImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBqyVYJ7xtJdhigrYDAmNgu5hmfOzFO5QEfWlLC8mNwea-txFcJFrXFCfk0IBN31FqwVSg5S5xWVxE4rrRAbSe04pWODoo1N-GMpaBHu5xSbyNSFHVABL4ev-C78tYtq7Up72avbgnLYG_R25p_fPwJW-plCW5Taf3XpEMx_RVzAySDoTONsS43ljvkjw6W7amtOdPi2OQ7C6ZbKwsu-xWhtFRtR6Kc8aUCnURjGuIUk-fAk3fWMvwn5kluP9bcxg565HdD8SX04d8',
-);
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb
-  locale={locale}
-  items={[{ name: copy.heroTitle }]}
-/>
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    meta={[{ label: 'Updated', value: copy.updated }]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* Hero */}
-  <section class="px-4 pb-12 pt-8 md:px-8 md:pt-12">
-    <div class="mx-auto max-w-4xl">
-      <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
-      <h1 class="serif-display mb-8 text-4xl font-bold leading-tight text-on-surface md:text-5xl lg:text-6xl">
-        {copy.heroTitle}
-      </h1>
-      <p class="mb-6 text-lg leading-relaxed text-on-surface-muted md:text-xl">
-        {copy.heroLead}
-      </p>
-      <p class="eyebrow text-on-surface-subtle">{copy.updated}</p>
-    </div>
-  </section>
-
-  {/* Body */}
-  <section class="px-4 pb-24 md:px-8">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-12 md:gap-16">
-      {/* Sidebar TOC */}
-      <aside class="md:col-span-3">
-        <div class="md:sticky md:top-28 space-y-10">
-          <nav aria-label={copy.tocTitle}>
-            <h2 class="eyebrow mb-4 text-orange-dark">{copy.tocTitle}</h2>
-            <ul class="space-y-3">
-              {copy.toc.map((item) => (
-                <li>
-                  <a
-                    href={`#${item.id}`}
-                    class="block text-sm text-on-surface-muted hover:text-teal-dark"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div class="rounded-lg bg-surface-low p-6">
-            <h3 class="eyebrow mb-3 text-on-surface-subtle">{copy.legalAsideTitle}</h3>
-            <p class="mb-4 text-sm leading-relaxed text-on-surface-muted">
-              {copy.legalAsideBody}
-            </p>
-            <a
-              href={`mailto:${copy.legalEmail}`}
-              class="text-sm font-bold text-teal-dark underline-offset-4 hover:underline"
-            >
-              {copy.legalEmail}
-            </a>
-          </div>
+  <CorpSection variant="white">
+    <div class="pp-doc">
+      <aside class="pp-toc" aria-label="TOC">
+        <span class="co-eyebrow co-eyebrow--ink">{copy.tocTitle}</span>
+        <ol>
+          {copy.toc.map((t) => (
+            <li><a href={`#${t.id}`}>{t.label}</a></li>
+          ))}
+        </ol>
+        <div class="pp-aside">
+          <span class="co-eyebrow">{copy.legalAsideTitle}</span>
+          <p>{copy.legalAsideBody}</p>
+          <a href={`mailto:${copy.legalEmail}`} class="co-link">{copy.legalEmail} <span class="co-link__arrow" aria-hidden="true">→</span></a>
         </div>
       </aside>
 
-      {/* Document body */}
-      <article class="md:col-span-9 max-w-3xl">
-        <div class="space-y-14">
-          {copy.sections.map((s) => (
-            <>
-              <section id={s.id} class="scroll-mt-32">
-                <div class="mb-6 flex items-baseline gap-4">
-                  <span class="serif-display text-2xl italic text-orange-dark">{s.n}</span>
-                  <h2 class="serif-display text-2xl font-bold text-on-surface md:text-3xl">{s.h}</h2>
-                </div>
-                <div class="space-y-5 leading-relaxed text-on-surface-muted">
-                  {s.p.map((para) => <p>{para}</p>)}
-                </div>
-              </section>
-
-              {/* Decorative asymmetric image + aside, between "How We Use" (03) and "Sharing" (04) */}
-              {s.id === 'use' && (
-                <div class="relative py-6">
-                  <div class="grid grid-cols-1 items-center gap-10 md:grid-cols-[1fr_1fr]">
-                    <div class="shadow-editorial overflow-hidden rounded-xl">
-                      <img
-                        src={mapImg}
-                        alt=""
-                        class="h-64 w-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                        width="800"
-                        height="500"
-                      />
-                    </div>
-                    <div>
-                      <h3 class="serif-display mb-3 text-2xl italic text-on-surface">
-                        {copy.securityTitle}
-                      </h3>
-                      <p class="text-sm leading-relaxed text-on-surface-muted">
-                        {copy.securityBody}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ))}
-        </div>
+      <article class="pp-body">
+        {copy.sections.map((s) => (
+          <section id={s.id} class="pp-sec">
+            <header class="pp-sec__head">
+              <span class="co-num pp-sec__num">{s.n}</span>
+              <h2 class="co-h3">{s.h}</h2>
+            </header>
+            {s.p.map((para) => <p>{para}</p>)}
+          </section>
+        ))}
       </article>
     </div>
-  </section>
+  </CorpSection>
+
+  <CorpSection variant="navy" eyebrow="GÜVENLİK" title={copy.securityTitle}>
+    <p class="pp-security">{copy.securityBody}</p>
+    <div class="pp-retention">
+      <span class="co-eyebrow">{copy.retentionTitle}</span>
+      <p>{copy.retentionBody}</p>
+    </div>
+  </CorpSection>
 </main>
 
 <SiteFooter locale={locale} />
+
+<style>
+  .pp-doc { display: grid; grid-template-columns: 1fr; gap: 40px; }
+  @media (min-width: 1024px) { .pp-doc { grid-template-columns: 240px 1fr; gap: 80px; align-items: start; } }
+  .pp-toc { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 16px; }
+  .pp-toc ol { list-style: none; counter-reset: t; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .pp-toc ol li { counter-increment: t; }
+  .pp-toc ol li a { font-family: var(--co-sans); font-size: 13px; font-weight: 500; color: var(--co-mute); text-decoration: none; transition: color 200ms ease; padding-left: 24px; position: relative; }
+  .pp-toc ol li a::before { content: counter(t, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: var(--co-sans); font-size: 11px; color: var(--co-amber); font-weight: 700; }
+  .pp-toc ol li a:hover { color: var(--co-navy); }
+  .pp-aside { padding-top: 16px; border-top: 1px solid var(--co-line); display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .pp-aside p { font-family: var(--co-sans); font-size: 13px; color: var(--co-mute); margin: 0; line-height: 1.55; }
+
+  .pp-body { display: flex; flex-direction: column; gap: 56px; }
+  .pp-sec { display: flex; flex-direction: column; gap: 14px; padding-top: 24px; border-top: 1px solid var(--co-line); scroll-margin-top: 100px; }
+  .pp-sec__head { display: flex; align-items: baseline; gap: 16px; }
+  .pp-sec__num { font-size: 24px; color: var(--co-amber); line-height: 1; }
+  .pp-sec h2 { color: var(--co-ink); margin: 0; }
+  .pp-sec p { font-family: var(--co-sans); font-size: 15px; line-height: 1.7; color: var(--co-text); margin: 0; max-width: 70ch; }
+
+  .pp-security { font-family: var(--co-sans); font-size: 17px; color: rgba(255,255,255,0.85); line-height: 1.65; max-width: 70ch; margin: 0 0 36px; }
+  .pp-retention { padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 10px; max-width: 70ch; }
+  .pp-retention p { font-family: var(--co-sans); font-size: 15px; color: rgba(255,255,255,0.78); margin: 0; line-height: 1.65; }
+</style>

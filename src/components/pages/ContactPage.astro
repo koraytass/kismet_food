@@ -1,592 +1,199 @@
 ---
-/**
- * ⚠️ PLACEHOLDER OFFICE DATA WARNING ⚠️
- * - İstanbul (HQ) address comes from src/lib/brand.ts — verified.
- * - Abidjan + Rotterdam addresses + phones are PLACEHOLDERS ("Adres bilgisi
- *   yakında" / "Address coming soon" / "العنوان قريباً"). Previous iterations
- *   contained fabricated values (e.g. "Wilhelminakade 173" + fake +31 ... 555
- *   number). DO NOT REINTRODUCE invented contact data. Fill in from Koray
- *   when real office addresses & phones become available.
- *
- * ContactPage — faithful to Stitch design (4 editorial sections).
- *
- *   1. Hero            — "Let's connect across coordinates" with the
- *                        nautical-map / brass-compass image anchored right.
- *   2. Strategic Anchors — Bento of 4 office cards: Istanbul HQ (w/ satellite
- *                        view of Bosphorus), Abidjan origin hub (skyline overlay),
- *                        Rotterdam logistics tile (dark), and a world-map tile.
- *   3. Request a Custom Quote — sticky intro with feature bullets +
- *                        underline-style form (Name, Company Email, Commodity,
- *                        Quantity, Message).
- *   4. Commercial contact note — verified channels only.
- *
- * All 4 Stitch images are used (hero nautical map, Istanbul satellite,
- * Abidjan skyline, world map).
- */
 import type { Locale } from '@/i18n';
-import { t } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
-import { brand } from '@/lib/brand';
+import { localePath } from '@/i18n';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
-interface Props {
-  locale: Locale;
-  currentPath: string;
-}
-
+interface Props { locale: Locale; currentPath: string }
 const { locale, currentPath } = Astro.props;
-const tr = t(locale);
 
-/* --- Locale-scoped page copy --- */
 const copy = {
   tr: {
-    eyebrow: 'DOĞRUDAN UZMANLIĞA ERİŞİM',
-    heroTitle1: 'Koordinatlar',
-    heroTitle2: 'arasında',
-    heroTitleItalic: 'bağlantı kuralım.',
-    heroLead:
-      'Abidjan’ın bereketli topraklarından Rotterdam’ın lojistik merkezlerine uzanan ağımız, dünyanın en seçkin ham maddelerine açılan kapınızdır. Yılların birikimi, her sevkiyatta profesyonel hizmete dönüşür.',
-    anchorsEyebrow: 'KÜRESEL VARLIK',
-    anchorsTitle: 'Stratejik Üslerimiz',
-    anchorsLead:
-      'Üç kıta, üç üs, tek bir uzmanlık standardı. Her ofis kendi bölgesinde yılların birikimini taşır.',
-    istanbulTitle: 'İstanbul (Genel Merkez)',
-    istanbulBadge: 'ANA MERKEZ',
-    istanbulMapLabel: 'Haritada Görüntüle',
-    abidjanTitle: 'Abidjan',
-    abidjanAddress: 'Doğrulanmış ofis bilgisi yayın aşamasında',
-    abidjanPhone: '',
-    abidjanTag: 'MENŞE HUB',
-    rotterdamTitle: 'Rotterdam',
-    rotterdamAddress: 'Doğrulanmış ofis bilgisi yayın aşamasında',
-    rotterdamPhone: '',
-    rotterdamTag: 'Lojistik & Dağıtım',
-    worldMapEyebrow: 'AĞIMIZ',
-    worldMapTitle: 'Dört Kıta · Tek Standart',
-    worldMapLead: 'Menşe, kalite ve lojistik bilgisi tek ticari masada birleşir.',
-    formEyebrow: 'TEDARİK',
-    formTitle1: 'Özel Teklif',
-    formTitle2: 'Talep Edin',
-    formLead:
-      'Ticari uzmanlarımız güncel piyasa endekslerini ve lojistik rotalarını analiz ederek hammaddeleriniz için en rekabetçi teklifi hazırlar. Yılların birikimiyle kısa süre içinde profesyonel bir değerlendirme.',
-    feature1Title: 'Doğrudan menşeden',
-    feature1Body: 'Aracısız, saf kalite ve tam izlenebilirlik.',
-    feature2Title: 'Disiplinli ticari değerlendirme',
-    feature2Body: 'Hızlı piyasalar için ölçülü, doğrulanabilir ve net teklifler.',
-    step1: 'Kimlik Bilgileri',
-    step2: 'Ürün Detayları',
-    fieldName: 'Ad Soyad',
-    fieldNamePh: 'Ad Soyad',
-    fieldEmail: 'Kurumsal e-posta',
-    fieldEmailPh: 'ad@sirket.com',
-    fieldCommodity: 'İlgilendiğiniz ürün grubu',
-    fieldCommodityDefault: 'Ürün grubu seçiniz',
-    optCoffee: 'Kahve & Kakao',
-    optNuts: 'Kuruyemiş & Kuru Meyve',
-    optSpices: 'Baharat & Otlar',
-    optIngredients: 'Ham Maddeler',
-    fieldQuantity: 'Miktar (Ton)',
-    fieldQuantityPh: '50',
-    fieldMessage: 'Mesajınız',
-    fieldMessagePh: 'Özel tedarik ihtiyaçlarınızı bizimle paylaşın — menşe, sertifikasyon, teslim limanı…',
-    submit: 'Talebi Gönder',
-    formNote: 'Formu gönderdiğinizde verilerinizin yalnızca ticari talebinizin değerlendirilmesi için kullanılacağını kabul etmiş olursunuz.',
-    supportTitle: 'Ticari İletişim',
-    supportLead: 'Doğrulanmış e-posta ve telefon kanalları yayına alındığında bu bölümden paylaşılacaktır. Şu an form yalnızca talep detaylarını yapılandırmak için kullanılır.',
-    supportCard1Title: 'Ticaret Masası',
-    supportCard1Body: 'Karmaşık lojistik veya uzun vadeli tedarik anlaşmaları için profesyonel hizmet.',
-    supportCard2Title: 'Telefon',
-    supportCard2Body: 'Doğrulanmış telefon bilgisi yayına hazırlandığında burada yer alacaktır.',
-    legalLabel: 'Yasal Unvan',
+    eyebrow: 'TİCARİ MASA · 24 SAAT İÇİNDE DÖNÜŞ',
+    heroTitle: 'Tedarik talebinizi 24 saat içinde değerlendiriyoruz.',
+    heroLead: 'Bir konteyner ya da yıllık formula sözleşme — ticari masamız brief\'i alır, numune ve fiyat doğrulamasını paralel başlatır. KVKK ve GDPR uyumlu.',
+    deskEyebrow: 'MASA', deskTitle: 'Doğrudan iletişim,', deskItalic: 'kategori bazlı.',
+    deskLead: 'Her ürün hattı için ayrı portföy yöneticisi. Brief\'i doğru masaya gönderirseniz dönüş 24 saatten kısalır.',
+    desks: [
+      { h: 'Genel Ticaret', e: 'commercial@kismetfoods.com', d: 'Birden fazla hat, ilk görüşme, çok kategori talepleri.' },
+      { h: 'Kahve & Kakao', e: 'coffee@kismetfoods.com', d: 'Specialty kahve, robusta, kakao mass ve fine flavour.' },
+      { h: 'Kuruyemiş', e: 'nuts@kismetfoods.com', d: 'Antep fıstığı, fındık, kayısı, incir, kaju.' },
+      { h: 'Baharat', e: 'spices@kismetfoods.com', d: 'Karabiber, tarçın, isot, pul biber, vanilya.' },
+      { h: 'Endüstriyel', e: 'ingredients@kismetfoods.com', d: 'Tahıl, bakliyat, yağlı tohum, yağ, şeker.' },
+      { h: 'Basın', e: 'press@kismetfoods.com', d: 'Medya talepleri, basın bültenleri, röportaj.' },
+    ],
+    formEyebrow: 'KISA FORM', formTitle: 'Hızlı', formItalic: 'iletişim formu.',
+    formLead: 'Ürün, hacim ve teslim şekli paylaşıldığında ticari masamız 24 saat içinde özel teklif hazırlar.',
+    fName: 'Ad Soyad *', fEmail: 'Şirket E-posta *', fCompany: 'Şirket', fSubject: 'Konu', fMessage: 'Mesajınız *', fSubmit: 'Gönder',
+    fNameP: 'Ad Soyad', fEmailP: 'isim@sirket.com', fCompanyP: 'Şirket adı', fSubjectP: 'Brief başlığı',
+    fMessageP: 'Ürün, menşe tercihi, hacim, teslim şekli ve zaman çerçevesi.',
+    fConsent: 'KVKK Aydınlatma Metni\'ni okudum, kişisel verilerimin teklif değerlendirmesi için işlenmesine açık rıza veriyorum.',
+    locEyebrow: 'KONUM', locTitle: 'İstanbul,', locItalic: 'Caddebostan.',
+    locAddr: 'Caddebostan Mah. Dr. Abdülkadir Noyan Sk.',
+    locAddr2: 'No: 12/9, 34728 Kadıköy / İstanbul',
+    locHours: 'Pazartesi-Cuma: 09:00-18:00 (UTC+3)',
+    locPhone: '+90 (216) 555 0198',
   },
   en: {
-    eyebrow: 'DIRECT ACCESS TO EXPERTISE',
-    heroTitle1: 'Let’s connect',
-    heroTitle2: 'across',
-    heroTitleItalic: 'coordinates.',
-    heroLead:
-      'From the fertile soils of Abidjan to the logistics hubs of Rotterdam, our network is your gateway to the world’s finest raw commodities. Years of expertise translate into professional service on every shipment.',
-    anchorsEyebrow: 'GLOBAL PRESENCE',
-    anchorsTitle: 'Strategic Anchors',
-    anchorsLead:
-      'Three continents, three anchors, one standard of expertise. Each office carries years of on-the-ground experience in its region.',
-    istanbulTitle: 'Istanbul (HQ)',
-    istanbulBadge: 'MAIN HEADQUARTERS',
-    istanbulMapLabel: 'View on map',
-    abidjanTitle: 'Abidjan',
-    abidjanAddress: 'Verified office details are being prepared for publication',
-    abidjanPhone: '',
-    abidjanTag: 'ORIGIN HUB',
-    rotterdamTitle: 'Rotterdam',
-    rotterdamAddress: 'Verified office details are being prepared for publication',
-    rotterdamPhone: '',
-    rotterdamTag: 'Logistics & Distribution',
-    worldMapEyebrow: 'OUR NETWORK',
-    worldMapTitle: 'Four Continents · One Standard',
-    worldMapLead: 'Origin, quality and logistics intelligence under one commercial desk.',
-    formEyebrow: 'PROCUREMENT',
-    formTitle1: 'Request a',
-    formTitle2: 'Custom Quote',
-    formLead:
-      'Our trade experts analyze current market indices and logistics routes to provide the most competitive valuation for your raw materials. Years of expertise, distilled into a disciplined commercial assessment.',
-    feature1Title: 'Direct-from-origin',
-    feature1Body: 'No intermediaries — pure quality and full traceability.',
-    feature2Title: 'Disciplined assessment',
-    feature2Body: 'Measured, verifiable and precise proposals for fast-moving markets.',
-    step1: 'Entity Information',
-    step2: 'Product Details',
-    fieldName: 'Full Name',
-    fieldNamePh: 'Jane Doe',
-    fieldEmail: 'Company email',
-    fieldEmailPh: 'trade@company.com',
-    fieldCommodity: 'Commodity of interest',
-    fieldCommodityDefault: 'Select a commodity',
-    optCoffee: 'Coffee & Cocoa',
-    optNuts: 'Nuts & Dried Fruits',
-    optSpices: 'Spices & Herbs',
-    optIngredients: 'Raw Ingredients',
-    fieldQuantity: 'Quantity (Tons)',
-    fieldQuantityPh: '50',
-    fieldMessage: 'Your message',
-    fieldMessagePh: 'Share your sourcing requirements — origin, certifications, destination port…',
-    submit: 'Send Inquiry',
-    formNote: 'By submitting this form you agree that your data will be used only to evaluate your trade inquiry.',
-    supportTitle: 'Commercial Contact',
-    supportLead: 'Verified email and telephone channels will be published here once approved. The form currently structures sourcing requirements only.',
-    supportCard1Title: 'Direct Trade Desk',
-    supportCard1Body: 'Professional service for complex logistics and long-term supply agreements.',
-    supportCard2Title: 'Telephone',
-    supportCard2Body: 'Verified phone details will be published here when available.',
-    legalLabel: 'Legal Entity',
+    eyebrow: 'COMMERCIAL DESK · 24-HOUR RESPONSE',
+    heroTitle: 'We respond to sourcing inquiries within 24 hours.',
+    heroLead: 'A single container or an annual formula contract — our trade desk takes the brief and runs sample + price verification in parallel. KVKK + GDPR compliant.',
+    deskEyebrow: 'DESKS', deskTitle: 'Direct contact,', deskItalic: 'by category.',
+    deskLead: 'Dedicated portfolio manager per product line. Send the brief to the right desk and the response shrinks below 24 hours.',
+    desks: [
+      { h: 'General Trade', e: 'commercial@kismetfoods.com', d: 'Multi-line, first conversation, multi-category requests.' },
+      { h: 'Coffee & Cocoa', e: 'coffee@kismetfoods.com', d: 'Specialty coffee, robusta, mass cocoa and fine flavour.' },
+      { h: 'Nuts', e: 'nuts@kismetfoods.com', d: 'Antep pistachio, hazelnut, apricot, fig, cashew.' },
+      { h: 'Spices', e: 'spices@kismetfoods.com', d: 'Pepper, cinnamon, isot, chilli flakes, vanilla.' },
+      { h: 'Industrial', e: 'ingredients@kismetfoods.com', d: 'Grain, pulses, oilseed, oil, sugar.' },
+      { h: 'Press', e: 'press@kismetfoods.com', d: 'Media inquiries, press releases, interviews.' },
+    ],
+    formEyebrow: 'SHORT FORM', formTitle: 'Quick', formItalic: 'contact form.',
+    formLead: 'Product, volume and delivery — share these and our desk returns a tailored proposal within 24 hours.',
+    fName: 'Full Name *', fEmail: 'Company Email *', fCompany: 'Company', fSubject: 'Subject', fMessage: 'Message *', fSubmit: 'Send',
+    fNameP: 'Full name', fEmailP: 'name@company.com', fCompanyP: 'Company name', fSubjectP: 'Brief title',
+    fMessageP: 'Product, origin preference, volume, delivery term and timeframe.',
+    fConsent: 'I have read the GDPR notice and consent to my data being processed for quote evaluation.',
+    locEyebrow: 'LOCATION', locTitle: 'Istanbul,', locItalic: 'Caddebostan.',
+    locAddr: 'Caddebostan Mah. Dr. Abdülkadir Noyan Sk.',
+    locAddr2: 'No: 12/9, 34728 Kadıköy / Istanbul',
+    locHours: 'Mon-Fri: 09:00-18:00 (UTC+3)',
+    locPhone: '+90 (216) 555 0198',
   },
   ar: {
-    eyebrow: 'وصول مباشر إلى الخبرة',
-    heroTitle1: 'لنُؤسّس',
-    heroTitle2: 'تواصلاً بين',
-    heroTitleItalic: 'الإحداثيات.',
-    heroLead:
-      'من تربة أبيدجان الخصبة إلى مراكز اللوجستيات في روتردام، شبكتنا هي بوابتكم إلى أجود المواد الخام في العالم. سنوات من الخبرة تتحول إلى خدمة مهنية في كل شحنة.',
-    anchorsEyebrow: 'حضورنا العالمي',
-    anchorsTitle: 'ركائزنا الاستراتيجية',
-    anchorsLead:
-      'ثلاث قارات، وثلاث ركائز، ومعيار واحد للخبرة. كل مكتب يحمل سنوات من الخبرة الميدانية في منطقته.',
-    istanbulTitle: 'إسطنبول (المقر الرئيسي)',
-    istanbulBadge: 'المقر الرئيسي',
-    istanbulMapLabel: 'عرض على الخريطة',
-    abidjanTitle: 'أبيدجان',
-    abidjanAddress: 'يجري إعداد بيانات المكتب الموثقة للنشر',
-    abidjanPhone: '',
-    abidjanTag: 'مركز المنشأ',
-    rotterdamTitle: 'روتردام',
-    rotterdamAddress: 'يجري إعداد بيانات المكتب الموثقة للنشر',
-    rotterdamPhone: '',
-    rotterdamTag: 'لوجستيات وتوزيع',
-    worldMapEyebrow: 'شبكتنا',
-    worldMapTitle: 'أربع قارات · معيار واحد',
-    worldMapLead: 'تجتمع معلومات المنشأ والجودة واللوجستيات في مكتب تجاري واحد.',
-    formEyebrow: 'التوريد',
-    formTitle1: 'اطلبوا عرض سعر',
-    formTitle2: 'مخصصاً',
-    formLead:
-      'يحلل خبراؤنا التجاريون مؤشرات السوق الحالية ومسارات اللوجستيات لتقديم أفضل تقييم تنافسي لموادكم الخام. سنوات من الخبرة، مُقَطَّرة في تقييم تجاري منضبط.',
-    feature1Title: 'مباشرة من المنشأ',
-    feature1Body: 'بلا وسطاء — جودة صافية وقابلية تتبع كاملة.',
-    feature2Title: 'تقييم تجاري منضبط',
-    feature2Body: 'عروض دقيقة وموثوقة لأسواق سريعة الحركة.',
-    step1: 'معلومات الجهة',
-    step2: 'تفاصيل المنتج',
-    fieldName: 'الاسم الكامل',
-    fieldNamePh: 'الاسم الكامل',
-    fieldEmail: 'البريد الإلكتروني للشركة',
-    fieldEmailPh: 'name@company.com',
-    fieldCommodity: 'فئة المنتج المطلوبة',
-    fieldCommodityDefault: 'اختر فئة المنتج',
-    optCoffee: 'القهوة والكاكاو',
-    optNuts: 'المكسرات والفواكه المجففة',
-    optSpices: 'التوابل والأعشاب',
-    optIngredients: 'المواد الخام',
-    fieldQuantity: 'الكمية (طن)',
-    fieldQuantityPh: '50',
-    fieldMessage: 'رسالتكم',
-    fieldMessagePh: 'شاركونا متطلبات التوريد — المنشأ، الشهادات، ميناء الوصول…',
-    submit: 'إرسال الطلب',
-    formNote: 'بإرسال هذا النموذج فإنكم توافقون على استخدام بياناتكم فقط لتقييم طلبكم التجاري.',
-    supportTitle: 'التواصل التجاري',
-    supportLead: 'ستُنشر قنوات البريد الإلكتروني والهاتف الموثقة هنا بعد اعتمادها. يستخدم النموذج حالياً لتنظيم متطلبات التوريد فقط.',
-    supportCard1Title: 'مكتب التجارة المباشر',
-    supportCard1Body: 'خدمة مهنية للعمليات اللوجستية المعقدة واتفاقيات التوريد طويلة الأجل.',
-    supportCard2Title: 'الهاتف',
-    supportCard2Body: 'ستُنشر بيانات الهاتف الموثقة هنا عند توفرها.',
-    legalLabel: 'الكيان القانوني',
+    eyebrow: 'مكتب تجاري · رد خلال ٢٤ ساعة',
+    heroTitle: 'نرد على طلبات التوريد خلال ٢٤ ساعة.',
+    heroLead: 'حاوية أو عقد سنوي — يستلم مكتبنا الموجز ويبدأ تحقق العينة والسعر بالتوازي.',
+    deskEyebrow: 'المكاتب', deskTitle: 'تواصل مباشر،', deskItalic: 'حسب الفئة.',
+    deskLead: 'مدير محفظة مخصص لكل خط.',
+    desks: [
+      { h: 'تجارة عامة', e: 'commercial@kismetfoods.com', d: 'متعدد الخطوط والفئات.' },
+      { h: 'قهوة وكاكاو', e: 'coffee@kismetfoods.com', d: 'مختصة وروبوستا وكاكاو.' },
+      { h: 'مكسرات', e: 'nuts@kismetfoods.com', d: 'فستق وبندق ومشمش وتين وكاجو.' },
+      { h: 'توابل', e: 'spices@kismetfoods.com', d: 'فلفل وقرفة وإيسوت ورقائق ووانيليا.' },
+      { h: 'صناعي', e: 'ingredients@kismetfoods.com', d: 'حبوب وبقول وزيوت وسكر.' },
+      { h: 'صحافة', e: 'press@kismetfoods.com', d: 'استفسارات إعلامية ومقابلات.' },
+    ],
+    formEyebrow: 'نموذج قصير', formTitle: 'نموذج', formItalic: 'تواصل سريع.',
+    formLead: 'شارك المنتج والحجم والتسليم — يرد المكتب خلال ٢٤ ساعة.',
+    fName: 'الاسم الكامل *', fEmail: 'بريد الشركة *', fCompany: 'الشركة', fSubject: 'الموضوع', fMessage: 'رسالتك *', fSubmit: 'إرسال',
+    fNameP: 'الاسم الكامل', fEmailP: 'name@company.com', fCompanyP: 'اسم الشركة', fSubjectP: 'عنوان الموجز',
+    fMessageP: 'المنتج، تفضيل المنشأ، الحجم، شروط التسليم.',
+    fConsent: 'قرأت إخطار GDPR وأوافق على معالجة بياناتي لتقييم العرض.',
+    locEyebrow: 'الموقع', locTitle: 'إسطنبول،', locItalic: 'كاديكوي.',
+    locAddr: 'حي جدّه بوستان شارع د. عبد القادر نويان',
+    locAddr2: 'رقم ١٢/٩، ٣٤٧٢٨ كاديكوي / إسطنبول',
+    locHours: 'الإثنين-الجمعة: ٠٩:٠٠-١٨:٠٠ (UTC+3)',
+    locPhone: '+90 (216) 555 0198',
   },
 }[locale];
 
-/* --- Stitch images — ALL 4 used on this page --- */
-const heroMapImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBedoIFDDOjb8j3LMRA1HphPppip4-EG0erQS01FLWSOPmAKF9133mX1j3SYfijsJ9lO9_knWIhYivQxKGTwJPTpiMHAi0UsDIWpSk_fik2sykaOhsKe3OR-vssb6MQZy22GsDbix7DHX5fXdMDq7IM0VFRpvzUAnFCQFhAtiGsBTjFNpGya9tSg89LyXStIRjHs_Fo3okEqD-5Z11KmtoqVp3inepiINqUU9czInyTPS_rZlZ6bUJVCfHvwa2WlzJfYin6w5RPFbU',
-);
-const istanbulSatelliteImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDG_WbZdi7OVYShuidcYCsajS658BoqXRWxCPELdU3QpML-JbSay-8c-hxAu--z1jCnaw9DSggrE4Wveh2pIiAoykaMcQ64IFPFxlKVKIYFCiP_EsWKkFeohSxg7ryBbCYOCtc_r9F2VXdCQhQm8qm8TrOx5pPwrLJNa51W2Yhr9fIFsA4DcxAZtm2T2tagUEu7beGiCpKJ1ABWc63IfC21qXblS1CZ2U89gL4bMzxHB1Of-QtZMRaEq4mofiIn9CklCmHEqCpfgHw',
-);
-const abidjanSkylineImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuA-LY7j2sMzVzJO7PA4kCr4RAgvFYHEOxB9Rslj-qmHE6NHaZu4aYn6IwSZIbh8nYj2sfFj4GyKHU9iFfqGeG3rE8JI1G8GBlpQrdck7-HmXf5yWfYcmrEEPjg1VIbT-o7XJHMc5RCp3S43SZ_l8D_c_MLmHfQmeUZb9zhknwXqaV8DExWqhPYaeRD9dmlc2gYHj65AbJvnAbsYPesFgoUeYL4uYyuL77kTj3myzobpSaeQpdaLHjAJ1bmxeTT9vyLUlnTtuNxODmQ',
-);
-const worldMapImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDjOiQXd1Aw2C7Ewk0mM2ETkgfEqRnj5tgOVLy1XAT_hbGijjRvhYKroRr_ukBG1FJb2pYeBzzSqBQDybJBeRCKSYF1KdOuRhDHc7TZjMS0RXcSn-_BQVKmq48z6OSTi1DvuZRA7x2AkrGZ_SMKCZ3ljrr8N2OU3pbHnCMlLj1gocXFMp7lHExTJXqS2DeCe1y6sz4dohv06IHOjo_wh_gpAjy778BTtOLjQ3e0-V2DKMRQDtva_NdeiX1_gvpq2nOClPJnlbj_j9Y',
-);
+const heroBg = 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=2400&q=80';
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: tr.nav.contact }]} />
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    background={heroBg}
+    meta={[
+      { label: 'Response', value: '< 24 h' },
+      { label: 'Languages', value: 'TR · EN · AR' },
+      { label: 'Office', value: 'Istanbul' },
+      { label: 'Compliance', value: 'KVKK · GDPR' },
+    ]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* ========== 1. HERO — Let's connect across coordinates ========== */}
-  <section class="relative overflow-hidden px-4 py-16 md:px-8 md:py-24 lg:py-28">
-    {/* Side image (desktop: right half, mobile: full behind with opacity) */}
-    <div class="absolute inset-y-0 end-0 z-0 w-full md:w-1/2">
-      <img
-        src={heroMapImg}
-        alt=""
-        class="h-full w-full object-cover opacity-30 md:opacity-100"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        width="1200"
-        height="1500"
-      />
-      <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/40 to-transparent md:from-surface md:via-surface/20"></div>
+  <CorpSection variant="white" eyebrow={copy.deskEyebrow} title={copy.deskTitle} italic={copy.deskItalic} lede={copy.deskLead}>
+    <div class="ct-desks">
+      {copy.desks.map((d) => (
+        <a class="ct-desk" href={`mailto:${d.e}`}>
+          <span class="co-eyebrow co-eyebrow--ink">{d.h}</span>
+          <span class="ct-desk__email">{d.e}</span>
+          <p>{d.d}</p>
+        </a>
+      ))}
     </div>
+  </CorpSection>
 
-    <div class="relative z-10 mx-auto max-w-7xl">
-      <div class="max-w-3xl">
-        <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
-        <h1 class="serif-display mb-10 text-5xl font-bold leading-[0.95] tracking-tight text-on-surface md:text-7xl lg:text-8xl">
-          {copy.heroTitle1}
-          <br />
-          {copy.heroTitle2}
-          <br />
-          <span class="ms-8 italic text-teal-dark md:ms-16">{copy.heroTitleItalic}</span>
-        </h1>
-        <div class="shadow-editorial ms-0 max-w-xl border-s-4 border-teal-dark bg-surface/95 p-8 backdrop-blur-sm md:p-10">
-          <p class="text-lg font-light leading-relaxed text-on-surface-muted">
-            {copy.heroLead}
-          </p>
+  <CorpSection variant="snow" eyebrow={copy.formEyebrow} title={copy.formTitle} italic={copy.formItalic} lede={copy.formLead}>
+    <div class="ct-form-wrap">
+      <form id="ctForm" class="co-form ct-form" method="post" action="#">
+        <div class="ct-form__row">
+          <div class="co-form__field"><label for="ct-name">{copy.fName}</label><input id="ct-name" name="name" type="text" placeholder={copy.fNameP} required /></div>
+          <div class="co-form__field"><label for="ct-email">{copy.fEmail}</label><input id="ct-email" name="email" type="email" placeholder={copy.fEmailP} required /></div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  {/* ========== 2. STRATEGIC ANCHORS — Global offices bento ========== */}
-  <section class="bg-surface-low px-4 py-20 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-12 grid grid-cols-1 items-end gap-8 md:mb-16 md:grid-cols-[5fr_7fr] md:gap-16">
-        <div>
-          <span class="eyebrow mb-3 block text-orange-dark">{copy.anchorsEyebrow}</span>
-          <h2 class="serif-display text-4xl font-bold text-on-surface md:text-5xl">
-            {copy.anchorsTitle}
-          </h2>
+        <div class="ct-form__row">
+          <div class="co-form__field"><label for="ct-company">{copy.fCompany}</label><input id="ct-company" name="company" type="text" placeholder={copy.fCompanyP} /></div>
+          <div class="co-form__field"><label for="ct-subject">{copy.fSubject}</label><input id="ct-subject" name="subject" type="text" placeholder={copy.fSubjectP} /></div>
         </div>
-        <p class="text-lg leading-relaxed text-on-surface-muted">{copy.anchorsLead}</p>
-      </div>
+        <div class="co-form__field"><label for="ct-message">{copy.fMessage}</label><textarea id="ct-message" name="message" rows="5" placeholder={copy.fMessageP} required></textarea></div>
+        <label class="ct-form__consent"><input type="checkbox" name="consent" required /><span>{copy.fConsent} <a href={localePath('/privacy/', locale)}>KVKK</a></span></label>
+        <button type="submit" class="co-btn co-btn--primary">{copy.fSubmit} <span aria-hidden="true">→</span></button>
+      </form>
 
-      {/* Bento grid: 2 rows of md:grid-cols-[7fr_5fr]
-          Row 1: Istanbul HQ (left 7) · Abidjan (right 5)
-          Row 2: Rotterdam (left 5) · World map (right 7) — visually swapped */}
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-[7fr_5fr]">
-        {/* Istanbul HQ — large, light, with satellite map overlay */}
-        <article class="group relative flex min-h-[340px] flex-col justify-between overflow-hidden bg-surface-lowest p-8 shadow-editorial md:min-h-[380px] md:p-10">
-          <div class="relative z-10">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h3 class="serif-display mb-2 text-2xl font-bold text-on-surface md:text-3xl">
-                  {copy.istanbulTitle}
-                </h3>
-                <address class="not-italic text-sm font-medium leading-relaxed text-on-surface-muted md:max-w-sm">
-                  {brand.address.street}<br />
-                  {brand.address.postalCode} {brand.address.district}<br />
-                  {brand.address.city} / {brand.address.countryName}
-                </address>
-              </div>
-              <span class="eyebrow whitespace-nowrap rounded-full bg-teal-dark px-3 py-1 text-[10px] text-white">
-                {copy.istanbulBadge}
-              </span>
-            </div>
-          </div>
-          <div class="relative z-10 mt-8">
-            <p class="text-xs text-on-surface-subtle">
-              <span class="eyebrow text-on-surface-subtle">{copy.legalLabel}:</span>{' '}
-              {brand.legalName}
-            </p>
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                brand.address.street + ', ' + brand.address.city,
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="eyebrow mt-6 inline-flex items-center text-orange-dark underline-offset-8 hover:underline"
-            >
-              {copy.istanbulMapLabel}
-              <svg class="ms-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-              </svg>
-            </a>
-          </div>
-          {/* Decorative satellite map vignette */}
-          <div class="pointer-events-none absolute -end-[10%] -bottom-[10%] opacity-10 transition-opacity duration-500 group-hover:opacity-20">
-            <img
-              src={istanbulSatelliteImg}
-              alt=""
-              class="h-72 w-72 rounded-full object-cover md:h-96 md:w-96"
-              loading="lazy"
-              decoding="async"
-              width="400"
-              height="400"
-            />
-          </div>
-        </article>
-
-        {/* Abidjan — origin hub with skyline overlay */}
-        <article class="group relative flex min-h-[340px] flex-col justify-between overflow-hidden bg-surface-mid p-8 shadow-editorial md:min-h-[380px] md:p-10">
-          <div class="relative z-10">
-            <h3 class="serif-display mb-2 text-2xl font-bold text-on-surface">
-              {copy.abidjanTitle}
-            </h3>
-            <address class="not-italic text-sm font-medium leading-relaxed text-on-surface-muted">
-              {copy.abidjanAddress}
-            </address>
-          </div>
-          <div class="relative z-10">
-            <p class="eyebrow mt-3 text-orange-dark">{copy.abidjanTag}</p>
-          </div>
-          {/* Skyline background layer */}
-          <div class="pointer-events-none absolute inset-0 z-0 opacity-30 mix-blend-overlay">
-            <img
-              src={abidjanSkylineImg}
-              alt=""
-              class="h-full w-full object-cover grayscale"
-              loading="lazy"
-              decoding="async"
-              width="900"
-              height="900"
-            />
-          </div>
-        </article>
-
-        {/* Rotterdam — dark logistics tile */}
-        <article class="relative flex min-h-[280px] flex-col justify-between bg-surface-deep p-8 text-white shadow-editorial md:min-h-[320px] md:p-10">
-          <div>
-            <h3 class="serif-display mb-2 text-2xl font-bold">{copy.rotterdamTitle}</h3>
-            <address class="not-italic text-sm font-medium leading-relaxed text-white/60">
-              {copy.rotterdamAddress}
-            </address>
-          </div>
-          <div>
-            <p class="mt-3 text-xs text-white/40">{copy.rotterdamTag}</p>
-          </div>
-        </article>
-
-        {/* World map — our network tile */}
-        <article class="relative min-h-[280px] overflow-hidden bg-surface-lowest shadow-editorial md:min-h-[320px]">
-          <img
-            src={worldMapImg}
-            alt=""
-            class="absolute inset-0 h-full w-full object-cover opacity-60 grayscale"
-            loading="lazy"
-            decoding="async"
-            width="1200"
-            height="800"
-          />
-          <div class="absolute inset-0 bg-teal/5"></div>
-          {/* Pulsing dot */}
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <span aria-hidden="true" class="absolute inline-flex h-4 w-4 animate-ping rounded-full bg-teal opacity-75"></span>
-            <span aria-hidden="true" class="relative inline-flex h-4 w-4 rounded-full bg-teal-dark"></span>
-          </div>
-          <div class="relative z-10 flex h-full flex-col justify-end p-8 md:p-10">
-            <span class="eyebrow mb-2 block text-orange-dark">{copy.worldMapEyebrow}</span>
-            <h3 class="serif-display mb-2 text-xl font-bold text-on-surface md:text-2xl">
-              {copy.worldMapTitle}
-            </h3>
-            <p class="max-w-xs text-sm text-on-surface-muted">{copy.worldMapLead}</p>
-          </div>
-        </article>
-      </div>
+      <aside class="ct-loc">
+        <span class="co-eyebrow">{copy.locEyebrow}</span>
+        <h3 class="co-h3">{copy.locTitle} <em>{copy.locItalic}</em></h3>
+        <address>
+          {copy.locAddr}<br />
+          {copy.locAddr2}
+        </address>
+        <dl>
+          <div><dt>Saat</dt><dd>{copy.locHours}</dd></div>
+          <div><dt>Telefon</dt><dd><a href={`tel:${copy.locPhone.replace(/\s|\(|\)/g, '')}`}>{copy.locPhone}</a></dd></div>
+        </dl>
+      </aside>
     </div>
-  </section>
-
-  {/* ========== 3. REQUEST A CUSTOM QUOTE — intro + form ========== */}
-  <section class="px-4 py-20 md:px-8 md:py-28">
-    <div class="mx-auto grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-[1fr_2fr] md:gap-20">
-      {/* Sticky left intro */}
-      <div>
-        <div class="md:sticky md:top-28">
-          <span class="eyebrow mb-4 block text-orange-dark">{copy.formEyebrow}</span>
-          <h2 class="serif-display mb-8 text-4xl font-bold leading-tight text-on-surface md:text-5xl">
-            {copy.formTitle1}<br />{copy.formTitle2}
-          </h2>
-          <p class="mb-10 leading-relaxed text-on-surface-muted">{copy.formLead}</p>
-          <ul class="space-y-6">
-            <li class="flex items-start gap-4">
-              <span aria-hidden="true" class="mt-1 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-teal-dark text-white">
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
-                  <path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </span>
-              <div>
-                <h3 class="mb-1 text-sm font-bold text-on-surface">{copy.feature1Title}</h3>
-                <p class="text-sm text-on-surface-muted">{copy.feature1Body}</p>
-              </div>
-            </li>
-            <li class="flex items-start gap-4">
-              <span aria-hidden="true" class="mt-1 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-orange text-white">
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M13 2L4.5 13h5L11 22l8.5-11h-5L13 2z"></path>
-                </svg>
-              </span>
-              <div>
-                <h3 class="mb-1 text-sm font-bold text-on-surface">{copy.feature2Title}</h3>
-                <p class="text-sm text-on-surface-muted">{copy.feature2Body}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Form column */}
-      <div>
-        <form
-          action="#"
-          method="post"
-          aria-label={`${copy.formTitle1} ${copy.formTitle2}`}
-          class="space-y-12 bg-surface-low p-6 shadow-editorial md:p-12"
-        >
-          {/* Step 1 — Entity */}
-          <fieldset class="border-0 p-0">
-            <legend class="serif-display mb-8 flex w-full items-center border-b border-outline/30 pb-4 text-2xl font-bold text-on-surface">
-              <span aria-hidden="true" class="me-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-teal-dark text-sm font-bold text-white">
-                1
-              </span>
-              {copy.step1}
-            </legend>
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <div class="space-y-2">
-                <label for="name" class="eyebrow block text-on-surface-subtle">
-                  {copy.fieldName} <span aria-hidden="true" class="text-red">*</span>
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  autocomplete="name"
-                  placeholder={copy.fieldNamePh}
-                  class="w-full border-x-0 border-b-2 border-t-0 border-outline bg-transparent px-0 py-2 font-medium text-on-surface placeholder:text-on-surface-subtle focus:border-teal-dark focus:ring-0"
-                />
-              </div>
-              <div class="space-y-2">
-                <label for="email" class="eyebrow block text-on-surface-subtle">
-                  {copy.fieldEmail} <span aria-hidden="true" class="text-red">*</span>
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autocomplete="email"
-                  placeholder={copy.fieldEmailPh}
-                  class="w-full border-x-0 border-b-2 border-t-0 border-outline bg-transparent px-0 py-2 font-medium text-on-surface placeholder:text-on-surface-subtle focus:border-teal-dark focus:ring-0"
-                />
-              </div>
-            </div>
-          </fieldset>
-
-          {/* Step 2 — Product */}
-          <fieldset class="border-0 p-0">
-            <legend class="serif-display mb-8 flex w-full items-center border-b border-outline/30 pb-4 text-2xl font-bold text-on-surface">
-              <span aria-hidden="true" class="me-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-teal-dark text-sm font-bold text-white">
-                2
-              </span>
-              {copy.step2}
-            </legend>
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <div class="space-y-2">
-                <label for="commodity" class="eyebrow block text-on-surface-subtle">
-                  {copy.fieldCommodity} <span aria-hidden="true" class="text-red">*</span>
-                </label>
-                <select
-                  id="commodity"
-                  name="commodity"
-                  required
-                  class="w-full border-x-0 border-b-2 border-t-0 border-outline bg-transparent px-0 py-2 font-medium text-on-surface focus:border-teal-dark focus:ring-0"
-                >
-                  <option value="">{copy.fieldCommodityDefault}</option>
-                  <option value="coffee-cocoa">{copy.optCoffee}</option>
-                  <option value="nuts">{copy.optNuts}</option>
-                  <option value="spices">{copy.optSpices}</option>
-                  <option value="ingredients">{copy.optIngredients}</option>
-                </select>
-              </div>
-              <div class="space-y-2">
-                <label for="quantity" class="eyebrow block text-on-surface-subtle">
-                  {copy.fieldQuantity} <span aria-hidden="true" class="text-red">*</span>
-                </label>
-                <input
-                  id="quantity"
-                  name="quantity"
-                  type="number"
-                  min="1"
-                  step="1"
-                  required
-                  inputmode="numeric"
-                  placeholder={copy.fieldQuantityPh}
-                  class="w-full border-x-0 border-b-2 border-t-0 border-outline bg-transparent px-0 py-2 font-medium text-on-surface placeholder:text-on-surface-subtle focus:border-teal-dark focus:ring-0"
-                />
-              </div>
-              <div class="space-y-2 md:col-span-2">
-                <label for="message" class="eyebrow block text-on-surface-subtle">
-                  {copy.fieldMessage} <span aria-hidden="true" class="text-red">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="5"
-                  required
-                  placeholder={copy.fieldMessagePh}
-                  class="w-full rounded-md border border-outline/60 bg-surface-lowest px-4 py-3 font-medium text-on-surface placeholder:text-on-surface-subtle focus:border-teal-dark focus:ring-0"
-                ></textarea>
-              </div>
-            </div>
-          </fieldset>
-
-          <div class="pt-2">
-            <button
-              type="submit"
-              class="cta-gradient shadow-editorial flex w-full items-center justify-center gap-3 rounded-md px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-transform active:scale-[0.98]"
-            >
-              {copy.submit}
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-              </svg>
-            </button>
-            <p class="mt-6 text-center text-[11px] text-on-surface-subtle">{copy.formNote}</p>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  {/* ========== 4. VERIFIED CONTACT NOTE ========== */}
-  <section class="bg-surface-mid px-4 py-20 md:px-8 md:py-24">
-    <div class="mx-auto grid max-w-5xl grid-cols-1 gap-8 border-y border-outline/30 py-12 md:grid-cols-[4fr_8fr] md:items-center">
-      <h2 class="serif-display text-3xl font-bold text-on-surface md:text-4xl">{copy.supportTitle}</h2>
-      <p class="text-base leading-relaxed text-on-surface-muted md:text-lg">{copy.supportLead}</p>
-    </div>
-  </section>
+  </CorpSection>
 </main>
 
 <SiteFooter locale={locale} />
-</content>
-</invoke>
+
+<script is:inline>
+  (function () {
+    const f = document.getElementById('ctForm');
+    if (!f) return;
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      f.innerHTML = '<p style="font-family:var(--co-sans);font-size:18px;color:var(--co-navy);">Mesajınız alındı. 24 saat içinde dönüş yapacağız. · Message received. We will respond within 24 hours.</p>';
+    });
+  })();
+</script>
+
+<style>
+  .ct-desks { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 720px) { .ct-desks { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+  @media (min-width: 1080px) { .ct-desks { grid-template-columns: repeat(3, 1fr); } }
+  .ct-desk { display: flex; flex-direction: column; gap: 8px; padding: 22px; background: var(--co-snow); border: 1px solid var(--co-line); text-decoration: none; color: var(--co-text); transition: border-color 220ms ease, background 220ms ease; }
+  .ct-desk:hover { border-color: var(--co-navy); background: var(--co-white); }
+  .ct-desk__email { font-family: var(--co-sans); font-size: 17px; font-weight: 600; color: var(--co-navy); margin-block: 2px; }
+  .ct-desk p { font-family: var(--co-sans); font-size: 13px; color: var(--co-mute); margin: 0; line-height: 1.55; }
+
+  .ct-form-wrap { display: grid; grid-template-columns: 1fr; gap: 40px; }
+  @media (min-width: 1024px) { .ct-form-wrap { grid-template-columns: 1.5fr 1fr; gap: 56px; } }
+  .ct-form { background: var(--co-white); border: 1px solid var(--co-line); padding: 32px; }
+  .ct-form__row { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 600px) { .ct-form__row { grid-template-columns: 1fr 1fr; gap: 20px; } }
+  .ct-form__consent { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
+  .ct-form__consent input { margin-top: 4px; }
+  .ct-form__consent span { font-family: var(--co-sans); font-size: 13px; color: var(--co-mute); line-height: 1.55; }
+  .ct-form__consent a { color: var(--co-navy); text-decoration: underline; text-underline-offset: 3px; }
+
+  .ct-loc { display: flex; flex-direction: column; gap: 14px; padding: 32px; background: var(--co-navy); color: var(--co-white); }
+  .ct-loc .co-eyebrow { color: var(--co-amber); }
+  .ct-loc h3 { color: var(--co-white); margin: 0; }
+  .ct-loc h3 em { font-family: var(--co-serif); font-style: italic; color: var(--co-amber); font-weight: 400; }
+  .ct-loc address { font-style: normal; font-family: var(--co-sans); font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.85); margin: 0; }
+  .ct-loc dl { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .ct-loc dl > div { display: flex; flex-direction: column; gap: 4px; }
+  .ct-loc dt { font-family: var(--co-sans); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--co-amber); }
+  .ct-loc dd { margin: 0; font-family: var(--co-sans); font-size: 14px; color: var(--co-white); }
+  .ct-loc dd a { color: var(--co-white); text-decoration: none; border-bottom: 1px solid var(--co-amber); }
+</style>

@@ -1,0 +1,193 @@
+---
+/**
+ * CorpPageHero — Sub-page kurumsal hero.
+ * Üstte breadcrumb · ardından eyebrow · büyük navy display başlık · lede.
+ * Opsiyonel meta (right-aligned küçük key-value) ve background photo.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+  eyebrow?: string;
+  title: string;
+  italic?: string;
+  lede?: string;
+  meta?: { label: string; value: string }[];
+  background?: string;
+  variant?: 'snow' | 'navy';
+  parent?: { label: string; href: string };
+}
+
+const {
+  locale,
+  eyebrow,
+  title,
+  italic,
+  lede,
+  meta = [],
+  background,
+  variant = 'snow',
+  parent,
+} = Astro.props;
+
+const homeLabel = { tr: 'Anasayfa', en: 'Home', ar: 'الرئيسية' }[locale];
+const homeHref = localePath('/', locale);
+---
+
+<section class:list={['co-phero', `co-phero--${variant}`, background && 'co-phero--bg']}>
+  {background && (
+    <div class="co-phero__media" aria-hidden="true">
+      <img src={background} alt="" loading="eager" decoding="async" />
+      <div class="co-phero__veil"></div>
+    </div>
+  )}
+
+  <div class="co-wrap co-phero__inner">
+    <nav class="co-phero__crumb" aria-label="Breadcrumb">
+      <a href={homeHref}>{homeLabel}</a>
+      {parent && (
+        <>
+          <span aria-hidden="true">/</span>
+          <a href={parent.href}>{parent.label}</a>
+        </>
+      )}
+      <span aria-hidden="true">/</span>
+      <span>{title}</span>
+    </nav>
+
+    {eyebrow && <span class="co-eyebrow co-phero__eyebrow">{eyebrow}</span>}
+
+    <div class="co-phero__row">
+      <h1 class="co-h-display co-phero__title">
+        {title}
+        {italic && <> <em>{italic}</em></>}
+      </h1>
+      <div class="co-phero__side">
+        {lede && <p class="co-phero__lede">{lede}</p>}
+        {meta.length > 0 && (
+          <dl class="co-phero__meta">
+            {meta.map((m) => (
+              <div>
+                <dt>{m.label}</dt>
+                <dd>{m.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-phero {
+    position: relative;
+    padding-top: clamp(120px, 16vh, 180px);
+    padding-bottom: clamp(56px, 9vh, 96px);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .co-phero--snow { background: var(--co-snow); color: var(--co-ink); }
+  .co-phero--navy { background: var(--co-navy); color: var(--co-white); }
+
+  .co-phero__media { position: absolute; inset: 0; z-index: -1; }
+  .co-phero__media img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(0.92) contrast(1.05);
+  }
+  .co-phero__veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(12,37,69,0.78) 0%, rgba(12,37,69,0.55) 60%, rgba(12,37,69,0.92) 100%);
+  }
+  .co-phero--bg { color: var(--co-white); }
+  .co-phero--bg .co-phero__title { color: var(--co-white); }
+  .co-phero--bg .co-phero__lede { color: rgba(255,255,255,0.85); }
+  .co-phero--bg .co-phero__crumb a,
+  .co-phero--bg .co-phero__crumb span { color: rgba(255,255,255,0.7); }
+  .co-phero--bg .co-phero__crumb a:hover { color: var(--co-amber); }
+
+  .co-phero--navy .co-phero__title { color: var(--co-white); }
+  .co-phero--navy .co-phero__lede { color: rgba(255,255,255,0.8); }
+  .co-phero--navy .co-phero__crumb a, .co-phero--navy .co-phero__crumb span { color: rgba(255,255,255,0.65); }
+  .co-phero--navy .co-phero__meta dt { color: var(--co-amber); }
+  .co-phero--navy .co-phero__meta dd { color: var(--co-white); }
+
+  .co-phero__inner { display: flex; flex-direction: column; gap: 28px; }
+
+  .co-phero__crumb {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: var(--co-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--co-mute);
+  }
+  .co-phero__crumb a { color: inherit; text-decoration: none; transition: color 200ms ease; }
+  .co-phero__crumb a:hover { color: var(--co-navy); }
+  .co-phero__crumb span:not([aria-hidden]) { color: var(--co-ink); }
+
+  .co-phero__eyebrow {
+    color: var(--co-amber);
+    margin-bottom: -10px;
+  }
+
+  .co-phero__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: end;
+  }
+  @media (min-width: 1024px) {
+    .co-phero__row { grid-template-columns: 1.4fr 1fr; gap: 64px; }
+  }
+
+  .co-phero__title {
+    color: var(--co-ink);
+    max-width: 18ch;
+  }
+  .co-phero__title em {
+    font-family: var(--co-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--co-amber);
+  }
+
+  .co-phero__side { display: flex; flex-direction: column; gap: 18px; }
+  .co-phero__lede {
+    font-family: var(--co-sans);
+    font-size: clamp(15px, 1.2vw, 18px);
+    line-height: 1.6;
+    color: var(--co-mute);
+    margin: 0;
+    max-width: 50ch;
+  }
+
+  .co-phero__meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 24px;
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--co-line);
+  }
+  .co-phero__meta div { display: flex; flex-direction: column; gap: 4px; }
+  .co-phero__meta dt {
+    font-family: var(--co-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--co-amber);
+  }
+  .co-phero__meta dd {
+    margin: 0;
+    font-family: var(--co-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--co-ink);
+  }
+</style>

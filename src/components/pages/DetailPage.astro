@@ -1,12 +1,16 @@
 ---
+/**
+ * DetailPage — v3 corporate.
+ * Dynamic [locale]/[group]/[slug] sayfaları için kurumsal sunum.
+ * Mevcut DetailCopy data sözleşmesi (eyebrow/title/lead/notes/factSheet/sections) korundu.
+ */
 import type { Locale } from '@/i18n';
 import { localePath } from '@/i18n';
 import type { DetailCopy } from '@/lib/detail-pages';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
-import Button from '../Button.astro';
-import TextLink from '../TextLink.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
 interface Props {
   locale: Locale;
@@ -16,140 +20,112 @@ interface Props {
 }
 
 const { locale, currentPath, parentPath, page } = Astro.props;
+void currentPath;
 
 const resolvedLinks = page.links?.map((link) => ({
   ...link,
   href: link.href.startsWith(`/${locale}/`) ? link.href : localePath(link.href, locale),
 })) ?? [];
+
+const meta: { label: string; value: string }[] = [];
+if (page.stat && page.statLabel) meta.push({ label: page.statLabel, value: page.stat });
+meta.push({ label: 'Section', value: page.parentLabel });
+
+const notesLabel = locale === 'tr' ? 'OKUMA NOTU' : locale === 'ar' ? 'ملاحظات قراءة' : 'READING NOTES';
+const factsLabel = locale === 'tr' ? 'TİCARİ ÇERÇEVE' : locale === 'ar' ? 'الإطار التجاري' : 'COMMERCIAL FRAME';
+const sectionsLabel = locale === 'tr' ? 'BÖLÜMLER' : locale === 'ar' ? 'الأقسام' : 'SECTIONS';
+const backLabel = locale === 'tr' ? 'Üst sayfaya dön' : locale === 'ar' ? 'العودة' : 'Back to parent';
 ---
 
-<SiteHeader locale={locale} currentPath={currentPath} />
+<SiteHeader locale={locale} currentPath={parentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: page.parentLabel, href: parentPath }, { name: page.title }]} />
-
-<main id="main" class="bg-surface text-on-surface">
-  <section class="relative overflow-hidden px-5 pb-16 pt-10 sm:px-6 md:px-8 md:pb-20 md:pt-16">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end lg:gap-14">
-      <div class="lg:col-span-7">
-        <span class="eyebrow mb-5 block text-orange">{page.eyebrow}</span>
-        <h1 class="serif-display max-w-4xl text-[2.8rem] font-semibold leading-[0.98] tracking-tight text-on-surface sm:text-6xl lg:text-[5.7rem]">
-          {page.title}
-        </h1>
-      </div>
-
-      <div class="lg:col-span-5">
-        <p class="max-w-xl text-base leading-[1.75] text-on-surface-muted md:text-lg">
-          {page.lead}
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="px-5 pb-20 sm:px-6 md:px-8 md:pb-28">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
-      <figure class="relative min-h-[26rem] overflow-hidden bg-surface-low lg:col-span-8">
-        <img src={page.image} alt={page.imageAlt} class="h-full min-h-[26rem] w-full object-cover" loading="eager" decoding="async" />
-        <div class="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,17,13,0.38),transparent_58%)]"></div>
-      </figure>
-
-      <aside class="flex flex-col justify-between border-t border-outline/40 pt-7 lg:col-span-4 lg:border-s lg:border-t-0 lg:ps-8 lg:pt-0">
-        <div>
-          <p class="eyebrow mb-5 text-teal">{page.parentLabel}</p>
-          {page.stat && (
-            <div class="mb-8">
-              <p class="serif-display text-6xl italic leading-none text-on-surface md:text-7xl">{page.stat}</p>
-              <p class="mt-3 text-[11px] font-bold uppercase tracking-[0.22em] text-on-surface-muted">{page.statLabel}</p>
-            </div>
-          )}
-        </div>
-
-        {resolvedLinks.length > 0 && (
-          <div class="flex flex-wrap gap-4">
-            <Button href={resolvedLinks[0].href} variant="primary">{resolvedLinks[0].label}</Button>
-            {resolvedLinks.slice(1).map((link) => (
-              <TextLink href={link.href}>{link.label}</TextLink>
-            ))}
-          </div>
-        )}
-      </aside>
-    </div>
-  </section>
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={page.eyebrow}
+    title={page.title}
+    lede={page.lead}
+    background={page.image}
+    parent={{ label: page.parentLabel, href: parentPath }}
+    meta={meta}
+  />
 
   {page.notes && page.notes.length > 0 && (
-    <section class="px-5 pb-20 sm:px-6 md:px-8 md:pb-28">
-      <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 border-y border-outline/40 py-10 lg:grid-cols-12 lg:gap-12">
-        <div class="lg:col-span-3">
-          <p class="eyebrow text-orange">
-            {locale === 'tr' && 'Okuma notu'}
-            {locale === 'en' && 'Reading notes'}
-            {locale === 'ar' && 'ملاحظات قراءة'}
-          </p>
-        </div>
-        <div class="grid gap-5 lg:col-span-9">
-          {page.notes.map((note) => (
-            <p class="max-w-4xl text-base leading-[1.85] text-on-surface-muted md:text-lg">
-              {note}
-            </p>
-          ))}
-        </div>
+    <CorpSection variant="white" eyebrow={notesLabel} title={page.title} compact>
+      <div class="dt-notes">
+        {page.notes.map((n) => <p>{n}</p>)}
       </div>
-    </section>
+    </CorpSection>
   )}
 
   {page.factSheet && page.factSheet.length > 0 && (
-    <section class="px-5 pb-20 sm:px-6 md:px-8 md:pb-28">
-      <div class="mx-auto max-w-7xl">
-        <div class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <p class="eyebrow text-teal">
-            {locale === 'tr' && 'Ticari çerçeve'}
-            {locale === 'en' && 'Commercial frame'}
-            {locale === 'ar' && 'الإطار التجاري'}
-          </p>
-          <p class="max-w-xl text-sm leading-[1.7] text-on-surface-muted">
-            {locale === 'tr' && 'Satın alma kararında ürün adı kadar kalite, evrak, menşe ve teslim yapısı da belirleyicidir.'}
-            {locale === 'en' && 'In procurement, quality, records, origin and delivery structure matter as much as the product name.'}
-            {locale === 'ar' && 'في الشراء، لا يقل أثر الجودة والوثائق والمنشأ والتسليم عن اسم المنتج.'}
-          </p>
-        </div>
-        <div class="grid grid-cols-1 border-t border-outline/35 md:grid-cols-2">
-          {page.factSheet.map((item) => (
-            <article class="border-b border-outline/35 py-7 md:px-7 md:first:ps-0">
-              <p class="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-orange">{item.label}</p>
-              <h2 class="serif-display mb-3 text-2xl font-semibold leading-tight text-on-surface md:text-3xl">{item.title}</h2>
-              <p class="text-sm leading-[1.78] text-on-surface-muted">{item.body}</p>
-            </article>
-          ))}
-        </div>
+    <CorpSection variant="snow" eyebrow={factsLabel} title="Ticari" italic="çerçeve.">
+      <div class="dt-facts">
+        {page.factSheet.map((it) => (
+          <article class="dt-fact">
+            <span class="co-eyebrow co-eyebrow--ink">{it.label}</span>
+            <h3 class="co-h3">{it.title}</h3>
+            <p>{it.body}</p>
+          </article>
+        ))}
       </div>
-    </section>
+    </CorpSection>
   )}
 
-  <section class="bg-surface-low px-5 py-20 sm:px-6 md:px-8 md:py-28">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:grid-cols-3">
-      {page.sections.map((section) => (
-        <article class="group min-h-[18rem] border border-outline/35 bg-surface p-7 transition-colors duration-300 hover:border-teal/45 md:p-8">
-          <p class="mb-8 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-orange">{section.label}</p>
-          <h2 class="serif-display mb-5 text-3xl font-semibold leading-tight text-on-surface">{section.title}</h2>
-          <p class="text-sm leading-[1.75] text-on-surface-muted">{section.body}</p>
+  <CorpSection variant="white" eyebrow={sectionsLabel} title="Detay" italic="bölümler.">
+    <div class="dt-sections">
+      {page.sections.map((s, i) => (
+        <article class="dt-sec">
+          <span class="co-num dt-sec__num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="co-eyebrow co-eyebrow--ink">{s.label}</span>
+          <h3 class="co-h3">{s.title}</h3>
+          <p>{s.body}</p>
         </article>
       ))}
     </div>
-  </section>
+  </CorpSection>
 
-  <section class="px-5 py-18 sm:px-6 md:px-8 md:py-24">
-    <div class="mx-auto flex max-w-7xl flex-col gap-6 border-y border-outline/40 py-8 md:flex-row md:items-center md:justify-between">
-      <p class="serif-display max-w-2xl text-3xl font-semibold leading-tight text-on-surface md:text-4xl">
-        {locale === 'tr' && 'Keşfe ana başlıktan devam edin.'}
-        {locale === 'en' && 'Continue exploring from the main section.'}
-        {locale === 'ar' && 'تابع الاستكشاف من القسم الرئيسي.'}
-      </p>
-      <TextLink href={parentPath}>
-        {locale === 'tr' && 'Üst sayfaya dön'}
-        {locale === 'en' && 'Back to parent'}
-        {locale === 'ar' && 'العودة إلى الصفحة الأم'}
-      </TextLink>
-    </div>
-  </section>
+  {resolvedLinks.length > 0 && (
+    <CorpSection variant="navy" compact>
+      <div class="dt-cta">
+        <h2 class="co-h2">{resolvedLinks[0].label}</h2>
+        <div class="dt-cta__row">
+          <a href={resolvedLinks[0].href} class="co-btn co-btn--amber">{resolvedLinks[0].label} <span aria-hidden="true">→</span></a>
+          {resolvedLinks.slice(1).map((l) => (
+            <a href={l.href} class="dt-cta__link">{l.label} →</a>
+          ))}
+          <a href={parentPath} class="dt-cta__link">{backLabel}</a>
+        </div>
+      </div>
+    </CorpSection>
+  )}
 </main>
 
 <SiteFooter locale={locale} />
+
+<style>
+  .dt-notes { display: flex; flex-direction: column; gap: 22px; max-width: 70ch; }
+  .dt-notes p { font-family: var(--co-sans); font-size: 17px; line-height: 1.7; color: var(--co-text); margin: 0; }
+
+  .dt-facts { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--co-line); border: 1px solid var(--co-line); }
+  @media (min-width: 720px) { .dt-facts { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1080px) { .dt-facts { grid-template-columns: repeat(4, 1fr); } }
+  .dt-fact { background: var(--co-white); padding: 24px; display: flex; flex-direction: column; gap: 10px; transition: background 200ms ease; }
+  .dt-fact:hover { background: var(--co-snow); }
+  .dt-fact h3 { color: var(--co-ink); margin: 0; font-size: 18px; }
+  .dt-fact p { font-family: var(--co-sans); font-size: 13px; color: var(--co-mute); margin: 0; line-height: 1.6; }
+
+  .dt-sections { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  @media (min-width: 720px) { .dt-sections { grid-template-columns: repeat(2, 1fr); gap: 32px; } }
+  @media (min-width: 1080px) { .dt-sections { grid-template-columns: repeat(3, 1fr); } }
+  .dt-sec { padding-top: 24px; border-top: 2px solid var(--co-amber); display: flex; flex-direction: column; gap: 8px; }
+  .dt-sec__num { font-size: 24px; color: var(--co-amber); line-height: 1; }
+  .dt-sec h3 { color: var(--co-ink); margin: 0; }
+  .dt-sec p { font-family: var(--co-sans); font-size: 14px; color: var(--co-mute); margin: 0; line-height: 1.65; }
+
+  .dt-cta { display: flex; flex-direction: column; gap: 18px; max-width: 800px; }
+  .dt-cta h2 { color: var(--co-white); }
+  .dt-cta__row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .dt-cta__link { font-family: var(--co-sans); font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.78); text-decoration: none; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.3); transition: color 200ms ease, border-color 200ms ease; }
+  .dt-cta__link:hover { color: var(--co-amber); border-color: var(--co-amber); }
+</style>

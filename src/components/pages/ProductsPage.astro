@@ -1,246 +1,91 @@
 ---
 /**
- * ProductsPage — faithful to Stitch design (5 editorial sections).
- *
- *   1. Editorial Header — eyebrow + oversized display title + lead,
- *                         right aside with hairline rule and curated label.
- *   2. Category Intro   — "Four Categories, One Standard" split heading.
- *   3. Bento Portfolio  — 4 asymmetric cards mirroring Stitch layout:
- *                           • Coffee & Cocoa        (7fr / 16:10, featured)
- *                           • Spices & Herbs        (5fr / 3:4, offset top)
- *                           • Nuts & Dried Fruits   (5fr / 4:5)
- *                           • Raw Ingredients       (7fr / 16:9, centered CTA,
- *                                                    overlapping negative margin)
- *   4. Traceability     — "The Story Behind Every Shipment" split with stats
- *                         grid and latest-shipment vignette card.
- *   5. CTA              — gradient band, Request Quote anchor.
- *
- * Every Stitch aida-public URL from the source code.html is wrapped in
- * stitchSrc() and placed in its corresponding card.
+ * ProductsPage — v3 corporate.
+ * 5 ürün hattı kurumsal grid + izlenebilirlik bandı + CTA.
  */
 import type { Locale } from '@/i18n';
 import { t, localePath } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
-import Button from '../Button.astro';
-import AmuletDivider from '../AmuletDivider.astro';
-import { stockImages } from '@/lib/images';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
-interface Props {
-  locale: Locale;
-  currentPath: string;
-}
-
+interface Props { locale: Locale; currentPath: string }
 const { locale, currentPath } = Astro.props;
 const tr = t(locale);
 
-/* --- Locale-scoped page copy --- */
 const copy = {
   tr: {
     eyebrow: 'KÜRESEL KÜRATÖR',
-    heroTitle1: 'Ürün Portföyü',
-    heroTitleItalic: '',
-    heroLead:
-      'Dünyanın en özel ham maddelerini uluslararası pazarlara hassas lojistik ve etik tedarikle taşıyoruz.',
-    heroAside: 'TİTİZLİKLE SEÇİLMİŞ MÜKEMMELLİK',
-    categoriesEyebrow: 'PORTFÖY',
-    categoriesTitle: 'Beş Kategori, Tek Standart.',
-    categoriesLead:
-      'Kahve, kakao, kuruyemiş, baharat ve endüstriyel gıda içerikleri — her emtia grubunda sahada yetişmiş ve mesleki olarak uzmanlaşmış profesyonellerle çalışıyoruz.',
-    categories: [
-      {
-        slug: 'coffee',
-        badge: 'Öne Çıkan Menşe',
-        title: 'Kahve',
-        body: 'Etiyopya yaylalarından ve Latin Amerika’nın yüksek rakımlı çiftliklerinden, etik olarak tedarik edilmiş spesiyalite sınıfı arabica ve robusta çekirdekler.',
-        cta: 'Kahveyi Keşfet',
-      },
-      {
-        slug: 'cocoa',
-        badge: 'Fermente Çekirdek',
-        title: 'Kakao',
-        body: 'Gana, Fildişi Sahili ve Ekvador’un fermente kakao çekirdekleri; çikolatacılar ve premium üreticiler için aroma profili korunmuş tedarik.',
-        cta: 'Kakaoyu Keşfet',
-      },
-      {
-        slug: 'nuts',
-        badge: 'Premium Kalibrasyon',
-        title: 'Kuruyemiş',
-        body: 'Anadolu fındığından Vietnam kajusuna, boyut ve nem profili için özenle seçilmiş premium çekirdekler.',
-        cta: 'Kuruyemişi Keşfet',
-      },
-      {
-        slug: 'spices',
-        badge: 'Saflık Testli',
-        title: 'Baharat',
-        body: 'Geleneksel baharat yollarından gelen, aroma profili ve saflığı laboratuvarda doğrulanmış aromatik hasatlar — karabiber, tarçın, anason, zerdeçal.',
-        cta: 'Baharatları Keşfet',
-      },
-      {
-        slug: 'industrial-ingredients',
-        badge: 'Endüstriyel Hacim',
-        title: 'Endüstriyel Gıda İçerikleri',
-        body: 'Küresel üretim için ölçekli emtialar; tahıllar, bakliyat, özel hammaddeler — uluslararası kalite standartlarına uygun, izlenebilir tedarik.',
-        cta: 'Toplu Tedarik',
-      },
+    heroTitle: 'Ürün Portföyü',
+    heroLead: 'Dünyanın en özel ham maddelerini uluslararası pazarlara hassas lojistik ve etik tedarikle taşıyoruz.',
+    portfolioEyebrow: 'PORTFÖY', portfolioTitle: 'Beş hat,', portfolioItalic: 'tek standart.',
+    portfolioLead: 'Kahve, kakao, kuruyemiş, baharat ve endüstriyel gıda içerikleri — her hat ayrı portföy yöneticisi, ayrı laboratuvar protokolüyle yönetilir.',
+    cats: [
+      { slug: 'coffee', badge: 'Öne Çıkan', title: 'Kahve', body: 'Etiyopya yaylalarından ve Latin Amerika’nın yüksek rakımlı çiftliklerinden specialty arabica & robusta.', bench: 'ICE NY-C · LIFFE Robusta', cta: 'Kahveyi Keşfet' },
+      { slug: 'cocoa', badge: 'Fermente Çekirdek', title: 'Kakao', body: 'Gana Forastero ve Fildişi Sahili kakao çekirdekleri — endüstriyel ve premium üretim için.', bench: 'ICE NY-K · LIFFE-C', cta: 'Kakaoyu Keşfet' },
+      { slug: 'nuts', badge: 'Premium Kalibrasyon', title: 'Kuruyemiş & Kuru Meyve', body: 'Antep PDO fıstığı, Giresun fındığı, Malatya kayısısı, Vietnam W320 kaju.', bench: 'spot · Anadolu', cta: 'Kuruyemişi Keşfet' },
+      { slug: 'spices', badge: 'Saflık Testli', title: 'Baharat & Otlar', body: 'Hindistan Tellicherry karabiber, Sumatra cassia tarçın, Urfa isot PDO.', bench: 'IPSTA · MCC', cta: 'Baharatları Keşfet' },
+      { slug: 'industrial-ingredients', badge: 'Endüstriyel Hacim', title: 'Endüstriyel Gıda İçerikleri', body: 'Konya buğday, Mendoza non-GMO soya, ayçiçek RBD, ICUMSA 45 şeker.', bench: 'MATIF · CME · BMD', cta: 'Toplu Tedarik' },
     ],
-    traceabilityEyebrow: 'İZLENEBİLİRLİK',
-    traceabilityTitle: 'Her Sevkiyatın Ardındaki Hikâye',
-    traceabilityBody:
-      'Şeffaflığın nihai lüks olduğuna inanıyoruz. Portföyümüzdeki her ürün; hasattan tesisinize uzanan yolculuğu belgeleyen dijital menşe sertifikasıyla birlikte gelir. Küresel ağımız tutarlı tedarik döngüleri ve her emtia grubunda derinleşmiş uzmanlıkla eşsiz bir lojistik hassasiyeti sağlar.',
-    statA: '42+',
-    statALabel: 'Menşe Ülke',
-    statB: '%100',
-    statBLabel: 'Kalite Denetimi',
-    shipmentLabel: 'SON SEVKİYAT',
-    shipmentCity: 'San Pedro de Macorís',
-    shipmentDetail: 'Premium Kakao Yağı · Yolda',
-    ctaTitle: 'Özel bir emtia tedariği için bizimle görüşün.',
-    ctaLead:
-      'Tek bir konteyner ya da sürekli sevkiyat — yılların birikimiyle çalışan emtia uzmanlarımız kısa süre içinde size özel bir teklif hazırlar.',
-    ctaBtn: 'Teklif Al',
+    traceEyebrow: 'İZLENEBİLİRLİK', traceTitle: 'Her sevkiyatın', traceItalic: 'belgesi var.',
+    traceBody: 'Şeffaflık nihai lükstür. Portföyümüzdeki her ürün; hasattan tesisinize uzanan yolculuğu belgeleyen dijital menşe sertifikası, EUDR geo-trace, akredite üçüncü-taraf lab analizi ve Phytosanitary + CoO + EUR.1 dosyasıyla gelir.',
+    stats: [
+      { v: '17', l: 'Aktif menşe' },
+      { v: '%92', l: 'EUDR uyumlu sevkiyat' },
+      { v: '%99,8', l: 'Zamanında teslim' },
+      { v: '5', l: 'Kıta operasyonu' },
+    ],
+    ctaTitle: 'Özel emtia tedariği için masamızla görüşün.', ctaLead: 'Tek bir konteyner ya da yıllık formula sözleşme — ticari masamız 24 saat içinde brief\'i değerlendirir.', ctaBtn: 'Teklif Al',
   },
   en: {
-    eyebrow: 'THE GLOBAL CURATOR',
-    heroTitle1: 'Product Portfolio',
-    heroTitleItalic: '',
-    heroLead:
-      'Bridging the world\'s most exceptional raw materials with international markets through precision logistics and ethical sourcing.',
-    heroAside: 'CURATED EXCELLENCE',
-    categoriesEyebrow: 'THE PORTFOLIO',
-    categoriesTitle: 'Five Categories, One Standard.',
-    categoriesLead:
-      'Coffee, cocoa, nuts, spices and industrial food ingredients — in every commodity group we work with field-trained professionals who have grown up inside the trade and specialize in their category.',
-    categories: [
-      {
-        slug: 'coffee',
-        badge: 'Featured Origin',
-        title: 'Coffee',
-        body: 'Ethically sourced specialty arabica and robusta beans from the highlands of Ethiopia and the high-altitude farms of Latin America.',
-        cta: 'Explore Coffee',
-      },
-      {
-        slug: 'cocoa',
-        badge: 'Fermented Bean',
-        title: 'Cocoa',
-        body: 'Fermented cocoa beans from Ghana, Côte d’Ivoire and Ecuador — flavor-preserved supply for chocolatiers and premium manufacturers.',
-        cta: 'Explore Cocoa',
-      },
-      {
-        slug: 'nuts',
-        badge: 'Premium Calibration',
-        title: 'Nuts',
-        body: 'From Anatolian hazelnuts to Vietnamese cashews — premium kernels selected for size and moisture profile with uniform grading.',
-        cta: 'Explore Nuts',
-      },
-      {
-        slug: 'spices',
-        badge: 'Purity Tested',
-        title: 'Spices',
-        body: 'Aromatic harvests from traditional spice routes — black pepper, cinnamon, anise, turmeric — lab-verified for flavor profile and purity.',
-        cta: 'Explore Spices',
-      },
-      {
-        slug: 'industrial-ingredients',
-        badge: 'Industrial Volume',
-        title: 'Industrial Food Ingredients',
-        body: 'Bulk commodities for global manufacturing — grains, legumes, specialty raw materials. Traceable supply meeting the strictest international standards.',
-        cta: 'Bulk Supply',
-      },
+    eyebrow: 'GLOBAL CURATOR',
+    heroTitle: 'Product Portfolio',
+    heroLead: 'Bridging the world\'s most exceptional raw materials with international markets through precision logistics and ethical sourcing.',
+    portfolioEyebrow: 'THE PORTFOLIO', portfolioTitle: 'Five lines,', portfolioItalic: 'one standard.',
+    portfolioLead: 'Coffee, cocoa, nuts, spices and industrial food ingredients — each line runs with a dedicated portfolio manager and lab protocol.',
+    cats: [
+      { slug: 'coffee', badge: 'Featured', title: 'Coffee', body: 'Specialty arabica & robusta from the highlands of Ethiopia and the high-altitude farms of Latin America.', bench: 'ICE NY-C · LIFFE Robusta', cta: 'Explore Coffee' },
+      { slug: 'cocoa', badge: 'Fermented Bean', title: 'Cocoa', body: 'Ghana Forastero and Côte d’Ivoire cocoa beans — for industrial and premium production.', bench: 'ICE NY-K · LIFFE-C', cta: 'Explore Cocoa' },
+      { slug: 'nuts', badge: 'Premium Calibration', title: 'Nuts & Dried Fruit', body: 'Antep PDO pistachio, Giresun hazelnut, Malatya apricot, Vietnam W320 cashew.', bench: 'spot · Anatolia', cta: 'Explore Nuts' },
+      { slug: 'spices', badge: 'Purity Tested', title: 'Spices & Herbs', body: 'Indian Tellicherry pepper, Sumatra cassia, Urfa isot PDO.', bench: 'IPSTA · MCC', cta: 'Explore Spices' },
+      { slug: 'industrial-ingredients', badge: 'Industrial Volume', title: 'Industrial Food Ingredients', body: 'Konya wheat, Mendoza non-GMO soy, sunflower RBD, ICUMSA 45 sugar.', bench: 'MATIF · CME · BMD', cta: 'Bulk Supply' },
     ],
-    traceabilityEyebrow: 'TRACEABILITY',
-    traceabilityTitle: 'The Story Behind Every Shipment',
-    traceabilityBody:
-      'We believe transparency is the ultimate luxury. Every product in our portfolio comes with a digital certificate of origin, detailing the journey from harvest to your facility. Our global network ensures consistent supply cycles and unmatched logistical precision, backed by professional specialization in every commodity group we handle.',
-    statA: '42+',
-    statALabel: 'Origin Countries',
-    statB: '100%',
-    statBLabel: 'Quality Audited',
-    shipmentLabel: 'LATEST SHIPMENT',
-    shipmentCity: 'San Pedro de Macorís',
-    shipmentDetail: 'Premium Cocoa Butter · En Route',
-    ctaTitle: 'Let\'s discuss a custom commodity supply.',
-    ctaLead:
-      'A single container or recurring shipments — our trade experts, backed by years of expertise in every commodity group, prepare a tailored proposal with the right commercial context.',
-    ctaBtn: 'Request Quote',
+    traceEyebrow: 'TRACEABILITY', traceTitle: 'Every shipment', traceItalic: 'has its file.',
+    traceBody: 'Transparency is the ultimate luxury. Every product in our portfolio comes with a digital certificate of origin, EUDR geo-trace, accredited third-party lab analysis and Phytosanitary + CoO + EUR.1 file.',
+    stats: [
+      { v: '17', l: 'Active origins' },
+      { v: '92%', l: 'EUDR-compliant shipments' },
+      { v: '99.8%', l: 'On-time delivery' },
+      { v: '5', l: 'Continent operations' },
+    ],
+    ctaTitle: 'Discuss a custom commodity supply with our desk.', ctaLead: 'A single container or an annual formula contract — our trade desk evaluates the brief within 24 hours.', ctaBtn: 'Request Quote',
   },
   ar: {
     eyebrow: 'القيّم العالمي',
-    heroTitle1: 'محفظة المنتجات',
-    heroTitleItalic: '',
-    heroLead:
-      'نربط أندر المواد الخام في العالم بالأسواق الدولية عبر لوجستيات دقيقة وتوريد أخلاقي.',
-    heroAside: 'تميز منتقى بعناية',
-    categoriesEyebrow: 'المحفظة',
-    categoriesTitle: 'خمس فئات، معيار واحد.',
-    categoriesLead:
-      'القهوة، الكاكاو، المكسرات، التوابل، والمكونات الغذائية الصناعية — في كل مجموعة سلع نعمل مع محترفين متمرسين نشأوا داخل المهنة وتخصصوا في فئتهم.',
-    categories: [
-      {
-        slug: 'coffee',
-        badge: 'منشأ مميز',
-        title: 'القهوة',
-        body: 'حبوب أرابيكا وروبوستا مختصة بمصادر أخلاقية من مرتفعات إثيوبيا ومزارع أمريكا اللاتينية ذات الارتفاعات العالية.',
-        cta: 'استكشف القهوة',
-      },
-      {
-        slug: 'cocoa',
-        badge: 'حبوب مخمَّرة',
-        title: 'الكاكاو',
-        body: 'حبوب كاكاو مخمَّرة من غانا وساحل العاج والإكوادور — توريد محفوظ النكهة لصانعي الشوكولاتة والمصنّعين الفاخرين.',
-        cta: 'استكشف الكاكاو',
-      },
-      {
-        slug: 'nuts',
-        badge: 'فرز ممتاز',
-        title: 'المكسرات',
-        body: 'من بندق الأناضول إلى كاجو فيتنام — حبوب فاخرة منتقاة لحجمها ورطوبتها بتصنيف موحّد.',
-        cta: 'استكشف المكسرات',
-      },
-      {
-        slug: 'spices',
-        badge: 'اختبار نقاء',
-        title: 'التوابل',
-        body: 'حصاد عطري من طرق التوابل التقليدية — فلفل أسود، قرفة، يانسون، كركم — مختبَر معملياً للنكهة والنقاء.',
-        cta: 'استكشف التوابل',
-      },
-      {
-        slug: 'industrial-ingredients',
-        badge: 'حجم صناعي',
-        title: 'المكونات الغذائية الصناعية',
-        body: 'سلع بكميات كبيرة للتصنيع العالمي — حبوب، بقوليات، ومواد خام متخصصة. توريد قابل للتتبع يلبي أشد معايير الجودة الدولية صرامة.',
-        cta: 'توريد بالجملة',
-      },
+    heroTitle: 'محفظة المنتجات',
+    heroLead: 'نربط أندر المواد الخام في العالم بالأسواق الدولية عبر لوجستيات دقيقة وتوريد أخلاقي.',
+    portfolioEyebrow: 'المحفظة', portfolioTitle: 'خمسة خطوط،', portfolioItalic: 'معيار واحد.',
+    portfolioLead: 'القهوة والكاكاو والمكسرات والتوابل والمكونات الصناعية — كل خط بمدير محفظة وبروتوكول مختبر منفصل.',
+    cats: [
+      { slug: 'coffee', badge: 'مميز', title: 'القهوة', body: 'أرابيكا وروبوستا مختصة من مرتفعات إثيوبيا وأمريكا اللاتينية.', bench: 'ICE NY-C · LIFFE Robusta', cta: 'استكشف القهوة' },
+      { slug: 'cocoa', badge: 'حبوب مخمَّرة', title: 'الكاكاو', body: 'كاكاو غانا فوراستيرو وساحل العاج — للإنتاج الصناعي والفاخر.', bench: 'ICE NY-K · LIFFE-C', cta: 'استكشف الكاكاو' },
+      { slug: 'nuts', badge: 'فرز ممتاز', title: 'مكسرات وفواكه', body: 'فستق عنتاب PDO، بندق غيرسون، مشمش ملاطية، كاجو فيتنام W320.', bench: 'فوري · أناضول', cta: 'استكشف المكسرات' },
+      { slug: 'spices', badge: 'اختبار نقاء', title: 'توابل وأعشاب', body: 'فلفل تيليتشيري، قرفة كاسيا، إيسوت أورفا PDO.', bench: 'IPSTA · MCC', cta: 'استكشف التوابل' },
+      { slug: 'industrial-ingredients', badge: 'حجم صناعي', title: 'المكونات الغذائية الصناعية', body: 'قمح قونيا، صويا مندوزا، زيت دوار شمس RBD، سكر ICUMSA 45.', bench: 'MATIF · CME · BMD', cta: 'توريد بالجملة' },
     ],
-    traceabilityEyebrow: 'إمكانية التتبع',
-    traceabilityTitle: 'القصة وراء كل شحنة',
-    traceabilityBody:
-      'نؤمن بأن الشفافية هي الترف الأعظم. كل منتج في محفظتنا يأتي مع شهادة منشأ رقمية توثق رحلته من الحصاد إلى منشأتك. تضمن شبكتنا العالمية دورات توريد متسقة ودقة لوجستية لا مثيل لها، مدعومة بتخصص مهني في كل مجموعة سلع نتعامل معها.',
-    statA: '+42',
-    statALabel: 'بلد منشأ',
-    statB: '100%',
-    statBLabel: 'مدقّق الجودة',
-    shipmentLabel: 'آخر شحنة',
-    shipmentCity: 'سان بيدرو دي ماكوريس',
-    shipmentDetail: 'زبدة كاكاو فاخرة · في الطريق',
-    ctaTitle: 'لنناقش توريد سلعة مخصصة.',
-    ctaLead:
-      'حاوية واحدة أو شحنات متكررة — يُعدّ خبراؤنا، المدعومون بسنوات من الخبرة في كل مجموعة سلع، عرضًا مخصصًا بسياق تجاري دقيق.',
-    ctaBtn: 'اطلب عرض سعر',
+    traceEyebrow: 'إمكانية التتبع', traceTitle: 'لكل شحنة', traceItalic: 'ملفها.',
+    traceBody: 'الشفافية هي الترف الأعظم. كل منتج يأتي مع شهادة منشأ رقمية وتتبع جغرافي EUDR وتحليل مختبر طرف ثالث معتمد + ملف Phyto وCoO وEUR.1.',
+    stats: [
+      { v: '١٧', l: 'منشأ نشط' },
+      { v: '٪٩٢', l: 'شحنات متوافقة EUDR' },
+      { v: '٪٩٩٫٨', l: 'تسليم في الموعد' },
+      { v: '٥', l: 'عمليات قارية' },
+    ],
+    ctaTitle: 'ناقش توريد سلعة مخصصة مع مكتبنا.', ctaLead: 'حاوية واحدة أو عقد سنوي بصيغة — يقيّم مكتبنا الموجز خلال ٢٤ ساعة.', ctaBtn: 'طلب عرض سعر',
   },
 }[locale];
 
-/* Slug → URL map.
-   ProductsPage gösterimde 5 kart (coffee, cocoa, nuts, spices, industrial)
-   tutuyor ama backend yalnızca 4 detay sayfası ile besleniyor:
-     • /products/coffee-cocoa/        — birleşik kahve & kakao detayı
-     • /products/nuts/                — kuruyemiş & kuru meyve
-     • /products/spices/              — baharat & otlar
-     • /products/ingredients/         — endüstriyel hammadde
-   Bu yüzden coffee + cocoa kartları aynı coffee-cocoa sayfasına,
-   industrial-ingredients de ingredients sayfasına yönlendirilir. */
 const slugToPath: Record<string, string> = {
   coffee: '/products/coffee-cocoa/',
   cocoa: '/products/coffee-cocoa/',
@@ -248,298 +93,122 @@ const slugToPath: Record<string, string> = {
   spices: '/products/spices/',
   'industrial-ingredients': '/products/ingredients/',
 };
-const categoryLink = (slug: string) =>
-  localePath(slugToPath[slug] ?? `/products/${slug}/`, locale);
+const catLink = (slug: string) => localePath(slugToPath[slug] ?? `/products/${slug}/`, locale);
 
-/* --- Stitch images (all 4 aida-public URLs from code.html used) --- */
-const imgCoffee = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCf3xnmI7oq8dt-O3370grjkqFEh9Hw0tWGCewRtc0y0Ajm6AyoKdi4Ylg-IC4TDX-gpyhfKwp7Y3fTiMpkooyEqalk8C0qNFsoateoZKpEGacOtwKjtq1YrF_eOrd88WG85fwG_jjI9n3qGU9d--v9WdjHoDRifcrOY07HwxjDqQcmN1ftTAl2dlrCDV-fMT0Mw5XRi_O7eHMsliXGBpxfzht1coVg8N2I7ANoQ04Q0wBuQgDWiHUrjFMHyc6sNjwAeocCitwz0HQ',
-);
-const imgSpices = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCGph67KssqaQBYqynx742YWlGZY5ajlwVj_BKavqubpzfRKSz-0_fAhASYBcHe_UT-4-MRm7ChbMhmDBG_QQz5z4D1G8tSTqqvsyDnlAYxN59u-PdqDLNd07lofZAU_T_7XsLiCBEyP5-yqcQucSwtb8MSuMz5o8QgO_g2NMjlAh6KKCqxbaIcbdm_aNWKP0eQOq2Q3g0sIAv5jBtWqzaiBM_8EJ8dcyjHVzUY-xf8YApECQ5Ca81hG7pfp85i3eUCLcV2CRDuyUI',
-);
-const imgNuts = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCSmjHeOGh1MFuy6XVXUL3u6SacSmdebSl64nEB8K_3nK_9gVMWCIfh81kyInqPAOMapIAdoY49X2WxwtYQso-6OvIEQJyuuvqxf8cD2YAvLzDJ4-ifja-cXnYJKUpscf1B2zKRvbPoRFIv0Tian_naa3yhQSVXuAWKgN63wuFjvmutjZUN0dUtlTQZ1nxtRQsW-0rMyfyxZzMMV65KA8fTsb1u0J_8eMMLM6km4zRlOjKPAf_4_Nfy-ewBEA3TVfv1_ymVvkeqH_4',
-);
-const imgRaw = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDBkeaLnB2F34KEFWN5OwRrRvzaSepS6ypGxIV5y-G248lKiwoFoEuPAFNUUpCxBSk6MKWVyFlbjXThjZ59cgdUROlZ8r05LDNdFzSBjgAkeSETicPJcT6WvVIifOdjtyrODBasa7Ph5bmogrwqdsr5R9QDCYsXbLx_n1bTS9otxpkTFFhSmZn5CRqjv3mpw4soNyHgqy1l436FNtyP_Q9rxZxvtSaqwA7PekMvwO9FsJ4Pxb6Zf-AT1iSEYNxzosaq2HeFac7Ear0',
-);
-
-const categoryAlt: Record<string, string> = {
-  coffee:
-    locale === 'tr'
-      ? 'Yüksek rakım yeşil kahve çekirdekleri'
-      : locale === 'ar'
-      ? 'حبوب قهوة خضراء من ارتفاعات عالية'
-      : 'High-altitude raw green coffee beans',
-  cocoa:
-    locale === 'tr'
-      ? 'Muz yaprağı üstünde fermente kakao çekirdekleri'
-      : locale === 'ar'
-      ? 'حبوب كاكاو مخمرة على ورق الموز'
-      : 'Fermented cocoa beans on banana leaf',
-  nuts:
-    locale === 'tr'
-      ? 'Ceviz, fındık, badem ve kaju karışımı doğal düzen'
-      : locale === 'ar'
-      ? 'ترتيب طبيعي من الجوز والبندق واللوز والكاجو'
-      : 'Walnuts, hazelnuts, almonds and cashews in natural arrangement',
-  spices:
-    locale === 'tr'
-      ? 'Yıldız anason, tarçın, karabiber ve baharat dizilimi'
-      : locale === 'ar'
-      ? 'مجموعة من التوابل الكاملة'
-      : 'Array of whole exotic spices including star anise, cinnamon and peppercorns',
-  'industrial-ingredients':
-    locale === 'tr'
-      ? 'Endüstriyel ölçekte ham tahıl ve bakliyat'
-      : locale === 'ar'
-      ? 'حبوب وبقوليات خام بحجم صناعي'
-      : 'Industrial-scale raw grains and legumes under soft light',
+const photos: Record<string, string> = {
+  coffee: 'https://images.unsplash.com/photo-1495774856032-8b90bbb32b32?auto=format&fit=crop&w=1600&q=80',
+  cocoa: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=1600&q=80',
+  nuts: 'https://images.unsplash.com/photo-1599639957043-f3aa5c986398?auto=format&fit=crop&w=1600&q=80',
+  spices: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&w=1600&q=80',
+  'industrial-ingredients': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=1600&q=80',
 };
-
-/* Image source per slug. coffee-cocoa was a single combined image — split
-   into two distinct slots: cocoa uses stockImages.cocoa, others reuse the
-   Stitch product photography. */
-const imgFor: Record<string, string> = {
-  coffee: imgCoffee,
-  cocoa: stockImages.cocoa.src,
-  nuts: imgNuts,
-  spices: imgSpices,
-  'industrial-ingredients': imgRaw,
-};
-
-/* Featured (first card visually larger) vs the rest — clean editorial grid,
-   no upward overlap that previously buried the Spices card under Raw. */
-const featured = copy.categories[0];
-const rest = copy.categories.slice(1);
+const heroBg = 'https://images.unsplash.com/photo-1559525839-d9acfd1011c4?auto=format&fit=crop&w=2400&q=80';
+void tr;
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: tr.nav.products }]} />
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    background={heroBg}
+    meta={[
+      { label: 'Lines', value: '5' },
+      { label: 'Origins', value: '17' },
+      { label: 'Standard', value: 'ISO · BRC · FT' },
+    ]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* ========== 1. EDITORIAL HEADER ========== */}
-  <section class="hero relative overflow-hidden pt-10 pb-12 sm:pt-14 sm:pb-16 md:pt-20 md:pb-20 lg:pt-24">
-    <div
-      aria-hidden="true"
-      class="hero-halo pointer-events-none absolute -top-24 left-1/2 h-[640px] w-[1200px] -translate-x-1/2 opacity-50"
-    ></div>
+  <CorpSection variant="white" eyebrow={copy.portfolioEyebrow} title={copy.portfolioTitle} italic={copy.portfolioItalic} lede={copy.portfolioLead}>
+    <div class="pp-grid">
+      <a class="pp-card pp-card--featured" href={catLink(copy.cats[0].slug)}>
+        <figure><img src={photos[copy.cats[0].slug]} alt={copy.cats[0].title} loading="lazy" decoding="async" /></figure>
+        <div>
+          <span class="co-eyebrow">{copy.cats[0].bench}</span>
+          <h3 class="co-h2">{copy.cats[0].title}</h3>
+          <p>{copy.cats[0].body}</p>
+          <span class="co-link"><span>{copy.cats[0].cta}</span><span class="co-link__arrow" aria-hidden="true">→</span></span>
+        </div>
+      </a>
 
-    <div class="relative mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-5 sm:px-6 md:flex-row md:items-end md:gap-10 md:px-8" data-reveal>
-      <div class="max-w-3xl">
-        <span class="eyebrow mb-5 block text-orange">{copy.eyebrow}</span>
-        <h1 class="serif-display text-[2.5rem] font-semibold leading-[1.05] tracking-tight text-on-surface sm:text-5xl md:text-6xl lg:text-[4.5rem]">
-          {copy.heroTitle1}
-        </h1>
-        <p class="mt-6 max-w-xl text-[15px] leading-[1.7] text-on-surface-muted md:text-lg">
-          {copy.heroLead}
-        </p>
-      </div>
-      <div class="hidden md:block">
-        <div class="mb-4 h-px w-24 bg-orange"></div>
-        <span class="eyebrow text-on-surface-subtle">{copy.heroAside}</span>
-      </div>
-    </div>
-  </section>
-
-  <AmuletDivider compact />
-
-  {/* ========== 2. CATEGORY INTRO ========== */}
-  <section class="px-5 py-10 sm:px-6 sm:py-12 md:py-16">
-    <div class="mx-auto max-w-4xl text-center" data-reveal>
-      <span class="eyebrow mb-4 block text-orange">{copy.categoriesEyebrow}</span>
-      <h2 class="serif-display text-3xl font-semibold leading-[1.1] tracking-tight text-on-surface md:text-[2.6rem] lg:text-[3rem]">
-        {copy.categoriesTitle}
-      </h2>
-      <p class="mx-auto mt-5 max-w-2xl text-base leading-[1.7] text-on-surface-muted md:text-lg">
-        {copy.categoriesLead}
-      </p>
-    </div>
-  </section>
-
-  {/* ========== 3. CATEGORY CARDS — clean editorial grid, no overlap ========== */}
-  <section class="px-5 pb-16 sm:px-6 sm:pb-20 md:pb-28">
-    <div class="mx-auto w-full max-w-7xl">
-      {/* Featured card — first category (Coffee), full width on md, 8/12 on lg */}
-      <article class="group reveal-wrap mb-8 md:mb-10" data-reveal>
-        <a
-          href={categoryLink(featured.slug)}
-          class="block overflow-hidden rounded-sm shadow-editorial"
-        >
-          <div class="grid grid-cols-1 lg:grid-cols-12">
-            <figure class="photo-grade photo-grade--warm relative overflow-hidden lg:col-span-7">
-              <img
-                src={imgFor[featured.slug]}
-                alt={categoryAlt[featured.slug]}
-                width="1440"
-                height="900"
-                class="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] md:aspect-[16/10]"
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-              />
-            </figure>
-            <div class="flex flex-col justify-center gap-4 bg-surface-lowest p-6 sm:p-8 md:p-10 lg:col-span-5 lg:p-12">
-              <span class="eyebrow text-orange">{featured.badge}</span>
-              <h3 class="serif-display text-2xl font-semibold leading-tight text-on-surface md:text-3xl lg:text-[2.2rem]">
-                {featured.title}
-              </h3>
-              <p class="text-base leading-[1.7] text-on-surface-muted">
-                {featured.body}
-              </p>
-              <span class="txt-link mt-2 text-[11px] uppercase tracking-[0.18em] text-teal">
-                <span>{featured.cta}</span>
-                <span class="txt-link__arrow" aria-hidden="true">→</span>
-              </span>
+      <div class="pp-rest">
+        {copy.cats.slice(1).map((c) => (
+          <a class="pp-card" href={catLink(c.slug)}>
+            <figure><img src={photos[c.slug]} alt={c.title} loading="lazy" decoding="async" /></figure>
+            <div>
+              <span class="co-eyebrow">{c.bench}</span>
+              <h3 class="co-h3">{c.title}</h3>
+              <p>{c.body}</p>
+              <span class="co-link"><span>{c.cta}</span><span class="co-link__arrow" aria-hidden="true">→</span></span>
             </div>
-          </div>
-        </a>
-      </article>
-
-      {/* Remaining 4 cards — even 2-col grid on md+, 1-col mobile, NO overlap */}
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
-        {rest.map((cat, i) => (
-          <article class="group" data-reveal style={`transition-delay:${i * 80}ms`}>
-            <a
-              href={categoryLink(cat.slug)}
-              class="block overflow-hidden rounded-sm shadow-editorial"
-            >
-              <figure class="photo-grade overflow-hidden">
-                <img
-                  src={imgFor[cat.slug]}
-                  alt={categoryAlt[cat.slug]}
-                  width="900"
-                  height="900"
-                  class="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
-              <div class="flex flex-col gap-3 bg-surface-lowest p-6 sm:p-7 md:p-8">
-                <span class="eyebrow text-orange">{cat.badge}</span>
-                <h3 class="serif-display text-xl font-semibold leading-tight text-on-surface md:text-[1.6rem]">
-                  {cat.title}
-                </h3>
-                <p class="text-sm leading-[1.7] text-on-surface-muted md:text-base">
-                  {cat.body}
-                </p>
-                <span class="txt-link mt-1 text-[11px] uppercase tracking-[0.18em] text-teal">
-                  <span>{cat.cta}</span>
-                  <span class="txt-link__arrow" aria-hidden="true">→</span>
-                </span>
-              </div>
-            </a>
-          </article>
+          </a>
         ))}
       </div>
     </div>
-  </section>
+  </CorpSection>
 
-  <AmuletDivider />
-
-  {/* ========== 4. TRACEABILITY — light editorial 7/5 split ========== */}
-  <section class="px-5 py-14 sm:px-6 sm:py-16 md:py-24">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 md:grid-cols-12 md:gap-14">
-      <div class="md:col-span-7" data-reveal>
-        <span class="eyebrow mb-4 block text-orange">{copy.traceabilityEyebrow}</span>
-        <h2 class="serif-display text-3xl font-semibold leading-[1.1] tracking-tight text-on-surface md:text-4xl lg:text-[2.6rem]">
-          {copy.traceabilityTitle}
-        </h2>
-        <p class="mt-6 max-w-prose text-base leading-[1.7] text-on-surface-muted md:text-lg">
-          {copy.traceabilityBody}
-        </p>
-      </div>
-
-      <div class="md:col-span-5 md:pt-12" data-reveal style="transition-delay:120ms">
-        <dl class="grid grid-cols-2 gap-x-6 gap-y-8 border-y border-outline/30 py-8">
-          <div>
-            <dt class="serif-display text-3xl font-semibold text-teal md:text-4xl">{copy.statA}</dt>
-            <dd class="eyebrow mt-2 text-[10px] text-on-surface-subtle">{copy.statALabel}</dd>
-          </div>
-          <div>
-            <dt class="serif-display text-3xl font-semibold text-teal md:text-4xl">{copy.statB}</dt>
-            <dd class="eyebrow mt-2 text-[10px] text-on-surface-subtle">{copy.statBLabel}</dd>
-          </div>
-        </dl>
-
-        <div class="mt-6 border-s-2 border-orange/60 ps-5">
-          <span class="eyebrow text-orange">{copy.shipmentLabel}</span>
-          <p class="serif-display mt-2 text-lg font-semibold text-on-surface">
-            {copy.shipmentCity}
-          </p>
-          <p class="mt-1 text-sm text-on-surface-subtle">{copy.shipmentDetail}</p>
+  <CorpSection variant="navy" eyebrow={copy.traceEyebrow} title={copy.traceTitle} italic={copy.traceItalic} lede={copy.traceBody}>
+    <div class="pp-stats">
+      {copy.stats.map((s) => (
+        <div class="pp-stat">
+          <span class="co-num pp-stat__v">{s.v}</span>
+          <span class="pp-stat__l">{s.l}</span>
         </div>
-      </div>
+      ))}
     </div>
-  </section>
+  </CorpSection>
 
-  <AmuletDivider />
-
-  {/* ========== 5. CLOSING ========== */}
-  <section class="px-5 pb-20 sm:px-6 sm:pb-28 md:pb-36">
-    <div class="mx-auto max-w-3xl text-center" data-reveal>
-      <span class="eyebrow text-orange">Trade · Trust · Kismet</span>
-      <h2 class="serif-display mt-4 text-3xl font-semibold leading-[1.1] tracking-tight text-on-surface md:text-[2.4rem]">
-        {copy.ctaTitle}
-      </h2>
-      <p class="mx-auto mt-5 max-w-xl text-base leading-[1.7] text-on-surface-muted md:text-lg">
-        {copy.ctaLead}
-      </p>
-      <div class="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
-        <Button href={localePath('/contact/', locale)} variant="primary">{copy.ctaBtn}</Button>
-      </div>
+  <CorpSection variant="snow" compact>
+    <div class="pp-cta">
+      <h2 class="co-h2">{copy.ctaTitle}</h2>
+      <p>{copy.ctaLead}</p>
+      <a href={localePath('/contact/request-quote/', locale)} class="co-btn co-btn--primary">{copy.ctaBtn} <span aria-hidden="true">→</span></a>
     </div>
-  </section>
+  </CorpSection>
 </main>
 
-<style>
-  .hero-halo {
-    background:
-      radial-gradient(closest-side, rgba(0, 172, 175, 0.08), transparent 70%),
-      radial-gradient(closest-side at 70% 60%, rgba(246, 139, 92, 0.07), transparent 70%);
-  }
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity 800ms cubic-bezier(0.22, 0.72, 0.22, 1),
-      transform 800ms cubic-bezier(0.22, 0.72, 0.22, 1);
-  }
-  [data-reveal].is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
-</style>
-
-<script>
-  const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
-  if (items.length) {
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              e.target.classList.add('is-visible');
-              io.unobserve(e.target);
-            }
-          }
-        },
-        { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
-      );
-      items.forEach((el) => io.observe(el));
-    } else {
-      items.forEach((el) => el.classList.add('is-visible'));
-    }
-  }
-</script>
-
 <SiteFooter locale={locale} />
+
+<style>
+  .pp-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+  @media (min-width: 1024px) { .pp-grid { grid-template-columns: 1.5fr 1fr; } }
+  .pp-card { display: flex; flex-direction: column; background: var(--co-white); border: 1px solid var(--co-line); text-decoration: none; color: var(--co-text); transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease; overflow: hidden; }
+  .pp-card:hover { border-color: var(--co-navy); box-shadow: 0 32px 60px -32px rgba(12,37,69,0.22); transform: translateY(-2px); }
+  .pp-card figure { margin: 0; aspect-ratio: 16 / 10; overflow: hidden; background: var(--co-stone); }
+  .pp-card figure img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms cubic-bezier(0.22,0.72,0.22,1); }
+  .pp-card:hover figure img { transform: scale(1.04); }
+  .pp-card > div { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .pp-card h3 { color: var(--co-ink); }
+  .pp-card p { font-family: var(--co-sans); font-size: 15px; line-height: 1.65; color: var(--co-mute); margin: 0; }
+  .pp-card .co-link { align-self: flex-start; margin-top: 4px; }
+
+  .pp-card--featured figure { aspect-ratio: 4 / 5; }
+  .pp-card--featured > div { padding: 36px; gap: 18px; }
+  @media (min-width: 1024px) {
+    .pp-card--featured { flex-direction: row; }
+    .pp-card--featured figure { flex: 1; aspect-ratio: auto; }
+    .pp-card--featured > div { flex: 1; justify-content: center; }
+  }
+
+  .pp-rest { display: flex; flex-direction: column; gap: 24px; }
+  .pp-rest .pp-card { flex-direction: row; }
+  .pp-rest figure { width: 40%; aspect-ratio: auto; flex-shrink: 0; }
+  .pp-rest > .pp-card > div { padding: 20px 24px; }
+  @media (max-width: 760px) {
+    .pp-rest .pp-card { flex-direction: column; }
+    .pp-rest figure { width: 100%; aspect-ratio: 16 / 10; }
+  }
+
+  .pp-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); }
+  @media (min-width: 880px) { .pp-stats { grid-template-columns: repeat(4, 1fr); } }
+  .pp-stat { background: rgba(255,255,255,0.02); padding: 28px 22px; display: flex; flex-direction: column; gap: 6px; }
+  .pp-stat__v { font-size: clamp(28px, 3vw, 44px); color: var(--co-white); line-height: 1; }
+  .pp-stat__l { font-family: var(--co-sans); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--co-amber); text-transform: uppercase; }
+
+  .pp-cta { display: flex; flex-direction: column; gap: 18px; align-items: flex-start; max-width: 60ch; }
+  .pp-cta h2 { color: var(--co-ink); }
+  .pp-cta p { font-family: var(--co-sans); font-size: 17px; color: var(--co-mute); margin: 0; line-height: 1.65; }
+</style>

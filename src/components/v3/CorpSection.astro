@@ -1,0 +1,76 @@
+---
+/**
+ * CorpSection — Reusable kurumsal section wrapper.
+ * variant: white / snow / stone / navy
+ * Optional eyebrow + title + lede (right-aligned 2-col header layout).
+ */
+interface Props {
+  variant?: 'white' | 'snow' | 'stone' | 'navy';
+  eyebrow?: string;
+  title?: string;
+  italic?: string;
+  lede?: string;
+  id?: string;
+  wide?: boolean;
+  /** sıkı dikey ritm: padding'i azaltmak için */
+  compact?: boolean;
+}
+
+const { variant = 'white', eyebrow, title, italic, lede, id, wide = false, compact = false } = Astro.props;
+const cls = ['co-sec', `co-sec--${variant}`, compact && 'co-sec--compact'].filter(Boolean);
+const wrapClass = wide ? 'co-wrap' : 'co-wrap';
+---
+
+<section class:list={cls} id={id}>
+  <div class={wrapClass}>
+    {(eyebrow || title || lede) && (
+      <header class="co-sec__head">
+        <div>
+          {eyebrow && <span class="co-eyebrow">{eyebrow}</span>}
+          {title && (
+            <h2 class="co-h-display co-sec__title">
+              {title}
+              {italic && <> <em>{italic}</em></>}
+            </h2>
+          )}
+        </div>
+        {lede && <p class="co-lede co-sec__lede">{lede}</p>}
+      </header>
+    )}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .co-sec { padding-block: clamp(80px, 10vw, 160px); }
+  .co-sec--compact { padding-block: clamp(56px, 7vw, 100px); }
+  .co-sec--white { background: var(--co-white); color: var(--co-text); }
+  .co-sec--snow { background: var(--co-snow); color: var(--co-text); }
+  .co-sec--stone { background: var(--co-stone); color: var(--co-text); }
+  .co-sec--navy { background: var(--co-navy); color: rgba(255,255,255,0.85); }
+  .co-sec--navy .co-h-display, .co-sec--navy .co-h2, .co-sec--navy .co-h3 { color: var(--co-white); }
+  .co-sec--navy .co-lede { color: rgba(255,255,255,0.78); }
+  .co-sec--navy .co-eyebrow { color: var(--co-amber); }
+
+  .co-sec__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 56px;
+  }
+  @media (min-width: 1024px) {
+    .co-sec__head {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+  }
+  .co-sec__title { max-width: 18ch; }
+  .co-sec__title em {
+    font-family: var(--co-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--co-amber);
+  }
+  .co-sec__lede { padding-bottom: 4px; }
+</style>

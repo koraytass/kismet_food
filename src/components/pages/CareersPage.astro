@@ -1,580 +1,208 @@
 ---
-/**
- * CareersPage — faithful to Stitch design (careers_kismet_foods).
- *
- * Sections:
- *   1. Hero           — large serif headline, italic accent, editorial side image,
- *                       "Global Footprint" floating card, CTAs to openings + philosophy.
- *   2. Culture DNA    — "Our DNA" eyebrow + 3 value cards on a pale band.
- *   3. Life at Kismet — Bento grid: large hero shot + benefit tiles + portrait tile
- *                       + testimonial quote card + lab QC tile (4th Stitch image).
- *   4. Open roles     — Numbered list of 4 role categories with Apply CTAs.
- *   5. Final CTA      — "careers@kismetfoods.com" gradient band.
- *
- * All 4 Stitch images on the source page are used:
- *   · Hero portrait   (team in office)
- *   · Life main       (open-plan office)
- *   · Small portrait  (diverse professionals in lounge)
- *   · Lab shot        (hand inspecting raw coffee beans)
- */
 import type { Locale } from '@/i18n';
-import { t } from '@/i18n';
-import { stitchSrc } from '@/lib/stitch';
 import SiteHeader from '../SiteHeader.astro';
 import SiteFooter from '../SiteFooter.astro';
-import Breadcrumb from '../Breadcrumb.astro';
+import CorpPageHero from '../v3/CorpPageHero.astro';
+import CorpSection from '../v3/CorpSection.astro';
 
-interface Props {
-  locale: Locale;
-  currentPath: string;
-}
-
+interface Props { locale: Locale; currentPath: string }
 const { locale, currentPath } = Astro.props;
-const tr = t(locale);
 
-/* --- Locale-scoped page copy --- */
 const copy = {
   tr: {
-    eyebrow: 'KARİYER · KÜRESEL ÖLÇEKTE FIRSAT',
-    heroTitle1: 'Küresel',
-    heroTitleItalic: 'Küratör',
-    heroTitle2: 'Ekibine Katılın',
-    heroLead:
-      'Dünyanın en değerli ham maddelerini, onları en iyi değerlendirenlerle buluşturuyoruz. Yıllara yayılmış ticaret birikimimiz her departmanda derin bir uzmanlık kültürü kurar; burada sizi bekleyen bir iş değil, özenle icra edilen bir zanaattır.',
-    viewOpenings: 'Açık Pozisyonları Gör',
-    philosophy: 'Felsefemiz',
-    footprintLabel: 'Küresel Ayak İzi',
-    footprintValue: '42 Ülke',
-    cultureEyebrow: 'DNA’MIZ',
-    cultureTitle1: 'Amaçla Seçen,',
-    cultureTitle2: 'Mükemmellikle Çalışan.',
-    cultureQuote:
-      '"Biz yalnızca emtia ticareti yapmıyoruz; insan damağının ve endüstrinin özünü küratörlüğünü yapıyoruz."',
+    eyebrow: 'KARİYER · 5 KITADA EKİP',
+    heroTitle: 'Kismet’te emtia ticareti, küratörlüktür.',
+    heroLead: 'İstanbul merkezli, 30 kişilik kurumsal yapı; her menşede saha, her hatta uzman portföy yöneticisi. Aradığımız: disiplinli, sahaya çıkmaya hazır, üç pazarlı düşünen profesyoneller.',
+    cultureEyebrow: 'KÜLTÜR', cultureTitle: 'Disiplin', cultureItalic: 'sahanın kalbinde.',
+    cultureLead: 'B2B ticareti bir spread oyunu değil; bir karar disiplini. Her kararı öncesinden numune ile, sonrasından parti hafızası ile doğrularız.',
     values: [
-      {
-        t: 'Profesyonellik',
-        d: 'Küresel lojistikte hassasiyet taban çizgimizdir. Endüstri standardını yükselten yüksek şeffaflık ve etik ilkelerle çalışırız.',
-        hint: 'İcra her şeydir',
-      },
-      {
-        t: 'Merak',
-        d: 'Bilinmeyeni arıyoruz. Gizli bir miras kakao vadisi ya da daha verimli bir sevkiyat rotası — merak, inovasyonumuzun kalbidir.',
-        hint: 'Kaynağı ara',
-      },
-      {
-        t: 'Küresel Etki',
-        d: 'Her kararımız tedarik zincirinin derinliklerine dalgalar yayar. Yerel çiftçi topluluklarını güçlendiren sürdürülebilir tedariki önceliğimiz yaparız.',
-        hint: 'Sınırların ötesinde',
-      },
+      { h: 'Saha-içi düşünce', d: 'Yılda 2 kez tüm ekip menşe ziyareti. Çiftçi, kooperatif, ihracatçıyla yüz yüze.' },
+      { h: 'Belge disiplini', d: 'Numune doğrulamadan gümrük çıkışına; her sevkiyatta 14 kontrol noktası.' },
+      { h: 'Üç pazarlı düşünce', d: 'TR, EN, AR — Avrupa, Orta Doğu ve Asya alıcısı için aynı netlikte iletişim.' },
+      { h: 'Karar şeffaflığı', d: '2-haftalık review döngüleri; her kategori ve müşteri tarafı açık masada.' },
     ],
-    lifeEyebrow: 'KISMET’TE YAŞAM',
-    lifeTitle: 'Ortak Ustalık',
-    benefitA: {
-      t: 'Esnek Mobilite',
-      d: 'Uluslararası seyahat ve kıtalar arası rotasyon olanakları — her yıl yeni bir menşe, yeni bir ekip.',
-    },
-    benefitB: {
-      t: 'Bütüncül Refah',
-      d: 'Kapsamlı küresel sağlık sigortası, zihinsel sağlık ödeneği ve yıllık retret programı.',
-    },
-    testimonial: {
-      q: '"Kısmet’te üstlendiğim projelerin ölçeği ve bana tanınan özerklik, ticaret sektörünün hiçbir yerinde bulamayacağım bir şey."',
-      name: 'Elena V.',
-      role: 'Menşe Stratejisi Başkanı',
-    },
-    labCaption: 'Kalite Kontrol Laboratuvarı',
-    rolesEyebrow: 'AÇIK POZİSYONLAR · KÜRATÖRLÜĞE KATIL',
-    rolesTitle: 'Güncel Fırsatlar',
-    rolesLead:
-      'Omurgamızı oluşturan dört uzmanlık alanında açık pozisyonlarımız var. Tümü careers@kismetfoods.com adresinden başvuruya açık.',
-    applyCta: 'Başvur',
+    rolesEyebrow: 'AÇIK ROLLER', rolesTitle: 'Şu an açık', rolesItalic: 'pozisyonlar.',
     roles: [
-      {
-        num: '01',
-        t: 'Ticaret Operasyonları Müdürü',
-        desc: 'Kahve ve kakao portföyü için uçtan uca sevkiyat sorumluluğu — menşeden teslimata.',
-        loc: 'İstanbul HQ · Tam Zamanlı',
-        tag: 'HIZLA BÜYÜYEN',
-      },
-      {
-        num: '02',
-        t: 'Kalite Kontrol Uzmanı',
-        desc: 'Samsun ve Kadıköy laboratuvarlarında fındık, kakao ve kahve numunelerinde duyusal ve fiziksel analiz.',
-        loc: 'Samsun Saha + Kadıköy Lab · Hibrit',
-        tag: 'TEMEL',
-      },
-      {
-        num: '03',
-        t: 'Junior Tedarik Analisti',
-        desc: 'Menşe fiyat endekslerini izler; piyasa raporlarının veri omurgasını hazırlar.',
-        loc: 'İstanbul HQ · Tam Zamanlı',
-        tag: 'STRATEJİK',
-      },
-      {
-        num: '04',
-        t: 'BT Sistemleri Mühendisi',
-        desc: 'Küresel lojistik platformumuzu ve iç süreç otomasyonlarını tasarlar, sürdürür.',
-        loc: 'İstanbul HQ · Uzaktan Seçenekli',
-        tag: 'İNOVASYON',
-      },
+      { h: 'Origin Trader · Kahve', loc: 'İstanbul', type: 'Tam zamanlı', d: 'Etiyopya/Kolombiya/Vietnam kahve hatlarını yönetecek 5+ yıl emtia tecrübeli portföy yöneticisi. Q Grader sertifikası tercih sebebi.' },
+      { h: 'QA Specialist · Lab + Saha', loc: 'İstanbul + remote menşe', type: 'Tam zamanlı', d: 'Laboratuvar protokolleri, parti onayı ve menşe ziyaretleri. Gıda mühendisliği veya kimya temelli.' },
+      { h: 'Logistics Coordinator · FOB/CIF/DDP', loc: 'İstanbul', type: 'Tam zamanlı', d: 'MAERSK/MSC/COSCO sözleşmeleri, gümrük müşaviri koordinasyonu, transit takibi.' },
+      { h: 'EUDR Compliance Lead', loc: 'İstanbul + AB', type: 'Tam zamanlı', d: 'Geo-trace + farmer-ID sistemleri, EU EUDR uyumluluğu, ESG raporlama.' },
+      { h: 'Account Manager · MENA', loc: 'Dubai veya İstanbul', type: 'Tam zamanlı', d: 'BAE, Suudi Arabistan, Mısır ve Kuzey Afrika pazarı bölge hesabı. Arapça akıcı, B2B emtia tecrübesi.' },
     ],
-    spontaneousLead: 'Size uygun bir pozisyon göremediniz mi? Olağanüstü küratörleri her zaman arıyoruz.',
-    spontaneousCta: 'Spontane Başvuru Gönder',
-    ctaTitle: 'Küratör kadromuza yazın.',
-    ctaLead:
-      'Tek bir özgeçmiş, uzun soluklu bir ticaret yolculuğunun başlangıcı olabilir. Tüm başvurular doğrudan careers@kismetfoods.com adresine iletilir.',
+    benefitsEyebrow: 'YAN HAKLAR', benefitsTitle: 'Ekibe katılınca,', benefitsItalic: 'ne düşünmezsin?',
+    benefits: [
+      { h: 'Sağlık', d: 'Premium özel sağlık sigortası (eş ve çocuk dahil).' },
+      { h: 'Saha', d: 'Yılda 2 kez tüm ekip menşe ziyareti, ekip + bireysel programlarla.' },
+      { h: 'Eğitim', d: 'SCA, Q Grader, Kakao master programları için yıllık eğitim bütçesi.' },
+      { h: 'Esneklik', d: 'İstanbul ofis + remote hibrit, 25 gün yıllık izin + 4 gün menşe izni.' },
+    ],
+    ctaTitle: 'CV\'nizi gönderin.',
+    ctaLead: 'careers@kismetfoods.com — başvurularınız 2 hafta içinde değerlendirilir, açık pozisyon olmasa bile portföye eklenir.',
     ctaBtn: 'careers@kismetfoods.com',
   },
   en: {
-    eyebrow: 'CAREERS · OPPORTUNITY AT SCALE',
-    heroTitle1: 'Join the Global',
-    heroTitleItalic: 'Curator',
-    heroTitle2: 'Team',
-    heroLead:
-      'We bridge the world’s most pristine raw materials with the people who value them most. Years of accumulated trade practice shape a deep culture of expertise across every department — here you are not joining a job, you are joining a craft.',
-    viewOpenings: 'View Open Positions',
-    philosophy: 'Our Philosophy',
-    footprintLabel: 'Global Footprint',
-    footprintValue: '42 Countries',
-    cultureEyebrow: 'OUR DNA',
-    cultureTitle1: 'Curated with Purpose,',
-    cultureTitle2: 'Driven by Excellence.',
-    cultureQuote:
-      '"We don’t just trade commodities; we curate the very essence of human taste and industry."',
+    eyebrow: 'CAREERS · TEAM ACROSS 5 CONTINENTS',
+    heroTitle: 'At Kismet, commodity trading is curation.',
+    heroLead: 'Istanbul-based 30-person organisation; field representation per origin, dedicated portfolio manager per line. We hire disciplined, field-ready, three-market-aware professionals.',
+    cultureEyebrow: 'CULTURE', cultureTitle: 'Discipline', cultureItalic: 'at the heart of the field.',
+    cultureLead: 'B2B trade is not a spread game; it’s a decision discipline. Every decision validated upstream by sample and downstream by batch memory.',
     values: [
-      {
-        t: 'Professionalism',
-        d: 'In global logistics, precision is our baseline. We operate with high-level transparency and ethical standards that set the industry benchmark.',
-        hint: 'Execution is everything',
-      },
-      {
-        t: 'Curiosity',
-        d: 'We seek the unknown. Whether it is a hidden valley of heirloom cocoa or a more efficient shipping route, curiosity drives our innovation.',
-        hint: 'Seek the source',
-      },
-      {
-        t: 'Global Impact',
-        d: 'Every decision ripples through the supply chain. We prioritise sustainable sourcing that empowers local farming communities worldwide.',
-        hint: 'Beyond borders',
-      },
+      { h: 'Field-first thinking', d: 'Two whole-team origin visits per year. Face-to-face with farmer, cooperative, exporter.' },
+      { h: 'Document discipline', d: 'From sample validation to customs clearance — 14 control points per shipment.' },
+      { h: 'Three-market thinking', d: 'TR, EN, AR — EU, Middle East and Asia buyers in the same clarity of communication.' },
+      { h: 'Decision transparency', d: 'Two-week review cycles; every category and client side on the open table.' },
     ],
-    lifeEyebrow: 'LIFE AT KISMET',
-    lifeTitle: 'Collaborative Mastery',
-    benefitA: {
-      t: 'Flexible Mobility',
-      d: 'Opportunities for international travel and cross-continental rotations — a new origin, a new team, every year.',
-    },
-    benefitB: {
-      t: 'Holistic Wellness',
-      d: 'Comprehensive global health coverage, a dedicated mental wellness stipend, and an annual retreat programme.',
-    },
-    testimonial: {
-      q: '"The level of autonomy and the scale of the projects I handle at Kismet is unlike anywhere else in the trade industry."',
-      name: 'Elena V.',
-      role: 'Head of Origin Strategy',
-    },
-    labCaption: 'Quality Control Laboratory',
-    rolesEyebrow: 'OPEN POSITIONS · JOIN THE CURATION',
-    rolesTitle: 'Current Opportunities',
-    rolesLead:
-      'We have open positions in the four disciplines that form our backbone. All are open to applications at careers@kismetfoods.com.',
-    applyCta: 'Apply',
+    rolesEyebrow: 'OPEN ROLES', rolesTitle: 'Currently', rolesItalic: 'open positions.',
     roles: [
-      {
-        num: '01',
-        t: 'Trade Operations Manager',
-        desc: 'End-to-end shipment ownership for the coffee and cocoa portfolio — origin to delivery.',
-        loc: 'Istanbul HQ · Full-Time',
-        tag: 'FAST GROWING',
-      },
-      {
-        num: '02',
-        t: 'Quality Control Specialist',
-        desc: 'Sensory and physical analysis of hazelnut, cocoa and coffee samples in our Samsun and Kadıköy laboratories.',
-        loc: 'Samsun field + Kadıköy lab · Hybrid',
-        tag: 'ESSENTIAL',
-      },
-      {
-        num: '03',
-        t: 'Junior Sourcing Analyst',
-        desc: 'Monitors origin price indices and prepares the data backbone for our published market reports.',
-        loc: 'Istanbul HQ · Full-Time',
-        tag: 'STRATEGIC',
-      },
-      {
-        num: '04',
-        t: 'IT Systems Engineer',
-        desc: 'Designs and maintains our global logistics platform and internal process automation.',
-        loc: 'Istanbul HQ · Remote-friendly',
-        tag: 'INNOVATION',
-      },
+      { h: 'Origin Trader · Coffee', loc: 'Istanbul', type: 'Full-time', d: 'Portfolio manager for Ethiopia/Colombia/Vietnam coffee lines, 5+ years commodity experience. Q Grader cert preferred.' },
+      { h: 'QA Specialist · Lab + Field', loc: 'Istanbul + remote origin', type: 'Full-time', d: 'Lab protocols, batch approval, origin visits. Food engineering or chemistry background.' },
+      { h: 'Logistics Coordinator · FOB/CIF/DDP', loc: 'Istanbul', type: 'Full-time', d: 'MAERSK/MSC/COSCO contracts, customs broker coordination, transit tracking.' },
+      { h: 'EUDR Compliance Lead', loc: 'Istanbul + EU', type: 'Full-time', d: 'Geo-trace + farmer-ID systems, EU EUDR compliance, ESG reporting.' },
+      { h: 'Account Manager · MENA', loc: 'Dubai or Istanbul', type: 'Full-time', d: 'UAE, Saudi Arabia, Egypt and North Africa regional account. Arabic fluency, B2B commodity background.' },
     ],
-    spontaneousLead: 'Don’t see a perfect fit? We are always looking for exceptional curators.',
-    spontaneousCta: 'Send a Spontaneous Application',
-    ctaTitle: 'Write to our curator team.',
-    ctaLead:
-      'A single résumé can be the start of a long trade journey. All applications are routed directly to careers@kismetfoods.com.',
+    benefitsEyebrow: 'BENEFITS', benefitsTitle: 'When you join,', benefitsItalic: 'what you don’t worry about.',
+    benefits: [
+      { h: 'Health', d: 'Premium private health insurance (spouse and child included).' },
+      { h: 'Field', d: 'Two whole-team origin visits per year with team + individual programmes.' },
+      { h: 'Education', d: 'Annual training budget for SCA, Q Grader, Cocoa master programmes.' },
+      { h: 'Flexibility', d: 'Istanbul office + remote hybrid, 25 days annual leave + 4 origin-leave days.' },
+    ],
+    ctaTitle: 'Send your CV.',
+    ctaLead: 'careers@kismetfoods.com — applications reviewed within 2 weeks, added to portfolio even when no role is open.',
     ctaBtn: 'careers@kismetfoods.com',
   },
   ar: {
-    eyebrow: 'الوظائف · فرصة على نطاق عالمي',
-    heroTitle1: 'انضم إلى فريق',
-    heroTitleItalic: 'القيّم',
-    heroTitle2: 'العالمي',
-    heroLead:
-      'نربط أنقى المواد الخام في العالم بالأشخاص الأكثر تقديراً لها. سنوات متراكمة من الممارسة التجارية صاغت ثقافة خبرة عميقة في كل قسم — هنا لا تنضم إلى وظيفة، بل إلى حرفة.',
-    viewOpenings: 'اطّلع على الشواغر',
-    philosophy: 'فلسفتنا',
-    footprintLabel: 'البصمة العالمية',
-    footprintValue: '42 دولة',
-    cultureEyebrow: 'حمضنا النووي',
-    cultureTitle1: 'انتقاءٌ بهدف،',
-    cultureTitle2: 'وعملٌ بتميّز.',
-    cultureQuote:
-      '"لا نتاجر بالسلع فحسب؛ بل نُدير جوهر الذوق الإنساني والصناعة."',
+    eyebrow: 'الوظائف · فريق في ٥ قارات',
+    heroTitle: 'تجارة السلع في كسمت تنسيق.',
+    heroLead: 'هيكل ٣٠ شخصاً مقره إسطنبول؛ تمثيل ميداني في كل منشأ، مدير محفظة مخصص لكل خط.',
+    cultureEyebrow: 'الثقافة', cultureTitle: 'الانضباط', cultureItalic: 'في قلب الميدان.',
+    cultureLead: 'تجارة B2B ليست لعبة فارق؛ بل انضباط قرار.',
     values: [
-      {
-        t: 'الاحترافية',
-        d: 'في اللوجستيات العالمية، الدقة هي نقطة انطلاقنا. نعمل بمعايير شفافية وأخلاق عالية ترفع سقف الصناعة.',
-        hint: 'التنفيذ هو كل شيء',
-      },
-      {
-        t: 'الفضول',
-        d: 'نبحث عن المجهول. سواء أكان وادياً خفياً للكاكاو الأصيل أم مساراً شحنياً أكفأ — الفضول يقود ابتكارنا.',
-        hint: 'ابحث عن المصدر',
-      },
-      {
-        t: 'الأثر العالمي',
-        d: 'كل قرار يتردد صداه في سلسلة التوريد. نولي الأولوية للتوريد المستدام الذي يُمكّن المجتمعات الزراعية المحلية.',
-        hint: 'ما وراء الحدود',
-      },
+      { h: 'تفكير ميداني', d: 'زيارتان للمنشأ سنوياً للفريق كاملاً.' },
+      { h: 'انضباط وثائقي', d: '١٤ نقطة تحكم لكل شحنة.' },
+      { h: 'تفكير ثلاثي الأسواق', d: 'TR وEN وAR.' },
+      { h: 'شفافية قرار', d: 'دورات مراجعة كل أسبوعين.' },
     ],
-    lifeEyebrow: 'الحياة في كسمت',
-    lifeTitle: 'إتقان مشترك',
-    benefitA: {
-      t: 'تنقّل مرن',
-      d: 'فرص للسفر الدولي والتناوب بين القارات — منشأ جديد وفريق جديد كل عام.',
-    },
-    benefitB: {
-      t: 'رفاهية شاملة',
-      d: 'تغطية صحية عالمية شاملة، وبدل مخصص للصحة النفسية، وبرنامج اعتكاف سنوي.',
-    },
-    testimonial: {
-      q: '"مستوى الاستقلالية وحجم المشاريع التي أديرها في كسمت لا يوجد لها مثيل في قطاع التجارة."',
-      name: 'إلينا ف.',
-      role: 'رئيسة استراتيجية المنشأ',
-    },
-    labCaption: 'مختبر مراقبة الجودة',
-    rolesEyebrow: 'الشواغر · انضم إلى عملية الانتقاء',
-    rolesTitle: 'الفرص الحالية',
-    rolesLead:
-      'لدينا شواغر في الأقسام الأربعة التي تشكل عمودنا الفقري. جميعها مفتوحة للتقديم عبر careers@kismetfoods.com.',
-    applyCta: 'قدّم',
+    rolesEyebrow: 'الأدوار المفتوحة', rolesTitle: 'الوظائف', rolesItalic: 'الشاغرة حالياً.',
     roles: [
-      {
-        num: '01',
-        t: 'مدير عمليات التجارة',
-        desc: 'مسؤولية كاملة لشحنات محفظة القهوة والكاكاو — من المنشأ حتى التسليم.',
-        loc: 'المقر الرئيسي — إسطنبول · دوام كامل',
-        tag: 'نمو سريع',
-      },
-      {
-        num: '02',
-        t: 'أخصائي مراقبة الجودة',
-        desc: 'تحليل حسي وفيزيائي لعينات البندق والكاكاو والقهوة في مختبرَي سامسون وقاضي كوي.',
-        loc: 'ميدان سامسون + مختبر قاضي كوي · هجين',
-        tag: 'أساسي',
-      },
-      {
-        num: '03',
-        t: 'محلل توريد مبتدئ',
-        desc: 'يرصد مؤشرات أسعار المنشأ ويُعدّ العمود الفقري للبيانات في تقاريرنا المنشورة.',
-        loc: 'المقر الرئيسي — إسطنبول · دوام كامل',
-        tag: 'استراتيجي',
-      },
-      {
-        num: '04',
-        t: 'مهندس نظم معلومات',
-        desc: 'يصمم ويصون منصة اللوجستيات العالمية لدينا وأتمتة العمليات الداخلية.',
-        loc: 'المقر الرئيسي — إسطنبول · عمل عن بُعد متاح',
-        tag: 'ابتكار',
-      },
+      { h: 'تاجر منشأ · قهوة', loc: 'إسطنبول', type: 'دوام كامل', d: 'إثيوبيا/كولومبيا/فيتنام، خبرة ٥+ سنوات.' },
+      { h: 'أخصائي جودة · مختبر + ميدان', loc: 'إسطنبول + منشأ', type: 'دوام كامل', d: 'بروتوكولات مختبر، اعتماد دفعات.' },
+      { h: 'منسق لوجستيات', loc: 'إسطنبول', type: 'دوام كامل', d: 'عقود MAERSK/MSC/COSCO.' },
+      { h: 'قائد امتثال EUDR', loc: 'إسطنبول + EU', type: 'دوام كامل', d: 'أنظمة geo-trace + farmer-ID.' },
+      { h: 'مدير حساب · MENA', loc: 'دبي أو إسطنبول', type: 'دوام كامل', d: 'الإمارات والسعودية ومصر وشمال أفريقيا. عربية بطلاقة.' },
     ],
-    spontaneousLead: 'لم تجد ما يناسبك تماماً؟ نبحث دائماً عن قيّمين استثنائيين.',
-    spontaneousCta: 'أرسل طلباً تلقائياً',
-    ctaTitle: 'راسلوا فريق القيّمين لدينا.',
-    ctaLead:
-      'سيرة ذاتية واحدة قد تكون بداية رحلة تجارية طويلة. تُرسَل جميع الطلبات مباشرةً إلى careers@kismetfoods.com.',
+    benefitsEyebrow: 'المزايا', benefitsTitle: 'حين تنضم،', benefitsItalic: 'ما لا تقلق منه.',
+    benefits: [
+      { h: 'صحة', d: 'تأمين خاص فاخر للزوج والأطفال.' },
+      { h: 'ميدان', d: 'زيارتان للمنشأ سنوياً.' },
+      { h: 'تدريب', d: 'ميزانية SCA وQ Grader.' },
+      { h: 'مرونة', d: 'مكتب + هجين، ٢٥ يوماً إجازة سنوية.' },
+    ],
+    ctaTitle: 'أرسل سيرتك الذاتية.',
+    ctaLead: 'careers@kismetfoods.com — يُراجع الطلب خلال أسبوعين.',
     ctaBtn: 'careers@kismetfoods.com',
   },
 }[locale];
 
-/* --- Stitch imagery — all 4 unique images from the source page --- */
-const heroImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuA-4PV3BhKzXQzQzlzb8-natQdElLaEjBmysqlETBt6UuPk652_MIl4HrlJf95Jnlv4UqOJMwTzv368CRAxx6r0EQSl9zl-LGlHAZdKTkzY5B8RXjfvk9T9UVvLp2qtqVh8HMqp7UY_h9xCUFvXHKqolA51fn2Gs3S15X9jfRsHICL28utdSZIBVPYGq7wDWGOwkTs_vI2Z4aGuVaQ8yVc7ELxPUF9-nVqJwiGYUwUZAjFRLdr0gRqTNj6bkW7qVOEhY87VZrm_nAw',
-);
-const lifeMainImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuA13pSnCihOl7yagnn0UcmxAHXOJizgNz_MxOXq0GQulKKo4Ggccegvfv-J5hRSTHlmd5W4nm_DUesmBiKjopXBi204rT7y1FzlMwnXxQ8PvIDowlDfR-oaf4H8W4QQKuAVJ94YXplLL91iGUSfbXo_kr6fq-Ewvr2CuD8jvu736IjvCa3No0VUwoCEcu6lO4tyifeWcppQt_Gw4Fe9XCEESgb1bgMOWQXofT8-PCt8gw3QqYndsnj_xN4bbhhCeRsewj3MD3BzufA',
-);
-const teamPortraitImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBZ0Krgd1qmF7bMomqa4FcphmQ2QPbI9RcIYhQz5uAgsSyroA5Yx7YQnqilHRqcDmObRWuSNB_MNnN5HTQ8Ke4dyEBWWQj18JFcTyFVvypZ-vv90Il53GcsekY7EfsBxKBdTWrK-M5190DKkpc0LLbdAqOzt2bUikUWv-EDwha0ixib_OzVLgvHJJ38H-N-MkCEdfRUQrbh8JPvELnMb5ssjmu1TqpwPBQaXjMU2S5ce5JKlAtuSEbK9qzaRFkwMo40SXzkjpTdCKA',
-);
-const labImg = stitchSrc(
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBh5JVfVeYbua9zcrX0E7LkD1ozEiKrYjBYY-y8vn7yLuXhEFJz8TMRfKt0OmM5mGwb-sJ0JjW_UtcAKnbakTeaUYyvG77aF7WVyt2A26LxhapiFev3f-y_w9DeujlRrZvBtJRHEmzWoIZhfzi_EerXIJWKrWPehXahmuBivU1gOX5yn5VBsnoS4b9rO_YQ1cEVEAbVwJK37kjxudz2S45p929JrTbLvoZpQWYPdF19W8V0fVbuLmHBJx7hb07xL9rrsvUa55Uvs4s',
-);
-
-const careersMail = 'mailto:careers@kismetfoods.com';
+const heroBg = 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=2400&q=80';
 ---
 
 <SiteHeader locale={locale} currentPath={currentPath} />
 
-<Breadcrumb locale={locale} items={[{ name: tr.nav.careers }]} />
+<main id="main">
+  <CorpPageHero
+    locale={locale}
+    eyebrow={copy.eyebrow}
+    title={copy.heroTitle}
+    lede={copy.heroLead}
+    background={heroBg}
+    meta={[
+      { label: 'Team', value: '30 people' },
+      { label: 'Office', value: 'Istanbul' },
+      { label: 'Field', value: '2 visits/yr' },
+      { label: 'Languages', value: 'TR · EN · AR' },
+    ]}
+  />
 
-<main id="main" class="bg-surface">
-  {/* ========== 1. HERO ========== */}
-  <section class="px-4 pb-16 pt-10 md:px-8 md:pb-24 md:pt-16">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 md:grid-cols-[7fr_5fr]">
-      <div>
-        <span class="eyebrow mb-6 block text-orange-dark">{copy.eyebrow}</span>
-        <h1 class="serif-display mb-8 text-5xl font-bold leading-[0.95] tracking-tight text-on-surface md:text-6xl lg:text-7xl">
-          {copy.heroTitle1}
-          <br />
-          <span class="italic text-teal-dark">{copy.heroTitleItalic}</span>
-          {' '}{copy.heroTitle2}
-        </h1>
-        <p class="mb-10 max-w-2xl text-lg leading-relaxed text-on-surface-muted md:text-xl">
-          {copy.heroLead}
-        </p>
-        <div class="flex flex-wrap items-center gap-6">
-          <a
-            href="#open-roles"
-            class="cta-gradient shadow-editorial inline-flex items-center rounded-md px-7 py-4 text-xs font-bold uppercase tracking-widest text-white"
-          >
-            {copy.viewOpenings}
-          </a>
-          <a
-            href="#culture"
-            class="eyebrow inline-flex items-center gap-3 text-on-surface transition-colors hover:text-teal-dark"
-          >
-            <span>{copy.philosophy}</span>
-            <span aria-hidden="true" class="h-px w-8 bg-orange"></span>
-          </a>
-        </div>
-      </div>
-
-      <div class="relative">
-        <div class="shadow-editorial aspect-[4/5] w-full overflow-hidden rounded-lg">
-          <img
-            src={heroImg}
-            alt=""
-            width="800"
-            height="1000"
-            class="h-full w-full object-cover"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </div>
-
-        {/* editorial overlap chip */}
-        <div aria-hidden="true" class="absolute -bottom-8 -start-10 -z-10 hidden h-64 w-52 rounded-lg bg-surface-low lg:block"></div>
-
-        {/* global footprint card */}
-        <div class="shadow-editorial absolute end-[-1rem] top-1/2 hidden w-[200px] -translate-y-1/2 rounded-lg bg-surface-lowest/90 p-5 backdrop-blur lg:block">
-          <p class="eyebrow mb-2 text-orange-dark">{copy.footprintLabel}</p>
-          <p class="serif-display text-2xl font-bold text-on-surface">{copy.footprintValue}</p>
-          <div class="mt-4 h-1 w-full overflow-hidden rounded-full bg-surface-mid">
-            <div class="h-full w-3/4 bg-teal"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {/* ========== 2. CULTURE DNA ========== */}
-  <section id="culture" class="bg-surface-low px-4 py-24 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-16 grid grid-cols-1 items-end gap-10 md:grid-cols-[7fr_5fr] md:gap-16">
-        <div>
-          <span class="eyebrow mb-4 block text-orange-dark">{copy.cultureEyebrow}</span>
-          <h2 class="serif-display text-4xl font-bold leading-tight text-on-surface md:text-5xl">
-            {copy.cultureTitle1}
-            <br />
-            {copy.cultureTitle2}
-          </h2>
-        </div>
-        <blockquote class="border-s-2 border-teal-dark ps-6 italic leading-relaxed text-on-surface-muted">
-          {copy.cultureQuote}
-        </blockquote>
-      </div>
-
-      <div class="grid grid-cols-1 gap-1 bg-outline/10 p-1 md:grid-cols-3">
-        {copy.values.map((v) => (
-          <article class="group bg-surface p-10 transition-colors hover:bg-surface-lowest md:p-12">
-            <svg class="mb-8 h-10 w-10 text-teal-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2l8 4v6c0 5-3.4 9.3-8 10-4.6-.7-8-5-8-10V6l8-4z"></path>
-            </svg>
-            <h3 class="serif-display mb-4 text-2xl font-bold text-on-surface">{v.t}</h3>
-            <p class="mb-6 leading-relaxed text-on-surface-muted">{v.d}</p>
-            <span class="eyebrow text-teal-dark opacity-0 transition-opacity group-hover:opacity-100">
-              {v.hint}
-            </span>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  {/* ========== 3. LIFE AT KISMET — bento grid ========== */}
-  <section class="px-4 py-24 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* Main visual — spans 2 columns, 2 rows */}
-        <div class="group relative overflow-hidden rounded-lg md:col-span-2 md:row-span-2 md:min-h-[520px]">
-          <img
-            src={lifeMainImg}
-            alt=""
-            width="1200"
-            height="900"
-            loading="lazy"
-            decoding="async"
-            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-on-surface/70 to-transparent"></div>
-          <div class="absolute bottom-10 start-10 text-white">
-            <p class="eyebrow mb-2 opacity-80">{copy.lifeEyebrow}</p>
-            <h3 class="serif-display text-4xl font-bold md:text-5xl">{copy.lifeTitle}</h3>
-          </div>
-        </div>
-
-        {/* Benefit A */}
-        <article class="flex flex-col justify-between gap-8 rounded-lg bg-orange/15 p-8 md:p-10">
-          <svg class="h-9 w-9 text-orange-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 3a2 2 0 110 4 2 2 0 010-4zm5 13H7v-1c0-2 3.3-3 5-3s5 1 5 3v1z"></path>
-          </svg>
-          <div>
-            <h4 class="serif-display mb-2 text-xl font-bold text-on-surface">{copy.benefitA.t}</h4>
-            <p class="text-sm leading-relaxed text-on-surface-muted">{copy.benefitA.d}</p>
-          </div>
+  <CorpSection variant="white" eyebrow={copy.cultureEyebrow} title={copy.cultureTitle} italic={copy.cultureItalic} lede={copy.cultureLead}>
+    <div class="cr-values">
+      {copy.values.map((v, i) => (
+        <article class="cr-value">
+          <span class="co-num cr-value__num">0{i + 1}</span>
+          <h3 class="co-h3">{v.h}</h3>
+          <p>{v.d}</p>
         </article>
+      ))}
+    </div>
+  </CorpSection>
 
-        {/* Benefit B */}
-        <article class="flex flex-col justify-between gap-8 rounded-lg bg-teal/15 p-8 md:p-10">
-          <svg class="h-9 w-9 text-teal-dark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.3l-4.8 2.6.9-5.4L4.2 7.7l5.4-.8L12 2z"></path>
-          </svg>
-          <div>
-            <h4 class="serif-display mb-2 text-xl font-bold text-on-surface">{copy.benefitB.t}</h4>
-            <p class="text-sm leading-relaxed text-on-surface-muted">{copy.benefitB.d}</p>
+  <CorpSection variant="snow" eyebrow={copy.rolesEyebrow} title={copy.rolesTitle} italic={copy.rolesItalic}>
+    <ul class="cr-roles">
+      {copy.roles.map((r) => (
+        <li>
+          <div class="cr-role__main">
+            <h3 class="co-h3">{r.h}</h3>
+            <p>{r.d}</p>
           </div>
-        </article>
-
-        {/* Small portrait */}
-        <div class="overflow-hidden rounded-lg">
-          <img
-            src={teamPortraitImg}
-            alt=""
-            width="600"
-            height="600"
-            loading="lazy"
-            decoding="async"
-            class="h-full min-h-[240px] w-full object-cover"
-          />
-        </div>
-
-        {/* Testimonial */}
-        <article class="flex flex-col justify-center rounded-lg border border-outline/10 bg-surface-low p-8 md:p-10">
-          <p class="mb-6 text-lg italic leading-relaxed text-on-surface-muted">{copy.testimonial.q}</p>
-          <div>
-            <p class="font-bold text-on-surface">{copy.testimonial.name}</p>
-            <p class="eyebrow text-teal-dark">{copy.testimonial.role}</p>
+          <div class="cr-role__meta">
+            <span><span class="co-eyebrow co-eyebrow--ink">Lokasyon</span>{r.loc}</span>
+            <span><span class="co-eyebrow co-eyebrow--ink">Tip</span>{r.type}</span>
+            <a href="mailto:careers@kismetfoods.com" class="co-link">Başvur <span class="co-link__arrow" aria-hidden="true">→</span></a>
           </div>
+        </li>
+      ))}
+    </ul>
+  </CorpSection>
+
+  <CorpSection variant="navy" eyebrow={copy.benefitsEyebrow} title={copy.benefitsTitle} italic={copy.benefitsItalic}>
+    <div class="cr-benefits">
+      {copy.benefits.map((b, i) => (
+        <article class="cr-benefit">
+          <span class="co-num">0{i + 1}</span>
+          <h3 class="co-h3">{b.h}</h3>
+          <p>{b.d}</p>
         </article>
-
-        {/* Lab QC (4th Stitch image) */}
-        <div class="relative overflow-hidden rounded-lg">
-          <img
-            src={labImg}
-            alt=""
-            width="600"
-            height="600"
-            loading="lazy"
-            decoding="async"
-            class="h-full min-h-[240px] w-full object-cover"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-on-surface/60 to-transparent"></div>
-          <p class="eyebrow absolute bottom-6 start-6 text-white">{copy.labCaption}</p>
-        </div>
-      </div>
+      ))}
     </div>
-  </section>
+  </CorpSection>
 
-  {/* ========== 4. OPEN POSITIONS ========== */}
-  <section id="open-roles" class="bg-surface-lowest px-4 py-24 md:px-8 md:py-28">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-20 text-center">
-        <span class="eyebrow mb-4 block text-orange-dark">{copy.rolesEyebrow}</span>
-        <h2 class="serif-display mb-6 text-4xl font-bold text-on-surface md:text-5xl">
-          {copy.rolesTitle}
-        </h2>
-        <div class="mx-auto mb-6 h-1 w-24 bg-teal"></div>
-        <p class="mx-auto max-w-2xl text-on-surface-muted">{copy.rolesLead}</p>
-      </div>
-
-      <ul class="space-y-2">
-        {copy.roles.map((role) => (
-          <li class="group grid grid-cols-1 gap-6 border-b border-outline/30 py-8 transition-all duration-300 md:grid-cols-[7fr_5fr] md:items-center md:gap-10 md:py-10 hover:md:px-6">
-            <div class="flex items-start gap-6">
-              <span aria-hidden="true" class="serif-display w-10 text-2xl italic text-teal-dark md:text-3xl">
-                {role.num}
-              </span>
-              <div>
-                <h3 class="serif-display text-2xl font-bold text-on-surface">{role.t}</h3>
-                <p class="mt-2 text-sm leading-relaxed text-on-surface-muted">{role.desc}</p>
-                <p class="mt-3 text-xs text-on-surface-subtle">{role.loc}</p>
-              </div>
-            </div>
-            <div class="flex flex-wrap items-center gap-4 md:justify-end">
-              <span class="eyebrow rounded-full bg-surface px-3 py-1 text-[10px] text-on-surface-muted">
-                {role.tag}
-              </span>
-              <a
-                href={`${careersMail}?subject=${encodeURIComponent('Application: ' + role.t)}`}
-                class="rounded-md bg-on-surface px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-teal-dark"
-                aria-label={`${copy.applyCta} — ${role.t}`}
-              >
-                {copy.applyCta}
-              </a>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <div class="mt-20 text-center">
-        <p class="mb-4 text-on-surface-muted">{copy.spontaneousLead}</p>
-        <a
-          href={`${careersMail}?subject=${encodeURIComponent('Spontaneous Application')}`}
-          class="eyebrow inline-block border-b-2 border-orange pb-1 text-on-surface transition-colors hover:text-orange-dark"
-        >
-          {copy.spontaneousCta}
-        </a>
-      </div>
+  <CorpSection variant="snow" compact>
+    <div class="cr-cta">
+      <h2 class="co-h2">{copy.ctaTitle}</h2>
+      <p>{copy.ctaLead}</p>
+      <a href="mailto:careers@kismetfoods.com" class="co-btn co-btn--primary">{copy.ctaBtn} <span aria-hidden="true">→</span></a>
     </div>
-  </section>
-
-  {/* ========== 5. FINAL CTA ========== */}
-  <section class="cta-gradient px-4 py-24 text-white md:px-8">
-    <div class="mx-auto max-w-4xl text-center">
-      <h2 class="serif-display mb-4 text-4xl font-bold md:text-5xl">{copy.ctaTitle}</h2>
-      <p class="mb-8 text-lg leading-relaxed text-white/85">{copy.ctaLead}</p>
-      <a
-        href={careersMail}
-        class="inline-block rounded-md bg-orange px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-lg shadow-orange/20 transition-colors hover:bg-orange-dark"
-      >
-        {copy.ctaBtn}
-      </a>
-    </div>
-  </section>
+  </CorpSection>
 </main>
 
 <SiteFooter locale={locale} />
+
+<style>
+  .cr-values { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  @media (min-width: 880px) { .cr-values { grid-template-columns: repeat(4, 1fr); } }
+  .cr-value { padding-top: 24px; border-top: 2px solid var(--co-amber); display: flex; flex-direction: column; gap: 10px; }
+  .cr-value__num { font-size: 28px; color: var(--co-amber); line-height: 1; }
+  .cr-value h3 { color: var(--co-ink); margin: 0; }
+  .cr-value p { font-family: var(--co-sans); font-size: 14px; color: var(--co-mute); margin: 0; line-height: 1.6; }
+
+  .cr-roles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0; border-top: 1px solid var(--co-line); }
+  .cr-roles li { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 28px 0; border-bottom: 1px solid var(--co-line); transition: background 200ms ease; }
+  @media (min-width: 1024px) { .cr-roles li { grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: center; } }
+  .cr-roles li:hover { background: var(--co-white); }
+  .cr-role__main h3 { color: var(--co-ink); margin: 0 0 8px; }
+  .cr-role__main p { font-family: var(--co-sans); font-size: 14px; color: var(--co-mute); margin: 0; line-height: 1.6; max-width: 70ch; }
+  .cr-role__meta { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: center; }
+  .cr-role__meta > span { display: flex; flex-direction: column; gap: 4px; font-family: var(--co-sans); font-size: 14px; font-weight: 600; color: var(--co-ink); }
+  .cr-role__meta > span .co-eyebrow { color: var(--co-mute); margin-bottom: 2px; }
+
+  .cr-benefits { display: grid; grid-template-columns: 1fr; gap: 24px; }
+  @media (min-width: 880px) { .cr-benefits { grid-template-columns: repeat(4, 1fr); } }
+  .cr-benefit { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .cr-benefit .co-num { font-size: 22px; color: var(--co-amber); line-height: 1; }
+  .cr-benefit h3 { color: var(--co-white); margin: 0; font-size: 17px; }
+  .cr-benefit p { font-family: var(--co-sans); font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.55; }
+
+  .cr-cta { display: flex; flex-direction: column; gap: 18px; align-items: flex-start; max-width: 60ch; }
+  .cr-cta h2 { color: var(--co-ink); }
+  .cr-cta p { font-family: var(--co-sans); font-size: 17px; color: var(--co-mute); margin: 0; line-height: 1.65; }
+</style>
