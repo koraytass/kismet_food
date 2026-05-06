@@ -1,0 +1,215 @@
+---
+/**
+ * CorpOrigins — Coğrafi varlık bandı.
+ * Sol: 4 bölge listeli kart · Sağ: harita görseli + ülke pinleri (basit nokta).
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'COĞRAFİ AYAK',
+    title: 'Beş kıta. On yedi aktif menşe.',
+    lede: 'Kahve kuşağından Anadolu’ya, Batı Afrika’dan Güney Amerika’ya. Her menşe için yerel ortak + saha denetimi.',
+    cta: 'Tüm menşeler',
+    regions: [
+      { h: 'Anadolu',     c: '6 menşe', l: 'Antep, Giresun, Malatya, Aydın, Urfa, Konya' },
+      { h: 'Doğu Afrika',  c: '1 menşe', l: 'Yirgacheffe, Sidamo' },
+      { h: 'Batı Afrika',  c: '2 menşe', l: 'Ashanti (Gana), Daloa (Fildişi)' },
+      { h: 'Güney Amerika',c: '2 menşe', l: 'Huila (Kolombiya), Mendoza (Arjantin)' },
+      { h: 'Asya',         c: '4 menşe', l: 'Lam Dong, Phan Rang, Kerala, Sumatra' },
+      { h: 'Orta Amerika', c: '1 menşe', l: 'Antigua (Guatemala)' },
+    ],
+  },
+  en: {
+    eyebrow: 'GEOGRAPHIC FOOTPRINT',
+    title: 'Five continents. Seventeen active origins.',
+    lede: 'From the Coffee Belt to Anatolia, from West Africa to South America. Local partner + field audit per origin.',
+    cta: 'All origins',
+    regions: [
+      { h: 'Anatolia',     c: '6 origins', l: 'Antep, Giresun, Malatya, Aydın, Urfa, Konya' },
+      { h: 'East Africa',  c: '1 origin',  l: 'Yirgacheffe, Sidamo' },
+      { h: 'West Africa',  c: '2 origins', l: 'Ashanti (Ghana), Daloa (Côte d’Ivoire)' },
+      { h: 'South America',c: '2 origins', l: 'Huila (Colombia), Mendoza (Argentina)' },
+      { h: 'Asia',         c: '4 origins', l: 'Lam Dong, Phan Rang, Kerala, Sumatra' },
+      { h: 'Central America', c: '1 origin', l: 'Antigua (Guatemala)' },
+    ],
+  },
+  ar: {
+    eyebrow: 'البصمة الجغرافية',
+    title: 'خمس قارات · سبعة عشر منشأ نشطاً.',
+    lede: 'من حزام القهوة إلى الأناضول، من غرب أفريقيا إلى أمريكا الجنوبية. شريك محلي + تدقيق ميداني لكل منشأ.',
+    cta: 'جميع المناشئ',
+    regions: [
+      { h: 'الأناضول',         c: '٦ مناشئ', l: 'عنتاب، غيرسون، ملاطية، أيدِن، أورفا، قونيا' },
+      { h: 'شرق أفريقيا',      c: '١ منشأ',  l: 'يرغاشيف، سيدامو' },
+      { h: 'غرب أفريقيا',      c: '٢ منشأ',  l: 'أشانتي (غانا)، دالاوا (ساحل العاج)' },
+      { h: 'أمريكا الجنوبية',  c: '٢ منشأ',  l: 'هويلا (كولومبيا)، مندوزا (الأرجنتين)' },
+      { h: 'آسيا',             c: '٤ مناشئ', l: 'لام دونغ، فان رانغ، كيرلا، سومطرة' },
+      { h: 'أمريكا الوسطى',    c: '١ منشأ',  l: 'أنتيغوا (غواتيمالا)' },
+    ],
+  },
+}[locale];
+
+/* Pin coords for the static decorative map */
+const pins = [
+  { x: 18, y: 56 }, { x: 24, y: 38 }, { x: 32, y: 26 }, { x: 38, y: 36 },
+  { x: 44, y: 30 }, { x: 50, y: 28 }, { x: 56, y: 30 }, { x: 60, y: 36 },
+  { x: 64, y: 28 }, { x: 70, y: 38 }, { x: 78, y: 36 }, { x: 82, y: 48 },
+  { x: 86, y: 56 }, { x: 28, y: 60 }, { x: 22, y: 70 }, { x: 35, y: 75 }, { x: 70, y: 65 },
+];
+---
+
+<section class="co-section co-section--navy co-origins" id="origins">
+  <div class="co-wrap">
+    <header class="co-origins__head">
+      <div>
+        <span class="co-eyebrow">{ui.eyebrow}</span>
+        <h2 class="co-h-display">{ui.title}</h2>
+      </div>
+      <p class="co-lede co-origins__lede">{ui.lede}</p>
+    </header>
+
+    <div class="co-origins__grid">
+      <div class="co-origins__regions">
+        {ui.regions.map((r, i) => (
+          <article class="co-origins__region">
+            <span class="co-num co-origins__rnum">0{i + 1}</span>
+            <div>
+              <h3 class="co-h3">{r.h}</h3>
+              <span class="co-origins__count">{r.c}</span>
+              <p>{r.l}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <figure class="co-origins__map">
+        <div class="co-origins__map-canvas" aria-hidden="true">
+          <svg viewBox="0 0 100 56" preserveAspectRatio="none" class="co-origins__map-svg">
+            {/* abstract rectangular continental hints */}
+            <rect x="6" y="14" width="32" height="18" />
+            <rect x="14" y="34" width="22" height="14" />
+            <rect x="44" y="14" width="38" height="10" />
+            <rect x="44" y="26" width="14" height="14" />
+            <rect x="60" y="26" width="20" height="18" />
+            <rect x="80" y="42" width="14" height="8" />
+            {pins.map((p) => (
+              <circle cx={p.x} cy={p.y} r="0.8" class="co-origins__pin-bg" />
+            ))}
+            {pins.map((p) => (
+              <circle cx={p.x} cy={p.y} r="0.45" class="co-origins__pin" />
+            ))}
+          </svg>
+        </div>
+        <figcaption>17 origins · 5 continents</figcaption>
+      </figure>
+    </div>
+
+    <div class="co-origins__foot">
+      <a href={localePath('/origins/', locale)} class="co-btn co-btn--white">
+        {ui.cta} <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-origins__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 64px;
+  }
+  @media (min-width: 1024px) {
+    .co-origins__head {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+  }
+  .co-origins__lede { padding-bottom: 6px; }
+
+  .co-origins__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .co-origins__grid { grid-template-columns: 1fr 1fr; gap: 64px; }
+  }
+
+  .co-origins__regions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .co-origins__region {
+    background: rgba(255,255,255,0.02);
+    padding: 22px 22px;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .co-origins__rnum {
+    color: var(--co-amber);
+    font-size: 22px;
+    line-height: 1;
+  }
+  .co-origins__region h3 {
+    color: var(--co-white);
+    font-size: 18px;
+    margin: 0 0 4px;
+  }
+  .co-origins__count {
+    font-family: var(--co-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--co-amber);
+  }
+  .co-origins__region p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.55;
+  }
+
+  .co-origins__map { margin: 0; position: relative; }
+  .co-origins__map-canvas {
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 50%, rgba(194, 65, 12, 0.06), transparent 60%),
+      rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    aspect-ratio: 16 / 9;
+    padding: 8%;
+    overflow: hidden;
+  }
+  .co-origins__map-svg { width: 100%; height: 100%; }
+  .co-origins__map-svg rect {
+    fill: rgba(255,255,255,0.04);
+    stroke: rgba(255,255,255,0.18);
+    stroke-width: 0.15;
+  }
+  .co-origins__pin-bg { fill: rgba(194, 65, 12, 0.25); }
+  .co-origins__pin { fill: var(--co-amber); }
+  .co-origins__map figcaption {
+    margin-top: 12px;
+    font-family: var(--co-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .co-origins__foot { margin-top: 56px; display: flex; justify-content: flex-start; }
+</style>

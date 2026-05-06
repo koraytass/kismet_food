@@ -1,0 +1,192 @@
+---
+/**
+ * CorpHero — LDC-grade full-bleed corporate hero.
+ * Tek büyük arka plan görseli + sade beyaz overlay headline + sub + 2 CTA.
+ * Alt şeritte 4 stat (countries · farmers · containers · on-time %).
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const heroBg = 'https://images.unsplash.com/photo-1546874177-9e664107314e?auto=format&fit=crop&w=2400&q=80';
+
+const ui = {
+  tr: {
+    eyebrow: 'KÜRESEL EMTİA TÜCCARI · İSTANBUL',
+    title: 'Dünyanın temel gıda hammaddelerini, güvenle taşıyoruz.',
+    sub: 'Kismet Foods; kahve, kakao, kuruyemiş, baharat ve endüstriyel gıda içeriklerinde 45 ülkeye uzanan, kurumsal düzeyde tedarik yöneten İstanbul merkezli bir küresel ticaret evi.',
+    primary: 'Tedarik Talebi',
+    ghost: 'Hakkımızda',
+    s1: { v: '45',     l: 'Aktif menşe ülkesi' },
+    s2: { v: '12.000+', l: 'Çiftçi ortağı' },
+    s3: { v: '5',      l: 'Ürün hattı' },
+    s4: { v: '%99,8',   l: 'Zamanında teslim' },
+  },
+  en: {
+    eyebrow: 'GLOBAL COMMODITY MERCHANT · ISTANBUL',
+    title: 'We move the world’s essential food commodities — with discipline.',
+    sub: 'Kismet Foods is an Istanbul-based global trading house in coffee, cocoa, nuts, spices and industrial food ingredients across 45 origin markets.',
+    primary: 'Request supply',
+    ghost: 'About Kismet',
+    s1: { v: '45',     l: 'Active origin markets' },
+    s2: { v: '12,000+', l: 'Farmer partners' },
+    s3: { v: '5',      l: 'Product lines' },
+    s4: { v: '99.8%',   l: 'On-time delivery' },
+  },
+  ar: {
+    eyebrow: 'تاجر سلع غذائية عالمي · إسطنبول',
+    title: 'ننقل المواد الغذائية الأساسية للعالم بانضباط مؤسسي.',
+    sub: 'كسمت فودز بيت تجارة عالمي مقره إسطنبول للقهوة والكاكاو والمكسرات والتوابل والمكونات الغذائية الصناعية عبر ٤٥ سوقاً منشأ.',
+    primary: 'طلب توريد',
+    ghost: 'عن كسمت',
+    s1: { v: '٤٥',     l: 'سوق منشأ نشطة' },
+    s2: { v: '+١٢٠٠٠', l: 'شركاء المزارعين' },
+    s3: { v: '٥',      l: 'خطوط منتجات' },
+    s4: { v: '٪٩٩٫٨',   l: 'تسليم في الموعد' },
+  },
+}[locale];
+---
+
+<section class="co-hero">
+  <div class="co-hero__media">
+    <img src={heroBg} alt="" loading="eager" fetchpriority="high" decoding="async" />
+    <div class="co-hero__overlay" aria-hidden="true"></div>
+  </div>
+
+  <div class="co-wrap co-hero__inner">
+    <span class="co-eyebrow co-hero__eyebrow">{ui.eyebrow}</span>
+    <h1 class="co-h-display co-hero__title">{ui.title}</h1>
+    <p class="co-hero__sub">{ui.sub}</p>
+    <div class="co-hero__ctas">
+      <a href={localePath('/contact/request-quote/', locale)} class="co-btn co-btn--white">
+        {ui.primary} <span aria-hidden="true">→</span>
+      </a>
+      <a href={localePath('/about/', locale)} class="co-btn co-btn--ghost co-hero__btn-ghost">
+        {ui.ghost}
+      </a>
+    </div>
+  </div>
+
+  <div class="co-hero__stats">
+    <div class="co-wrap co-hero__stats-row">
+      {[ui.s1, ui.s2, ui.s3, ui.s4].map((s) => (
+        <div class="co-hero__stat">
+          <span class="co-num co-hero__stat-num">{s.v}</span>
+          <span class="co-hero__stat-label">{s.l}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    color: var(--co-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .co-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .co-hero__media img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(0.92) contrast(1.08) brightness(0.85);
+  }
+  .co-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(12, 37, 69, 0.55) 0%, rgba(12, 37, 69, 0.30) 35%, rgba(12, 37, 69, 0.78) 100%),
+      linear-gradient(90deg, rgba(12, 37, 69, 0.45) 0%, transparent 60%);
+  }
+
+  .co-hero__inner {
+    position: relative;
+    z-index: 1;
+    padding-top: clamp(120px, 18vh, 200px);
+    padding-bottom: clamp(48px, 8vh, 96px);
+    max-width: 980px;
+  }
+  .co-hero__eyebrow {
+    color: var(--co-amber);
+    margin-bottom: 22px;
+    display: inline-block;
+  }
+  .co-hero__title {
+    color: var(--co-white);
+    max-width: 18ch;
+  }
+  .co-hero__sub {
+    margin-top: 24px;
+    font-size: clamp(17px, 1.4vw, 22px);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 56ch;
+    font-weight: 400;
+  }
+  .co-hero__ctas {
+    margin-top: 36px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .co-hero__btn-ghost {
+    color: var(--co-white);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  .co-hero__btn-ghost:hover {
+    background: var(--co-white);
+    color: var(--co-navy);
+  }
+
+  /* Stats ribbon */
+  .co-hero__stats {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .co-hero__stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    padding: 0;
+  }
+  .co-hero__stat {
+    padding: 28px var(--co-gutter);
+    background: rgba(12, 37, 69, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .co-hero__stat-num {
+    font-size: clamp(28px, 3vw, 44px);
+    color: var(--co-white);
+    line-height: 1;
+  }
+  .co-hero__stat-label {
+    font-family: var(--co-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.75);
+    text-transform: uppercase;
+  }
+  @media (min-width: 760px) {
+    .co-hero__stats-row { grid-template-columns: repeat(4, 1fr); padding: 0; }
+    .co-hero__stat { padding: 32px 24px; }
+    .co-hero__stat:not(:first-child) { border-left: 1px solid rgba(255,255,255,0.12); }
+  }
+</style>

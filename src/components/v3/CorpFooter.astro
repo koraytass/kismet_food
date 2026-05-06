@@ -1,0 +1,312 @@
+---
+/**
+ * CorpFooter — annual-report grade multi-column.
+ * Brand kolonu (logo + adres + iletişim) + 3 link kolonu + bültene kayıt + alt copyright şeridi.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    strap: 'Küresel Emtia Tüccarı',
+    address: ['Caddebostan Mah. Dr. Abdülkadir Noyan Sk.', 'No: 12/9, Kadıköy / İstanbul'],
+    contactH: 'İletişim', addressH: 'Merkez',
+    nlH: 'Yatırımcı bülteni', nlBody: 'Aylık piyasa görüşü ve EUDR uyum güncellemeleri.', nlCta: 'Abone ol',
+    placeholder: 'kurumsal@sirket.com',
+    columns: [
+      { h: 'Şirket', items: [
+        { label: 'Hakkımızda', href: '/about/' },
+        { label: 'Hikaye',     href: '/about/story/' },
+        { label: 'Ekip',       href: '/about/team/' },
+        { label: 'Basın',      href: '/about/press/' },
+        { label: 'Kariyer',    href: '/careers/' },
+      ]},
+      { h: 'Hatlar', items: [
+        { label: 'Kahve & Kakao',          href: '/products/coffee-cocoa/' },
+        { label: 'Kuruyemiş & Kuru Meyve', href: '/products/nuts/' },
+        { label: 'Baharat & Otlar',         href: '/products/spices/' },
+        { label: 'Endüstriyel İçerikler',   href: '/products/ingredients/' },
+        { label: 'Tüm hatlar',              href: '/products/' },
+      ]},
+      { h: 'Operasyon', items: [
+        { label: 'Menşe',           href: '/origins/' },
+        { label: 'Tedarik zinciri',  href: '/supply-chain/' },
+        { label: 'Sürdürülebilirlik',href: '/sustainability/' },
+        { label: 'Yıllık rapor',     href: '/sustainability/report/' },
+        { label: 'Analizler',        href: '/insights/' },
+      ]},
+    ],
+    legal: { priv: 'Gizlilik Politikası', terms: 'Kullanım Şartları', cookies: 'Çerez Politikası', kvkk: 'KVKK Aydınlatma' },
+    cert: 'ISO 22000 · BRC AA · Fair Trade · Rainforest Alliance · EU EUDR · KVKK · GDPR',
+    copy: '© 2026 Kısmet Foods Gıda Tedarik Yönetimi A.Ş. — Tüm hakları saklıdır.',
+  },
+  en: {
+    strap: 'Global Commodity Merchant',
+    address: ['Caddebostan Mah. Dr. Abdülkadir Noyan Sk.', 'No: 12/9, Kadıköy / Istanbul'],
+    contactH: 'Contact', addressH: 'Headquarters',
+    nlH: 'Investor briefing', nlBody: 'Monthly market view and EUDR compliance updates.', nlCta: 'Subscribe',
+    placeholder: 'name@company.com',
+    columns: [
+      { h: 'Company', items: [
+        { label: 'About',   href: '/about/' },
+        { label: 'Story',   href: '/about/story/' },
+        { label: 'Team',    href: '/about/team/' },
+        { label: 'Press',   href: '/about/press/' },
+        { label: 'Careers', href: '/careers/' },
+      ]},
+      { h: 'Lines', items: [
+        { label: 'Coffee & Cocoa',           href: '/products/coffee-cocoa/' },
+        { label: 'Nuts & Dried Fruit',        href: '/products/nuts/' },
+        { label: 'Spices & Herbs',            href: '/products/spices/' },
+        { label: 'Industrial Food Ingredients', href: '/products/ingredients/' },
+        { label: 'All lines',                 href: '/products/' },
+      ]},
+      { h: 'Operations', items: [
+        { label: 'Origins',         href: '/origins/' },
+        { label: 'Supply chain',     href: '/supply-chain/' },
+        { label: 'Sustainability',   href: '/sustainability/' },
+        { label: 'Annual report',    href: '/sustainability/report/' },
+        { label: 'Insights',         href: '/insights/' },
+      ]},
+    ],
+    legal: { priv: 'Privacy Policy', terms: 'Terms of Use', cookies: 'Cookie Policy', kvkk: 'KVKK Disclosure' },
+    cert: 'ISO 22000 · BRC AA · Fair Trade · Rainforest Alliance · EU EUDR · KVKK · GDPR',
+    copy: '© 2026 Kısmet Foods Gıda Tedarik Yönetimi A.Ş. — All rights reserved.',
+  },
+  ar: {
+    strap: 'تاجر سلع غذائية عالمي',
+    address: ['حي جدّه بوستان شارع د. عبد القادر نويان', 'رقم ١٢/٩، قاضي كوي / إسطنبول'],
+    contactH: 'تواصل', addressH: 'المقر',
+    nlH: 'نشرة المستثمرين', nlBody: 'رؤية شهرية للسوق وتحديثات امتثال EUDR.', nlCta: 'اشترك',
+    placeholder: 'name@company.com',
+    columns: [
+      { h: 'الشركة', items: [
+        { label: 'من نحن',  href: '/about/' },
+        { label: 'القصة',    href: '/about/story/' },
+        { label: 'الفريق',  href: '/about/team/' },
+        { label: 'الصحافة', href: '/about/press/' },
+        { label: 'الوظائف', href: '/careers/' },
+      ]},
+      { h: 'الخطوط', items: [
+        { label: 'قهوة وكاكاو',         href: '/products/coffee-cocoa/' },
+        { label: 'مكسرات وفواكه مجففة', href: '/products/nuts/' },
+        { label: 'توابل وأعشاب',         href: '/products/spices/' },
+        { label: 'مكونات صناعية',       href: '/products/ingredients/' },
+        { label: 'كل الخطوط',            href: '/products/' },
+      ]},
+      { h: 'العمليات', items: [
+        { label: 'المنشأ',         href: '/origins/' },
+        { label: 'سلسلة التوريد',   href: '/supply-chain/' },
+        { label: 'الاستدامة',       href: '/sustainability/' },
+        { label: 'التقرير السنوي',  href: '/sustainability/report/' },
+        { label: 'تحليلات',         href: '/insights/' },
+      ]},
+    ],
+    legal: { priv: 'سياسة الخصوصية', terms: 'شروط الاستخدام', cookies: 'سياسة الكوكيز', kvkk: 'إفصاح KVKK' },
+    cert: 'ISO 22000 · BRC AA · Fair Trade · Rainforest Alliance · EU EUDR · KVKK · GDPR',
+    copy: '© ٢٠٢٦ كسمت فودز Gıda Tedarik Yönetimi A.Ş. — جميع الحقوق محفوظة.',
+  },
+}[locale];
+---
+
+<footer class="co-foot">
+  <div class="co-wrap">
+    <div class="co-foot__top">
+      <div class="co-foot__brand">
+        <a href={localePath('/', locale)} class="co-foot__brand-link" aria-label="Kismet Foods">
+          <img src="/logos/logo-teal.svg" alt="" width="48" height="48" />
+          <span>
+            <span class="co-foot__name">Kismet Foods</span>
+            <span class="co-foot__strap">{ui.strap}</span>
+          </span>
+        </a>
+
+        <div class="co-foot__contact">
+          <span class="co-eyebrow co-eyebrow--ink">{ui.addressH}</span>
+          <p>{ui.address[0]}<br />{ui.address[1]}</p>
+          <span class="co-eyebrow co-eyebrow--ink">{ui.contactH}</span>
+          <p>
+            <a href="mailto:trade@kismetfoods.com">trade@kismetfoods.com</a><br />
+            <a href="mailto:commercial@kismetfoods.com">commercial@kismetfoods.com</a>
+          </p>
+        </div>
+      </div>
+
+      {ui.columns.map((col) => (
+        <nav class="co-foot__col" aria-label={col.h}>
+          <span class="co-eyebrow co-eyebrow--ink">{col.h}</span>
+          <ul>
+            {col.items.map((it) => (
+              <li><a href={localePath(it.href, locale)}>{it.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+
+      <form class="co-foot__newsletter" method="post" action="#">
+        <span class="co-eyebrow co-eyebrow--ink">{ui.nlH}</span>
+        <p>{ui.nlBody}</p>
+        <div class="co-foot__nl-row">
+          <input type="email" placeholder={ui.placeholder} required />
+          <button type="submit" class="co-btn co-btn--primary">{ui.nlCta} →</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="co-foot__cert">
+      <span>{ui.cert}</span>
+    </div>
+
+    <div class="co-foot__bottom">
+      <span class="co-foot__copy">{ui.copy}</span>
+      <ul class="co-foot__legal">
+        <li><a href={localePath('/privacy/', locale)}>{ui.legal.priv}</a></li>
+        <li><a href={localePath('/terms/', locale)}>{ui.legal.terms}</a></li>
+        <li><a href={localePath('/cookies/', locale)}>{ui.legal.cookies}</a></li>
+        <li><a href={localePath('/privacy/', locale) + '#kvkk'}>{ui.legal.kvkk}</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .co-foot {
+    background: var(--co-ink);
+    color: rgba(255,255,255,0.78);
+    padding: 80px 0 24px;
+  }
+  .co-foot__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  @media (min-width: 1024px) {
+    .co-foot__top {
+      grid-template-columns: 1.6fr repeat(3, 1fr) 1.4fr;
+      gap: 56px;
+    }
+  }
+
+  .co-foot__brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--co-white);
+    text-decoration: none;
+  }
+  .co-foot__name {
+    display: block;
+    font-family: var(--co-sans);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--co-white);
+    letter-spacing: -0.02em;
+  }
+  .co-foot__strap {
+    display: block;
+    font-family: var(--co-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .co-foot__contact { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .co-foot__contact .co-eyebrow { color: var(--co-amber); margin-top: 6px; }
+  .co-foot__contact p {
+    font-family: var(--co-sans);
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.78);
+    margin: 0;
+  }
+  .co-foot__contact a { color: var(--co-white); text-decoration: none; }
+  .co-foot__contact a:hover { color: var(--co-amber); }
+
+  .co-foot__col { display: flex; flex-direction: column; gap: 16px; }
+  .co-foot__col .co-eyebrow { color: var(--co-amber); }
+  .co-foot__col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .co-foot__col a {
+    font-family: var(--co-sans);
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .co-foot__col a:hover { color: var(--co-white); }
+
+  .co-foot__newsletter { display: flex; flex-direction: column; gap: 14px; }
+  .co-foot__newsletter .co-eyebrow { color: var(--co-amber); }
+  .co-foot__newsletter p {
+    font-family: var(--co-sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+  }
+  .co-foot__nl-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .co-foot__nl-row input {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.16);
+    padding: 12px 14px;
+    color: var(--co-white);
+    font-family: var(--co-sans);
+    font-size: 14px;
+  }
+  .co-foot__nl-row input::placeholder { color: rgba(255,255,255,0.45); }
+  .co-foot__nl-row .co-btn { padding: 12px 18px; }
+
+  .co-foot__cert {
+    margin-top: 28px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    font-family: var(--co-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+
+  .co-foot__bottom {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .co-foot__copy {
+    font-family: var(--co-sans);
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+  .co-foot__legal {
+    display: inline-flex;
+    gap: 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--co-sans);
+    font-size: 12px;
+  }
+  .co-foot__legal a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+  }
+  .co-foot__legal a:hover { color: var(--co-white); }
+
+  @media (max-width: 720px) {
+    .co-foot__bottom { flex-direction: column; align-items: flex-start; }
+    .co-foot__legal { flex-wrap: wrap; gap: 10px; }
+  }
+</style>

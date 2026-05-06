@@ -1,0 +1,250 @@
+/* ============================================
+   KISMET — CORPORATE
+   LDC-vari boardroom estetiği. Beyaz, navy, sıkı tipografi, geniş nefes.
+   ============================================ */
+
+:root {
+  /* Surface */
+  --co-white: #ffffff;
+  --co-snow: #fafafa;
+  --co-stone: #f4f4f1;
+  --co-mist: #ececea;
+  --co-line: #e3e3e0;
+
+  /* Ink */
+  --co-ink: #0b1220;
+  --co-ink-2: #1a2332;
+  --co-text: #2a3340;
+  --co-mute: #5a6473;
+  --co-mute-2: #7c8694;
+
+  /* Brand */
+  --co-navy: #0c2545;
+  --co-navy-2: #122f54;
+  --co-navy-3: #1d4070;
+  --co-amber: #c2410c;        /* LDC turuncusunun gözlüklü versiyonu */
+  --co-amber-2: #b3370b;
+  --co-gold: #b8862e;
+  --co-emerald: #0d6e51;      /* sustainability accent */
+
+  /* Type */
+  --co-sans: 'Inter Tight', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  --co-serif: 'Source Serif 4', 'Tiempos', Georgia, serif;
+  --co-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Layout */
+  --co-gutter: clamp(20px, 4vw, 64px);
+  --co-col: 1320px;
+  --co-col-text: 880px;
+  --co-radius: 2px;
+}
+
+.co {
+  font-family: var(--co-sans);
+  background: var(--co-white);
+  color: var(--co-text);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11';
+}
+
+.co *::selection { background: var(--co-navy); color: var(--co-white); }
+
+/* ============================================
+   Type primitives
+   ============================================ */
+.co-eyebrow {
+  font-family: var(--co-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--co-amber);
+}
+.co-eyebrow--ink { color: var(--co-ink); }
+.co-eyebrow--mute { color: var(--co-mute); }
+
+.co-h-display {
+  font-family: var(--co-sans);
+  font-weight: 600;
+  font-size: clamp(40px, 5.6vw, 96px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--co-ink);
+}
+
+.co-h2 {
+  font-family: var(--co-sans);
+  font-weight: 600;
+  font-size: clamp(30px, 3.6vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--co-ink);
+}
+
+.co-h3 {
+  font-family: var(--co-sans);
+  font-weight: 600;
+  font-size: clamp(22px, 2.2vw, 32px);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--co-ink);
+}
+
+.co-lede {
+  font-family: var(--co-sans);
+  font-size: clamp(17px, 1.4vw, 22px);
+  line-height: 1.55;
+  color: var(--co-mute);
+  font-weight: 400;
+}
+
+.co-body { font-size: 16px; line-height: 1.7; color: var(--co-text); }
+.co-small { font-size: 13px; line-height: 1.6; color: var(--co-mute); }
+
+.co-num {
+  font-family: var(--co-sans);
+  font-weight: 600;
+  font-feature-settings: 'tnum', 'lnum';
+  letter-spacing: -0.03em;
+}
+
+/* ============================================
+   Layout
+   ============================================ */
+.co-wrap { max-width: var(--co-col); margin: 0 auto; padding-inline: var(--co-gutter); }
+.co-wrap-text { max-width: var(--co-col-text); margin: 0 auto; padding-inline: var(--co-gutter); }
+.co-section { padding-block: clamp(80px, 10vw, 160px); }
+.co-section--snow { background: var(--co-snow); }
+.co-section--stone { background: var(--co-stone); }
+.co-section--navy {
+  background: var(--co-navy);
+  color: rgba(255, 255, 255, 0.85);
+}
+.co-section--navy .co-h-display,
+.co-section--navy .co-h2,
+.co-section--navy .co-h3 { color: var(--co-white); }
+.co-section--navy .co-lede { color: rgba(255, 255, 255, 0.75); }
+.co-section--navy .co-eyebrow { color: var(--co-amber); }
+
+/* ============================================
+   Buttons
+   ============================================ */
+.co-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  font-family: var(--co-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 220ms ease, color 220ms ease, border-color 220ms ease, transform 220ms ease;
+}
+.co-btn--primary {
+  background: var(--co-navy);
+  color: var(--co-white);
+  border-color: var(--co-navy);
+}
+.co-btn--primary:hover { background: var(--co-navy-3); border-color: var(--co-navy-3); }
+.co-btn--ghost {
+  background: transparent;
+  color: var(--co-ink);
+  border-color: var(--co-ink);
+}
+.co-btn--ghost:hover { background: var(--co-ink); color: var(--co-white); }
+.co-btn--white {
+  background: var(--co-white);
+  color: var(--co-navy);
+  border-color: var(--co-white);
+}
+.co-btn--white:hover { background: transparent; color: var(--co-white); border-color: var(--co-white); }
+.co-btn--amber {
+  background: var(--co-amber);
+  color: var(--co-white);
+  border-color: var(--co-amber);
+}
+.co-btn--amber:hover { background: var(--co-amber-2); border-color: var(--co-amber-2); }
+
+.co-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--co-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--co-navy);
+  text-decoration: none;
+  border-bottom: 2px solid var(--co-amber);
+  padding-bottom: 4px;
+  transition: color 220ms ease, border-color 220ms ease;
+}
+.co-link:hover { color: var(--co-amber); }
+.co-link__arrow { transition: transform 220ms ease; }
+.co-link:hover .co-link__arrow { transform: translateX(4px); }
+
+/* ============================================
+   Card
+   ============================================ */
+.co-card {
+  background: var(--co-white);
+  border: 1px solid var(--co-line);
+  padding: 28px;
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+.co-card:hover {
+  border-color: var(--co-navy);
+  box-shadow: 0 24px 48px -24px rgba(12, 37, 69, 0.18);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   Form
+   ============================================ */
+.co-form { display: grid; gap: 20px; }
+.co-form__field { display: flex; flex-direction: column; gap: 6px; }
+.co-form__field label {
+  font-family: var(--co-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--co-ink);
+}
+.co-form__field input,
+.co-form__field select,
+.co-form__field textarea {
+  background: var(--co-snow);
+  border: 1px solid var(--co-line);
+  padding: 14px 16px;
+  font-family: var(--co-sans);
+  font-size: 16px;
+  color: var(--co-ink);
+  transition: border-color 220ms ease, background 220ms ease;
+}
+.co-form__field input:focus,
+.co-form__field select:focus,
+.co-form__field textarea:focus {
+  outline: none;
+  border-color: var(--co-navy);
+  background: var(--co-white);
+}
+
+/* ============================================
+   Reveal
+   ============================================ */
+.co-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 720ms cubic-bezier(0.22, 0.72, 0.22, 1),
+              transform 720ms cubic-bezier(0.22, 0.72, 0.22, 1);
+}
+.co-reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .co-reveal { opacity: 1; transform: none; transition: none; }
+}

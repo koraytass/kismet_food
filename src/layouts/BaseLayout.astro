@@ -1,30 +1,21 @@
 ---
 /**
- * BaseLayout - Root layout for all pages.
+ * BaseLayout — Corporate (v3, LDC-grade boardroom).
  *
- * Handles:
- * - HTML lang/dir attributes (RTL for Arabic)
- * - Self-hosted font loading (no third-party requests)
- * - Global CSS import
- * - SEO head injection via slot
- * - Consistent page structure
- *
- * Usage:
- * <BaseLayout locale="tr">
- *   <Fragment slot="head">
- *     <SEOHead ... />
- *   </Fragment>
- *   <main>Page content</main>
- * </BaseLayout>
+ * - HTML lang/dir + RTL Arapça
+ * - Self-hosted fontlar (Inter Tight + Source Serif + Source Sans + Noto Arabic + JetBrains Mono)
+ * - Global Tailwind CSS + corporate.css design tokens
+ * - Body sınıfı `co` → tüm Corp primitives çalışır
  */
 import { localeConfig, type Locale } from '@/i18n';
-import { colors } from '@/lib/brand';
 import '@/styles/global.css';
+import '@/styles/corporate.css';
 
-// Self-hosted fonts via fontsource — no third-party requests (KVKK/GDPR safe)
+import '@fontsource-variable/inter-tight';
 import '@fontsource-variable/source-serif-4';
 import '@fontsource-variable/source-sans-3';
 import '@fontsource-variable/noto-sans-arabic';
+import '@fontsource-variable/jetbrains-mono';
 
 interface Props {
   locale: Locale;
@@ -42,7 +33,6 @@ const { dir, hreflang } = localeConfig[locale];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    {/* Favicon — alternates teal ↔ orange via JS every 3 s */}
     <link id="favicon" rel="icon" type="image/svg+xml" href="/favicon-teal.svg" />
     <script is:inline>
       (function () {
@@ -57,14 +47,13 @@ const { dir, hreflang } = localeConfig[locale];
       })();
     </script>
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content={themeColor ?? colors.teal} />
+    <meta name="theme-color" content={themeColor ?? '#0c2545'} />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    {/* SEO head slot - inject SEOHead component here */}
     <slot name="head" />
   </head>
-  <body class:list={['flex min-h-dvh flex-col', bodyClass]}>
+  <body class:list={['co flex min-h-dvh flex-col', bodyClass]}>
     <slot />
   </body>
 </html>

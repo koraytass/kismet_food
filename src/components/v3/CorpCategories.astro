@@ -1,0 +1,207 @@
+---
+/**
+ * CorpCategories — 5 ürün hattı kurumsal grid.
+ * Featured kart (büyük) + 4 standart kart. Hover: navy border + amber underline.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'ÜRÜN HATLARI',
+    title: 'Beş hat. Tek standart.',
+    lede: 'Her hat ayrı portföy yöneticisi, ayrı laboratuvar protokolü, ayrı sertifika setiyle yönetilir. Aynı ticari disiplin.',
+    cta: 'Hat detayı',
+  },
+  en: {
+    eyebrow: 'PRODUCT LINES',
+    title: 'Five lines. One standard.',
+    lede: 'Each line runs with a dedicated portfolio manager, lab protocol and certification set — same commercial discipline across all.',
+    cta: 'Line detail',
+  },
+  ar: {
+    eyebrow: 'خطوط المنتجات',
+    title: 'خمسة خطوط. معيار واحد.',
+    lede: 'يدار كل خط بمدير محفظة منفصل وبروتوكول مختبر وشهادات مخصصة — مع الانضباط التجاري ذاته.',
+    cta: 'تفاصيل الخط',
+  },
+}[locale];
+
+const cats = [
+  {
+    slug: 'coffee-cocoa',
+    label: { tr: 'Kahve & Kakao', en: 'Coffee & Cocoa', ar: 'القهوة والكاكاو' },
+    body: { tr: 'Etiyopya, Kolombiya, Vietnam Specialty arabica & robusta · Gana, Fildişi Sahili Forastero kakao.', en: 'Specialty arabica & robusta from Ethiopia, Colombia, Vietnam · Forastero cocoa from Ghana, Côte d’Ivoire.', ar: 'أرابيكا وروبوستا مختصة من إثيوبيا وكولومبيا وفيتنام · فوراستيرو من غانا وساحل العاج.' },
+    bench: 'ICE NY-C · LIFFE Robusta · NY-K',
+    img: 'https://images.unsplash.com/photo-1495774856032-8b90bbb32b32?auto=format&fit=crop&w=1600&q=80',
+    featured: true,
+  },
+  {
+    slug: 'nuts',
+    label: { tr: 'Kuruyemiş & Kuru Meyve', en: 'Nuts & Dried Fruit', ar: 'مكسرات وفواكه مجففة' },
+    body: { tr: 'Antep PDO fıstığı, Giresun Tombul fındığı, Malatya kayısısı, Vietnam W320 kaju.', en: 'Antep PDO pistachio, Giresun Tombul hazelnut, Malatya apricot, Vietnam W320 cashew.', ar: 'فستق عنتاب PDO، بندق غيرسون تومبول، مشمش ملاطية، كاجو فيتنام W320.' },
+    bench: 'spot · NUTS Index',
+    img: 'https://images.unsplash.com/photo-1599639957043-f3aa5c986398?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    slug: 'spices',
+    label: { tr: 'Baharat & Otlar', en: 'Spices & Herbs', ar: 'توابل وأعشاب' },
+    body: { tr: 'Hindistan Tellicherry karabiber, Sumatra cassia tarçın, Urfa isot PDO, Maraş pul.', en: 'Indian Tellicherry pepper, Sumatra cassia, Urfa isot PDO, Maraş chilli flake.', ar: 'فلفل تيليتشيري، قرفة كاسيا، إيسوت أورفا PDO، رقائق مرعش.' },
+    bench: 'IPSTA · MCC',
+    img: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&w=1600&q=80',
+  },
+  {
+    slug: 'ingredients',
+    label: { tr: 'Endüstriyel Gıda İçerikleri', en: 'Industrial Food Ingredients', ar: 'مكونات غذائية صناعية' },
+    body: { tr: 'Konya buğday %12-14 protein · Mendoza non-GMO soya · ayçiçek RBD · şeker ICUMSA 45.', en: 'Konya wheat 12–14% protein · Mendoza non-GMO soy · sunflower RBD · sugar ICUMSA 45.', ar: 'قمح قونيا ١٢-١٤٪ بروتين · صويا مندوزا · زيت دوار شمس RBD · سكر ICUMSA 45.' },
+    bench: 'MATIF · CME · BMD',
+    img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=1600&q=80',
+  },
+];
+
+const featured = cats.find(c => c.featured)!;
+const rest = cats.filter(c => !c.featured);
+---
+
+<section class="co-section co-cats" id="products">
+  <div class="co-wrap">
+    <header class="co-cats__head">
+      <div>
+        <span class="co-eyebrow">{ui.eyebrow}</span>
+        <h2 class="co-h-display co-cats__title">{ui.title}</h2>
+      </div>
+      <p class="co-lede co-cats__lede">{ui.lede}</p>
+    </header>
+
+    <div class="co-cats__grid">
+      <a class="co-cats__card co-cats__card--featured" href={localePath(`/products/${featured.slug}/`, locale)}>
+        <figure class="co-cats__img">
+          <img src={featured.img} alt={featured.label[locale]} loading="lazy" decoding="async" />
+        </figure>
+        <div class="co-cats__copy">
+          <span class="co-eyebrow">{featured.bench}</span>
+          <h3 class="co-h2">{featured.label[locale]}</h3>
+          <p>{featured.body[locale]}</p>
+          <span class="co-link">
+            <span>{ui.cta}</span>
+            <span class="co-link__arrow" aria-hidden="true">→</span>
+          </span>
+        </div>
+      </a>
+
+      <div class="co-cats__rest">
+        {rest.map((c) => (
+          <a class="co-cats__card" href={localePath(`/products/${c.slug}/`, locale)}>
+            <figure class="co-cats__img">
+              <img src={c.img} alt={c.label[locale]} loading="lazy" decoding="async" />
+            </figure>
+            <div class="co-cats__copy">
+              <span class="co-eyebrow">{c.bench}</span>
+              <h3 class="co-h3">{c.label[locale]}</h3>
+              <p>{c.body[locale]}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-cats { background: var(--co-snow); }
+  .co-cats__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 64px;
+  }
+  @media (min-width: 1024px) {
+    .co-cats__head {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+  }
+  .co-cats__title { max-width: 14ch; }
+
+  .co-cats__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1024px) {
+    .co-cats__grid { grid-template-columns: 1.5fr 1fr; gap: 24px; }
+  }
+
+  .co-cats__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--co-white);
+    border: 1px solid var(--co-line);
+    text-decoration: none;
+    color: var(--co-text);
+    overflow: hidden;
+    transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+  }
+  .co-cats__card:hover {
+    border-color: var(--co-navy);
+    box-shadow: 0 32px 60px -32px rgba(12, 37, 69, 0.22);
+    transform: translateY(-2px);
+  }
+  .co-cats__img {
+    margin: 0;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--co-stone);
+  }
+  .co-cats__img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 700ms cubic-bezier(0.22, 0.72, 0.22, 1);
+  }
+  .co-cats__card:hover .co-cats__img img { transform: scale(1.04); }
+
+  .co-cats__copy {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .co-cats__copy h3 { color: var(--co-ink); }
+  .co-cats__copy p {
+    font-family: var(--co-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--co-mute);
+    margin: 0;
+  }
+  .co-cats__copy .co-link { margin-top: 8px; align-self: flex-start; }
+
+  .co-cats__card--featured .co-cats__img { aspect-ratio: 4 / 5; }
+  .co-cats__card--featured .co-cats__copy { padding: 36px; gap: 18px; }
+  @media (min-width: 1024px) {
+    .co-cats__card--featured {
+      flex-direction: row;
+      grid-row: span 2;
+    }
+    .co-cats__card--featured .co-cats__img { flex: 1; aspect-ratio: auto; }
+    .co-cats__card--featured .co-cats__copy { flex: 1; justify-content: center; }
+  }
+
+  .co-cats__rest {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .co-cats__rest .co-cats__card { flex-direction: row; }
+  .co-cats__rest .co-cats__img { width: 40%; aspect-ratio: auto; flex-shrink: 0; }
+  .co-cats__rest .co-cats__copy { padding: 20px 24px; }
+
+  @media (max-width: 760px) {
+    .co-cats__rest .co-cats__card { flex-direction: column; }
+    .co-cats__rest .co-cats__img { width: 100%; aspect-ratio: 16 / 10; }
+  }
+</style>

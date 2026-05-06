@@ -1,0 +1,124 @@
+---
+/**
+ * CorpQuote — Boardroom CTA + sade tek tanıklık.
+ * Snow zemin, navy display headline, amber underline link.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'KURUMSAL DİYALOG',
+    headline: 'Tedarik talebinizi 24 saat içinde değerlendiriyoruz.',
+    body: 'Bir konteyner ya da yıllık formula sözleşme — ticari masamız brief’i alır, numune ve fiyat doğrulamasını paralel başlatır.',
+    primary: 'Tedarik talebi',
+    ghost: 'Genel iletişim',
+    quote: '“Kismet, tek bir konteyner için bile yıllık tedarik akışı kurmuş gibi davranıyor — bu disiplin bizim üretim takvimimizi koruyor.”',
+    by: 'Procurement Director, EU çikolata üreticisi',
+  },
+  en: {
+    eyebrow: 'CORPORATE DIALOGUE',
+    headline: 'We respond to sourcing inquiries within 24 hours.',
+    body: 'A single container or an annual formula contract — our trade desk takes the brief and runs sample + price verification in parallel.',
+    primary: 'Request supply',
+    ghost: 'General contact',
+    quote: '“Kismet treats a single container like an annual supply flow — that discipline protects our production calendar.”',
+    by: 'Procurement Director, EU chocolate manufacturer',
+  },
+  ar: {
+    eyebrow: 'حوار مؤسسي',
+    headline: 'نجيب على طلبات التوريد خلال ٢٤ ساعة.',
+    body: 'حاوية واحدة أو عقد سنوي — يستلم مكتبنا التجاري الموجز ويبدأ تحقق العينة والسعر بالتوازي.',
+    primary: 'طلب توريد',
+    ghost: 'تواصل عام',
+    quote: '«تتعامل كسمت مع حاوية واحدة كأنها تدفق توريد سنوي — هذا الانضباط يحمي تقويم إنتاجنا.»',
+    by: 'مدير المشتريات، مصنع شوكولاتة أوروبي',
+  },
+}[locale];
+---
+
+<section class="co-section co-quote">
+  <div class="co-wrap">
+    <div class="co-quote__grid">
+      <div class="co-quote__lead">
+        <span class="co-eyebrow">{ui.eyebrow}</span>
+        <h2 class="co-h-display">{ui.headline}</h2>
+        <p class="co-quote__body">{ui.body}</p>
+        <div class="co-quote__ctas">
+          <a href={localePath('/contact/request-quote/', locale)} class="co-btn co-btn--primary">
+            {ui.primary} <span aria-hidden="true">→</span>
+          </a>
+          <a href={localePath('/contact/', locale)} class="co-btn co-btn--ghost">{ui.ghost}</a>
+        </div>
+      </div>
+
+      <figure class="co-quote__testimonial">
+        <blockquote>{ui.quote}</blockquote>
+        <figcaption>
+          <span class="co-quote__rule"></span>
+          <span>{ui.by}</span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-quote { background: var(--co-snow); }
+  .co-quote__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (min-width: 1024px) { .co-quote__grid { grid-template-columns: 1.5fr 1fr; gap: 80px; } }
+
+  .co-quote__lead { display: flex; flex-direction: column; gap: 22px; }
+  .co-quote__lead h2 { max-width: 22ch; }
+  .co-quote__body {
+    font-family: var(--co-sans);
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--co-text);
+    margin: 0;
+    max-width: 56ch;
+  }
+  .co-quote__ctas { display: inline-flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+  .co-quote__testimonial {
+    margin: 0;
+    background: var(--co-white);
+    border: 1px solid var(--co-line);
+    padding: 36px;
+    border-left: 4px solid var(--co-amber);
+  }
+  .co-quote__testimonial blockquote {
+    margin: 0;
+    font-family: var(--co-serif);
+    font-size: clamp(20px, 1.8vw, 26px);
+    line-height: 1.45;
+    color: var(--co-ink);
+    font-weight: 400;
+  }
+  .co-quote__testimonial figcaption {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--co-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--co-mute);
+    text-transform: uppercase;
+  }
+  .co-quote__rule {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--co-amber);
+  }
+</style>

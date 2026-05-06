@@ -1,0 +1,38 @@
+---
+/**
+ * CorpHome — v3 Corporate (LDC) homepage composition.
+ * Sırasıyla: Nav → Hero → Story → Categories → Origins (navy band)
+ *           → Sustainability → Insights → Quote/CTA → Footer.
+ */
+import type { Locale } from '@/i18n';
+import CorpNav            from './CorpNav.astro';
+import CorpHero           from './CorpHero.astro';
+import CorpStory          from './CorpStory.astro';
+import CorpCategories     from './CorpCategories.astro';
+import CorpOrigins        from './CorpOrigins.astro';
+import CorpSustainability from './CorpSustainability.astro';
+import CorpInsights       from './CorpInsights.astro';
+import CorpQuote          from './CorpQuote.astro';
+import CorpFooter         from './CorpFooter.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+---
+
+<CorpNav locale={locale} currentPath={currentPath} />
+
+<main id="main">
+  <CorpHero locale={locale} />
+  <CorpStory locale={locale} />
+  <CorpCategories locale={locale} />
+  <CorpOrigins locale={locale} />
+  <CorpSustainability locale={locale} />
+  <CorpInsights locale={locale} />
+  <CorpQuote locale={locale} />
+</main>
+
+<CorpFooter locale={locale} />

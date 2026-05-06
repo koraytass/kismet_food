@@ -1,0 +1,153 @@
+---
+/**
+ * CorpStory — Heritage / who we are kurumsal blok.
+ * Sol 5 col foto · sağ 7 col text · alt 3 sütun mini değer çekirdekleri.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'KISMET HAKKINDA',
+    title: 'Türkiye merkezli, küresel ölçekli.',
+    body: '2019’dan bu yana İstanbul’dan yönetilen tedarik operasyonları; 5 kıtadaki menşe noktalarını, AB ve Orta Doğu’daki kurumsal alıcılarla titiz lojistik ve belge disipliniyle birleştirir. Üretim hacmi büyüdükçe karar disiplini değişmedi: her parti, kontrat öncesi numune doğrulamasından geçer.',
+    cta: 'Şirket Profili',
+    pillars: [
+      { h: 'Doğrudan tedarik', b: 'Çiftçi kooperatifleri ve menşe ihracatçılarıyla doğrudan ilişki; aracı zincirsiz, tek atlama.' },
+      { h: 'Disiplinli denetim', b: 'Eurofins, SGS, Bureau Veritas akredite üçüncü-taraf laboratuvar parti bazında.' },
+      { h: 'Uçtan-uca evrak', b: 'Phyto, CoO, EUR.1, FDA FSMA, EUDR geo-trace — tek dosyada.' },
+    ],
+  },
+  en: {
+    eyebrow: 'ABOUT KISMET',
+    title: 'Headquartered in Istanbul, operating globally.',
+    body: 'Since 2019, sourcing operations run from Istanbul connect origin markets across 5 continents with corporate buyers in the EU and Middle East under disciplined logistics and documentation. Volume has grown; the decision discipline has not changed — every lot is sample-validated before contract.',
+    cta: 'Company profile',
+    pillars: [
+      { h: 'Direct sourcing', b: 'Direct relationships with farmer cooperatives and origin exporters — no middlemen.' },
+      { h: 'Audited quality', b: 'Eurofins, SGS, Bureau Veritas accredited third-party labs per batch.' },
+      { h: 'End-to-end documents', b: 'Phyto, CoO, EUR.1, FDA FSMA, EUDR geo-trace — in one file.' },
+    ],
+  },
+  ar: {
+    eyebrow: 'عن كسمت',
+    title: 'مقرها إسطنبول · عملياتها عالمية.',
+    body: 'منذ ٢٠١٩ تدير كسمت من إسطنبول عمليات توريد تربط أسواق المنشأ في ٥ قارات بالمشترين المؤسسيين في أوروبا والشرق الأوسط، بانضباط لوجستي ووثائقي. الحجم نما؛ انضباط القرار لم يتغير: كل دفعة تُختبر قبل التعاقد.',
+    cta: 'ملف الشركة',
+    pillars: [
+      { h: 'توريد مباشر', b: 'علاقات مباشرة مع تعاونيات المزارعين والمصدّرين — دون وسطاء.' },
+      { h: 'جودة مدققة', b: 'Eurofins وSGS وBV — مختبر طرف ثالث لكل دفعة.' },
+      { h: 'وثائق متكاملة', b: 'Phyto، CoO، EUR.1، FDA FSMA، EUDR — في ملف واحد.' },
+    ],
+  },
+}[locale];
+
+const photo = 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=80';
+---
+
+<section class="co-section co-story" id="about">
+  <div class="co-wrap">
+    <div class="co-story__grid">
+      <figure class="co-story__photo">
+        <img src={photo} alt="Kismet Foods Istanbul HQ" loading="lazy" decoding="async" />
+        <figcaption>Istanbul, Türkiye · 41.0082° N, 28.9784° E</figcaption>
+      </figure>
+      <div class="co-story__copy">
+        <span class="co-eyebrow">{ui.eyebrow}</span>
+        <h2 class="co-h-display co-story__title">{ui.title}</h2>
+        <p class="co-story__body">{ui.body}</p>
+        <a href={localePath('/about/', locale)} class="co-link">
+          <span>{ui.cta}</span>
+          <span class="co-link__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="co-story__pillars">
+      {ui.pillars.map((p, i) => (
+        <article class="co-story__pillar">
+          <span class="co-num co-story__pillar-num">0{i + 1}</span>
+          <h3 class="co-h3">{p.h}</h3>
+          <p>{p.b}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-story__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+  @media (min-width: 1024px) {
+    .co-story__grid {
+      grid-template-columns: 5fr 7fr;
+      gap: 80px;
+      align-items: center;
+    }
+  }
+  .co-story__photo {
+    margin: 0;
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--co-stone);
+  }
+  .co-story__photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(0.95) contrast(1.05);
+  }
+  .co-story__photo figcaption {
+    position: absolute;
+    left: 16px; bottom: 16px;
+    background: rgba(12, 37, 69, 0.85);
+    color: var(--co-white);
+    font-family: var(--co-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 8px 12px;
+  }
+
+  .co-story__copy { display: flex; flex-direction: column; gap: 22px; }
+  .co-story__title { max-width: 14ch; }
+  .co-story__body {
+    font-family: var(--co-sans);
+    font-size: clamp(17px, 1.4vw, 20px);
+    line-height: 1.65;
+    color: var(--co-text);
+    max-width: 56ch;
+  }
+
+  .co-story__pillars {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 56px;
+    border-top: 1px solid var(--co-line);
+  }
+  @media (min-width: 880px) {
+    .co-story__pillars { grid-template-columns: repeat(3, 1fr); gap: 48px; }
+  }
+  .co-story__pillar { display: flex; flex-direction: column; gap: 12px; }
+  .co-story__pillar-num {
+    font-size: 36px;
+    color: var(--co-amber);
+    line-height: 1;
+  }
+  .co-story__pillar p {
+    font-family: var(--co-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--co-mute);
+    margin: 0;
+    max-width: 36ch;
+  }
+</style>

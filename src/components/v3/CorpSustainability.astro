@@ -1,0 +1,155 @@
+---
+/**
+ * CorpSustainability — ESG callout band.
+ * Sol foto · sağ 3 KPI çekirdek + body + raporlar CTA.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'SÜRDÜRÜLEBİLİRLİK',
+    title: 'Çiftçi · Toprak · Ölçülebilir hedef.',
+    body: 'EU EUDR, ISO, BRC, Fair Trade ve Rainforest Alliance protokollerinin kesişiminde çalışıyoruz. Yıllık ESG raporu farmer ID düzeyinde geo-trace ile yayımlanır.',
+    cta: 'Yıllık Raporu Gör',
+    kpis: [
+      { v: '12.000+', l: 'Doğrudan ortak çiftçi' },
+      { v: '%92',     l: 'EUDR uyumlu sevkiyat' },
+      { v: '0.34 t',  l: 'Konteyner başına CO₂e (denge)' },
+    ],
+  },
+  en: {
+    eyebrow: 'SUSTAINABILITY',
+    title: 'Farmer · Soil · Measurable target.',
+    body: 'We operate at the intersection of EU EUDR, ISO, BRC, Fair Trade and Rainforest Alliance protocols. The annual ESG report is published with farmer-ID-level geo-traceability.',
+    cta: 'See annual report',
+    kpis: [
+      { v: '12,000+', l: 'Direct farmer partners' },
+      { v: '92%',     l: 'EUDR-compliant shipments' },
+      { v: '0.34 t',  l: 'CO₂e per container (offset)' },
+    ],
+  },
+  ar: {
+    eyebrow: 'الاستدامة',
+    title: 'مزارع · تربة · هدف قابل للقياس.',
+    body: 'نعمل عند تقاطع EUDR وISO وBRC وFair Trade وRainforest Alliance. يُنشر تقرير ESG السنوي مع تتبع جغرافي على مستوى معرّف المزارع.',
+    cta: 'عرض التقرير السنوي',
+    kpis: [
+      { v: '+١٢٠٠٠', l: 'شركاء مزارعون مباشرون' },
+      { v: '٪٩٢',    l: 'شحنات متوافقة مع EUDR' },
+      { v: '٠٫٣٤ طن', l: 'CO₂e لكل حاوية (موازنة)' },
+    ],
+  },
+}[locale];
+
+const photo = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80';
+---
+
+<section class="co-section co-sustain" id="sustainability">
+  <div class="co-wrap">
+    <div class="co-sustain__grid">
+      <figure class="co-sustain__photo">
+        <img src={photo} alt="Sustainable origin landscape" loading="lazy" decoding="async" />
+        <figcaption>Anatolian fields, Konya · 2026</figcaption>
+      </figure>
+      <div class="co-sustain__copy">
+        <span class="co-eyebrow">{ui.eyebrow}</span>
+        <h2 class="co-h2">{ui.title}</h2>
+        <p class="co-sustain__body">{ui.body}</p>
+
+        <div class="co-sustain__kpis">
+          {ui.kpis.map((k) => (
+            <div class="co-sustain__kpi">
+              <span class="co-num co-sustain__kv">{k.v}</span>
+              <span class="co-sustain__kl">{k.l}</span>
+            </div>
+          ))}
+        </div>
+
+        <a href={localePath('/sustainability/report/', locale)} class="co-link">
+          <span>{ui.cta}</span>
+          <span class="co-link__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .co-sustain { background: var(--co-stone); }
+  .co-sustain__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .co-sustain__grid { grid-template-columns: 1fr 1fr; gap: 80px; }
+  }
+  .co-sustain__photo {
+    margin: 0;
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .co-sustain__photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .co-sustain__photo figcaption {
+    position: absolute;
+    left: 16px; bottom: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--co-ink);
+    font-family: var(--co-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 8px 12px;
+  }
+
+  .co-sustain__copy { display: flex; flex-direction: column; gap: 22px; }
+  .co-sustain__body {
+    font-family: var(--co-sans);
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--co-text);
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  .co-sustain__kpis {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--co-line);
+    border: 1px solid var(--co-line);
+    margin-block: 12px;
+  }
+  @media (min-width: 600px) {
+    .co-sustain__kpis { grid-template-columns: repeat(3, 1fr); }
+  }
+  .co-sustain__kpi {
+    background: var(--co-white);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .co-sustain__kv {
+    font-size: clamp(28px, 2.6vw, 36px);
+    color: var(--co-navy);
+    line-height: 1;
+  }
+  .co-sustain__kl {
+    font-family: var(--co-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--co-mute);
+    text-transform: uppercase;
+  }
+</style>
