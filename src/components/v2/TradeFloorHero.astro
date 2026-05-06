@@ -1,0 +1,369 @@
+---
+/**
+ * TradeFloorHero — Live operations hero.
+ * Left: 3-line headline + small coordinate. Right: 4-up live stat grid.
+ *
+ * Sayılar şimdilik build-time fake; Monitor backend bağlandığında bu kart
+ * /api/desk/state JSON endpoint'inden beslenir.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const headline = {
+  tr: ['Dünyanın', 'en nadir', 'emtialarını taşırız.'],
+  en: ['We move', 'the world’s', 'rarest commodities.'],
+  ar: ['ننقل', 'أندر', 'سلع العالم.'],
+}[locale];
+
+const sub = {
+  tr: 'Bir tedarikçi değil; karar veren bir masa.',
+  en: 'Not a supplier — a desk that decides.',
+  ar: 'لسنا مورّداً — بل مكتب يقرر.',
+}[locale];
+
+const ctaPrimary = {
+  tr: 'Masayla Konuş',
+  en: 'Talk to the desk',
+  ar: 'تواصل مع المكتب',
+}[locale];
+
+const ctaGhost = {
+  tr: 'Operasyonu gör',
+  en: 'See operations',
+  ar: 'شاهد العمليات',
+}[locale];
+
+/* Live state — manuel overrides for v0; wire to /api/desk/state later */
+const state = {
+  contracts: 47,
+  origins: 14,
+  originsMax: 45,
+  inTransit: 12,
+  cupAvg: 86.4,
+  arabica: { px: 312.45, delta: 1.8 },
+  robusta: { px: 4275, delta: -0.6 },
+  cocoa:   { px: 7820, delta: 2.4 },
+};
+
+const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
+---
+
+<section class="tf-hero">
+  <div class="tf-wrap tf-hero__inner">
+    <div class="tf-hero__head">
+      <span class="tf-eyebrow tf-eyebrow--signal">N° 01 / Live operations</span>
+      <span class="tf-eyebrow tf-hero__coord">41.0082° N · 28.9784° E — Istanbul</span>
+    </div>
+
+    <div class="tf-hero__grid">
+      <div class="tf-hero__type">
+        <h1 class="tf-h-display tf-hero__title">
+          <span class="tf-hero__line">{headline[0]}</span>
+          <span class="tf-hero__line">{headline[1]}</span>
+          <span class="tf-hero__line">
+            {headline[2]}
+            <span aria-hidden="true" class="tf-hero__period">.</span>
+          </span>
+        </h1>
+        <p class="tf-hero__sub">{sub}</p>
+        <div class="tf-hero__ctas">
+          <a href={localePath('/contact/request-quote/', locale)} class="tf-btn tf-btn--primary">
+            {ctaPrimary}
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href={localePath('/origins/', locale)} class="tf-tlink">
+            <span>{ctaGhost}</span>
+            <span class="tf-tlink__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      <aside class="tf-hero__panel" aria-label="Live operations panel">
+        <div class="tf-hero__panel-head">
+          <span class="tf-eyebrow">desk state · {new Date().toISOString().slice(0, 10)}</span>
+          <span class="tf-hero__live"><span class="tf-hero__live-dot"></span>realtime</span>
+        </div>
+
+        <div class="tf-hero__stats">
+          <div class="tf-hero__stat" data-counter={state.contracts}>
+            <span class="tf-eyebrow">contracts</span>
+            <span class="tf-num tf-hero__stat-num" data-target={state.contracts}>0</span>
+            <span class="tf-hero__stat-foot">active · this quarter</span>
+          </div>
+          <div class="tf-hero__stat">
+            <span class="tf-eyebrow">origins</span>
+            <span class="tf-num tf-hero__stat-num">
+              <span data-target={state.origins}>0</span><span class="tf-hero__stat-frac">/{state.originsMax}</span>
+            </span>
+            <span class="tf-hero__stat-foot">live this month</span>
+          </div>
+          <div class="tf-hero__stat">
+            <span class="tf-eyebrow">in transit</span>
+            <span class="tf-num tf-hero__stat-num" data-target={state.inTransit}>0</span>
+            <span class="tf-hero__stat-foot">containers · cif/fob</span>
+          </div>
+          <div class="tf-hero__stat">
+            <span class="tf-eyebrow">cup q-grade</span>
+            <span class="tf-num tf-hero__stat-num" data-target={state.cupAvg} data-decimals="1">0.0</span>
+            <span class="tf-hero__stat-foot">avg · {locale === 'ar' ? 'الربع الأول' : 'q1 batches'}</span>
+          </div>
+        </div>
+
+        <div class="tf-hero__bench">
+          <span class="tf-eyebrow">benchmark · ICE / LIFFE</span>
+          <ul>
+            <li>
+              <span class="tf-hero__bench-name">arabica · NY-C</span>
+              <span class="tf-num">{state.arabica.px.toFixed(2)} <small>USc/lb</small></span>
+              <span class={`tf-num ${state.arabica.delta >= 0 ? 'tf-ticker__delta--up' : 'tf-ticker__delta--down'}`}>{fmtDelta(state.arabica.delta)}%</span>
+            </li>
+            <li>
+              <span class="tf-hero__bench-name">robusta · LON</span>
+              <span class="tf-num">{state.robusta.px.toLocaleString('en-US')} <small>USD/t</small></span>
+              <span class={`tf-num ${state.robusta.delta >= 0 ? 'tf-ticker__delta--up' : 'tf-ticker__delta--down'}`}>{fmtDelta(state.robusta.delta)}%</span>
+            </li>
+            <li>
+              <span class="tf-hero__bench-name">cocoa · NY-K</span>
+              <span class="tf-num">{state.cocoa.px.toLocaleString('en-US')} <small>USD/t</small></span>
+              <span class={`tf-num ${state.cocoa.delta >= 0 ? 'tf-ticker__delta--up' : 'tf-ticker__delta--down'}`}>{fmtDelta(state.cocoa.delta)}%</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <div class="tf-hero__foot">
+      <span class="tf-eyebrow">scroll</span>
+      <span class="tf-hero__scroll-line"></span>
+      <span class="tf-eyebrow">02 — categories</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tf-hero {
+    padding-top: clamp(120px, 14vw, 200px);
+    padding-bottom: clamp(40px, 6vw, 80px);
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255, 92, 0, 0.06), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255, 92, 0, 0.04), transparent 60%),
+      var(--carbon);
+  }
+
+  .tf-hero__inner { display: flex; flex-direction: column; gap: 56px; }
+
+  .tf-hero__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--hair);
+    padding-top: 16px;
+  }
+  .tf-hero__coord { color: var(--mono-3); }
+
+  .tf-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: end;
+  }
+  @media (min-width: 1024px) {
+    .tf-hero__grid {
+      grid-template-columns: 1.55fr 1fr;
+      gap: 64px;
+    }
+  }
+
+  .tf-hero__title { display: flex; flex-direction: column; gap: 0; }
+  .tf-hero__line { display: block; }
+  .tf-hero__line:nth-child(2) {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--signal);
+    padding-left: 0.6em;
+  }
+  .tf-hero__period {
+    color: var(--signal);
+    margin-left: 0.05em;
+  }
+
+  .tf-hero__sub {
+    margin-top: 28px;
+    font-family: var(--tf-italic);
+    font-style: italic;
+    font-size: clamp(18px, 1.4vw, 22px);
+    color: var(--mono);
+    max-width: 36ch;
+    line-height: 1.45;
+  }
+
+  .tf-hero__ctas {
+    margin-top: 32px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+  }
+
+  /* Panel */
+  .tf-hero__panel {
+    border: 1px solid var(--hair);
+    background: var(--carbon-2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .tf-hero__panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 14px;
+  }
+  .tf-hero__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--verified);
+  }
+  .tf-hero__live-dot {
+    width: 6px; height: 6px;
+    background: var(--verified);
+    border-radius: 50%;
+    animation: tf-pulse 2s infinite;
+  }
+
+  .tf-hero__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+  }
+  .tf-hero__stat {
+    background: var(--ash);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tf-hero__stat-num {
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 500;
+    color: var(--bone);
+    line-height: 1;
+  }
+  .tf-hero__stat-frac {
+    font-size: 0.5em;
+    color: var(--mono-3);
+    margin-left: 4px;
+  }
+  .tf-hero__stat-foot {
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--mono-3);
+    text-transform: uppercase;
+  }
+
+  .tf-hero__bench {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hair);
+  }
+  .tf-hero__bench ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tf-hero__bench li {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 14px;
+    align-items: baseline;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--hair);
+  }
+  .tf-hero__bench li:last-child { border-bottom: 0; }
+  .tf-hero__bench-name {
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mono-2);
+  }
+  .tf-hero__bench small {
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    color: var(--mono-3);
+    margin-left: 2px;
+  }
+
+  .tf-hero__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--hair);
+    padding-top: 16px;
+  }
+  .tf-hero__scroll-line {
+    flex: 1;
+    margin: 0 24px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--hair-bright) 20%, var(--signal) 50%, var(--hair-bright) 80%, transparent);
+    opacity: 0.5;
+  }
+</style>
+
+<script is:inline>
+  /* Odometer-ish counter on stat numbers */
+  (function () {
+    const targets = document.querySelectorAll('[data-target]');
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(el => {
+        const t = parseFloat(el.getAttribute('data-target') || '0');
+        const dec = parseInt(el.getAttribute('data-decimals') || '0');
+        el.textContent = dec > 0 ? t.toFixed(dec) : Math.round(t).toString();
+      });
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = parseFloat(el.getAttribute('data-target') || '0');
+        const dec = parseInt(el.getAttribute('data-decimals') || '0');
+        const start = performance.now();
+        const dur = 900;
+        function tick(now) {
+          const t = Math.min(1, (now - start) / dur);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const v = target * eased;
+          el.textContent = dec > 0 ? v.toFixed(dec) : Math.round(v).toString();
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+        io.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+    targets.forEach(el => io.observe(el));
+  })();
+</script>

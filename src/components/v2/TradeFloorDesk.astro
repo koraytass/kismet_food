@@ -1,0 +1,278 @@
+---
+/**
+ * TradeFloorDesk — Talk to the desk.
+ * Single column form, mono labels, hairline-only inputs, signal CTA.
+ * No marketing copy bloat — straight to the point.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'N° 07 / Masa',
+    title: 'Masayla',
+    titleEm: 'doğrudan konuş.',
+    lede: 'Ürün, hacim, teslim. 24 saat içinde dönüş.',
+    nameL: 'Ad Soyad',
+    emailL: 'Şirket e-postası',
+    productL: 'Hat',
+    products: ['Kahve & Kakao', 'Kuruyemiş', 'Baharat', 'Endüstriyel İçerikler'],
+    volumeL: 'Hacim',
+    volumes: ['Numune (50–500 g)', '1 konteyner (20’ DC)', 'Aylık (10+ konteyner)', 'Yıllık sözleşme'],
+    incoL: 'Teslim',
+    incos: ['FOB', 'CIF', 'CFR', 'DDP'],
+    msgL: 'Mesaj',
+    msgPh: 'Tedarik ihtiyacınızı kısaca yazın…',
+    consent: 'KVKK + GDPR kapsamında verilerimin teklif değerlendirme amacıyla işlenmesini kabul ederim.',
+    cta: 'İlet →',
+    sent: 'Talebiniz iletildi. 24 saat içinde dönüş yapacağız.',
+    asideHead: 'Doğrudan kanal',
+    aside: [
+      { l: 'Ticari masa',  v: 'commercial@kismetfoods.com' },
+      { l: 'Numune & QC',  v: 'qc@kismetfoods.com' },
+      { l: 'Acil sevkiyat', v: 'trade@kismetfoods.com' },
+      { l: 'Basın',        v: 'press@kismetfoods.com' },
+      { l: 'Adres',        v: 'Caddebostan, Kadıköy / İstanbul' },
+      { l: 'Saat',         v: 'Pzt–Cum 09:00–18:00 TRT' },
+    ],
+  },
+  en: {
+    eyebrow: 'N° 07 / Desk',
+    title: 'Talk',
+    titleEm: 'directly to the desk.',
+    lede: 'Product, volume, delivery. 24 h response.',
+    nameL: 'Full name',
+    emailL: 'Company email',
+    productL: 'Line',
+    products: ['Coffee & Cocoa', 'Nuts', 'Spices', 'Industrial Ingredients'],
+    volumeL: 'Volume',
+    volumes: ['Sample (50–500 g)', '1 container (20’ DC)', 'Monthly (10+ containers)', 'Annual contract'],
+    incoL: 'Delivery',
+    incos: ['FOB', 'CIF', 'CFR', 'DDP'],
+    msgL: 'Message',
+    msgPh: 'Briefly describe your sourcing need…',
+    consent: 'I consent to GDPR + KVKK processing of my data for quote evaluation.',
+    cta: 'Send →',
+    sent: 'Your request has been received. We will respond within 24 hours.',
+    asideHead: 'Direct channel',
+    aside: [
+      { l: 'Trade desk',   v: 'commercial@kismetfoods.com' },
+      { l: 'Sample & QC',  v: 'qc@kismetfoods.com' },
+      { l: 'Urgent ship',  v: 'trade@kismetfoods.com' },
+      { l: 'Press',        v: 'press@kismetfoods.com' },
+      { l: 'Address',      v: 'Caddebostan, Kadıköy / Istanbul' },
+      { l: 'Hours',        v: 'Mon–Fri 09:00–18:00 TRT' },
+    ],
+  },
+  ar: {
+    eyebrow: 'العدد ٠٧ / المكتب',
+    title: 'تحدّث',
+    titleEm: 'مباشرة مع المكتب.',
+    lede: 'المنتج، الحجم، التسليم. رد خلال ٢٤ ساعة.',
+    nameL: 'الاسم الكامل',
+    emailL: 'بريد الشركة',
+    productL: 'الخط',
+    products: ['قهوة وكاكاو', 'مكسرات', 'توابل', 'مكونات صناعية'],
+    volumeL: 'الحجم',
+    volumes: ['عينة', 'حاوية واحدة', 'شهري', 'عقد سنوي'],
+    incoL: 'التسليم',
+    incos: ['FOB', 'CIF', 'CFR', 'DDP'],
+    msgL: 'الرسالة',
+    msgPh: 'صف حاجتك بإيجاز…',
+    consent: 'أوافق على معالجة بياناتي وفق GDPR + KVKK لأغراض تقييم العرض.',
+    cta: 'إرسال →',
+    sent: 'تم استلام طلبكم. سنرد خلال ٢٤ ساعة.',
+    asideHead: 'قناة مباشرة',
+    aside: [
+      { l: 'مكتب التداول', v: 'commercial@kismetfoods.com' },
+      { l: 'عينات والجودة', v: 'qc@kismetfoods.com' },
+      { l: 'شحن عاجل',     v: 'trade@kismetfoods.com' },
+      { l: 'الصحافة',      v: 'press@kismetfoods.com' },
+      { l: 'العنوان',       v: 'كاديكوي / إسطنبول' },
+      { l: 'الساعات',       v: 'الإثنين–الجمعة ٠٩:٠٠–١٨:٠٠' },
+    ],
+  },
+}[locale];
+---
+
+<section class="tf-section tf-desk" id="desk">
+  <div class="tf-wrap">
+    <header class="tf-desk__head">
+      <span class="tf-eyebrow tf-eyebrow--signal">{ui.eyebrow}</span>
+      <h2 class="tf-h-display">
+        {ui.title} <em>{ui.titleEm}</em>
+      </h2>
+      <p class="tf-lede">{ui.lede}</p>
+    </header>
+
+    <div class="tf-desk__grid">
+      <form class="tf-form tf-desk__form" id="tfDeskForm" method="post" action={localePath('/contact/request-quote/', locale)}>
+        <div class="tf-form__field">
+          <label for="tf-name">{ui.nameL}</label>
+          <input id="tf-name" name="name" type="text" required autocomplete="name" />
+        </div>
+        <div class="tf-form__field">
+          <label for="tf-email">{ui.emailL}</label>
+          <input id="tf-email" name="email" type="email" required autocomplete="email" placeholder="name@company.com" />
+        </div>
+
+        <div class="tf-desk__row">
+          <div class="tf-form__field">
+            <label for="tf-product">{ui.productL}</label>
+            <select id="tf-product" name="product">{ui.products.map((p) => <option>{p}</option>)}</select>
+          </div>
+          <div class="tf-form__field">
+            <label for="tf-volume">{ui.volumeL}</label>
+            <select id="tf-volume" name="volume">{ui.volumes.map((p) => <option>{p}</option>)}</select>
+          </div>
+          <div class="tf-form__field">
+            <label for="tf-inco">{ui.incoL}</label>
+            <select id="tf-inco" name="inco">{ui.incos.map((p) => <option>{p}</option>)}</select>
+          </div>
+        </div>
+
+        <div class="tf-form__field">
+          <label for="tf-msg">{ui.msgL}</label>
+          <textarea id="tf-msg" name="message" rows="3" placeholder={ui.msgPh}></textarea>
+        </div>
+
+        <label class="tf-desk__consent">
+          <input type="checkbox" name="consent" required />
+          <span>
+            {ui.consent}{' '}
+            <a href={localePath('/privacy/', locale)}>privacy</a>
+          </span>
+        </label>
+
+        <button type="submit" class="tf-btn tf-btn--primary tf-desk__submit">{ui.cta}</button>
+      </form>
+
+      <aside class="tf-desk__aside">
+        <span class="tf-eyebrow tf-eyebrow--signal">{ui.asideHead}</span>
+        <ul>
+          {ui.aside.map((a) => (
+            <li>
+              <span class="tf-eyebrow">{a.l}</span>
+              <span class="tf-num">
+                {a.v.includes('@') ? <a href={`mailto:${a.v}`}>{a.v}</a> : a.v}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tf-desk {
+    background:
+      radial-gradient(ellipse 50% 30% at 100% 0%, rgba(255, 92, 0, 0.06), transparent 60%),
+      var(--carbon);
+  }
+  .tf-desk__head {
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .tf-desk__head em {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    color: var(--signal);
+    font-weight: 400;
+  }
+  .tf-desk__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  @media (min-width: 1024px) {
+    .tf-desk__grid {
+      grid-template-columns: 1.6fr 1fr;
+      gap: 80px;
+    }
+  }
+
+  .tf-desk__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 720px) {
+    .tf-desk__row {
+      grid-template-columns: 1.2fr 1.2fr 1fr;
+    }
+  }
+  .tf-form__field select {
+    appearance: none;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff5c00'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 4px center / 16px,
+      transparent;
+    padding-right: 28px;
+  }
+
+  .tf-desk__consent {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 12px;
+    align-items: start;
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--mono-2);
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+  .tf-desk__consent input { margin-top: 2px; accent-color: var(--signal); }
+  .tf-desk__consent a {
+    color: var(--bone);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .tf-desk__consent a:hover { color: var(--signal); }
+
+  .tf-desk__submit { align-self: flex-start; }
+
+  .tf-desk__aside {
+    border: 1px solid var(--hair);
+    background: var(--carbon-2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .tf-desk__aside ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .tf-desk__aside li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px dashed var(--hair);
+    padding-top: 12px;
+  }
+  .tf-desk__aside li:first-child { border-top: 0; padding-top: 0; }
+  .tf-desk__aside .tf-num,
+  .tf-desk__aside a {
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    color: var(--bone);
+    text-decoration: none;
+  }
+  .tf-desk__aside a:hover { color: var(--signal); }
+</style>
+
+<script is:inline define:vars={{ MSG: ui.sent }}>
+  const f = document.getElementById('tfDeskForm');
+  if (f) f.addEventListener('submit', (e) => { e.preventDefault(); alert(MSG); f.reset(); });
+</script>

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SEOHead from '@/components/SEOHead.astro';
-import LandingPage from '@/components/LandingPage.astro';
+import TradeFloorHome from '@/components/v2/TradeFloorHome.astro';
 import { t } from '@/i18n';
 import { organizationSchema, webSiteSchema } from '@/lib/schema';
 
@@ -23,5 +23,5 @@ const jsonLd = [organizationSchema(locale), webSiteSchema()];
     />
   </Fragment>
 
-  <LandingPage locale={locale} currentPath={Astro.url.pathname} />
+  <TradeFloorHome locale={locale} currentPath={Astro.url.pathname} />
 </BaseLayout>

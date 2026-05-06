@@ -1,0 +1,40 @@
+---
+/**
+ * TradeFloorHome — v2 homepage composition.
+ * Sırasıyla: Nav + Menu (SiteHeader üzerinden) → Hero → Ticker →
+ * Categories → Origins → Shipment → Standards → AntiManifesto → Desk → Footer.
+ */
+import type { Locale } from '@/i18n';
+import SiteHeader from '@/components/SiteHeader.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import TradeFloorHero       from './TradeFloorHero.astro';
+import TradeFloorTicker     from './TradeFloorTicker.astro';
+import TradeFloorCategories from './TradeFloorCategories.astro';
+import TradeFloorOrigins    from './TradeFloorOrigins.astro';
+import TradeFloorShipment   from './TradeFloorShipment.astro';
+import TradeFloorStandards  from './TradeFloorStandards.astro';
+import TradeFloorAntiManifesto from './TradeFloorAntiManifesto.astro';
+import TradeFloorDesk       from './TradeFloorDesk.astro';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+---
+
+<SiteHeader locale={locale} currentPath={currentPath} />
+
+<main id="main">
+  <TradeFloorHero locale={locale} />
+  <TradeFloorTicker locale={locale} />
+  <TradeFloorCategories locale={locale} />
+  <TradeFloorOrigins locale={locale} />
+  <TradeFloorShipment locale={locale} />
+  <TradeFloorStandards locale={locale} />
+  <TradeFloorAntiManifesto locale={locale} />
+  <TradeFloorDesk locale={locale} />
+</main>
+
+<SiteFooter locale={locale} />

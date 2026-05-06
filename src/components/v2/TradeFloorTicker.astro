@@ -1,0 +1,38 @@
+---
+/**
+ * TradeFloorTicker — Mono benchmark ticker.
+ * Shows a continuous stream of category · origin · grade · port pairs.
+ */
+import type { Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const items = [
+  '+ ICE NY-C arabica · 312.45 USc/lb',
+  '+ LIFFE robusta · 4 275 USD/t',
+  '+ ICE NY-K cocoa · 7 820 USD/t',
+  '+ LIFFE-C cocoa · 6 215 GBP/t',
+  '+ MATIF wheat · 218.50 EUR/t',
+  '+ Antep pistachio Q2 spec sheet · live',
+  '+ Tema → Mersin · cocoa container 18.4 t · ETD Mar 12',
+  '+ Yirgacheffe G1 · 86.4 cup avg',
+  '+ Phan Rang W320 · loading Cat Lai',
+  '+ Konya wheat 12% protein · annual contract open',
+  '+ Urfa isot harvest window · Aug–Sep',
+  '+ EUDR compliance · Ghana CMS verified',
+];
+
+void locale;
+---
+
+<div class="tf-ticker" aria-hidden="true">
+  <div class="tf-ticker__track">
+    {[...items, ...items].map((it, i) => (
+      <span>
+        <span class="tf-ticker__dot"></span>
+        <span>{it.replace(/^\+\s*/, '')}</span>
+      </span>
+    ))}
+  </div>
+</div>

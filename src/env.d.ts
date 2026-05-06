@@ -4,3 +4,5 @@
 declare module '@fontsource-variable/source-serif-4';
 declare module '@fontsource-variable/source-sans-3';
 declare module '@fontsource-variable/noto-sans-arabic';
+declare module '@fontsource-variable/inter-tight';
+declare module '@fontsource-variable/jetbrains-mono';

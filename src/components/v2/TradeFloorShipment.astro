@@ -1,0 +1,246 @@
+---
+/**
+ * TradeFloorShipment — A single shipment, end-to-end.
+ * Light bone section. Spec sheet on the left, journey timeline on the right.
+ * Goal: prove the operation is real with one concrete container.
+ */
+import type { Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'N° 04 / Bir konteyner',
+    title: 'Tek bir parti,',
+    titleEm: 'menşeden fabrikaya.',
+    lede: 'Türkiye Antep platosu → Hamburg, 22.4 ton coğrafi işaretli Antep fıstığı. Yedi durak, üç belge, on dokuz gün.',
+    specHead: 'Spec sheet',
+    timelineHead: 'Journey',
+    closing: 'Bu sevkiyatın tam izlenebilirlik dosyası talep üzerine paylaşılır. Lot numarası: KSF-2026-AP-0042.',
+  },
+  en: {
+    eyebrow: 'N° 04 / One container',
+    title: 'A single lot,',
+    titleEm: 'from origin to factory.',
+    lede: 'Antep plateau, Türkiye → Hamburg. 22.4 t PDO Antep pistachio. Seven stops, three documents, nineteen days.',
+    specHead: 'Spec sheet',
+    timelineHead: 'Journey',
+    closing: 'Full traceability file shared on request. Lot ID: KSF-2026-AP-0042.',
+  },
+  ar: {
+    eyebrow: 'العدد ٠٤ / حاوية واحدة',
+    title: 'دفعة واحدة',
+    titleEm: 'من المنشأ إلى المصنع.',
+    lede: 'هضبة عنتاب → هامبورغ. ٢٢٫٤ طن فستق عنتاب PDO. سبع محطات وثلاث وثائق وتسعة عشر يوماً.',
+    specHead: 'ورقة فنية',
+    timelineHead: 'الرحلة',
+    closing: 'ملف التتبع الكامل عند الطلب. رقم الدفعة: KSF-2026-AP-0042.',
+  },
+}[locale];
+
+const spec = [
+  { k: 'Lot ID', v: 'KSF-2026-AP-0042' },
+  { k: 'Product', v: 'Antep pistachio · Pistacia vera · PDO' },
+  { k: 'Variety', v: 'Barak (90%) · Uzun (10%)' },
+  { k: 'Calibration', v: '20–22 mm jumbo · open-shell ratio 88%' },
+  { k: 'Moisture', v: '5.2% · max 5.5%' },
+  { k: 'Aflatoxin', v: 'B1 < 0.4 ppb · total < 1.1 ppb (EU 10 ppb)' },
+  { k: 'Volume', v: '22.4 t · 1 × 20’ DC' },
+  { k: 'Packing', v: '12.5 kg vacuum carton × 1 792' },
+  { k: 'Lab', v: 'Eurofins Hamburg · cert 2026-AP-0119' },
+  { k: 'Incoterms', v: 'CIF Hamburg · INCOTERMS 2020' },
+];
+
+const journey = [
+  { d: '2026-02-12', city: 'Gaziantep, TR',  step: 'Harvest sample · field QC · cooperative validation' },
+  { d: '2026-02-15', city: 'Gaziantep, TR',  step: 'Mechanical sorting · vacuum packing 12.5 kg cartons' },
+  { d: '2026-02-17', city: 'Mersin, TR',     step: 'Customs clearance · Phyto · CoO · EUR.1 stamped' },
+  { d: '2026-02-19', city: 'Mersin port',    step: 'Loading 20’ DC · Maersk M/V Algeciras · ETD 22:40' },
+  { d: '2026-02-26', city: 'Algeciras, ES',  step: 'Transshipment · ETD next leg 14:00' },
+  { d: '2026-03-04', city: 'Hamburg, DE',    step: 'Discharge · port of arrival · 03:18' },
+  { d: '2026-03-05', city: 'Hamburg, DE',    step: 'Buyer warehouse · accepted · spec match' },
+];
+---
+
+<section class="tf-section tf-section--light tf-ship" id="shipment">
+  <div class="tf-wrap">
+    <header class="tf-ship__head">
+      <span class="tf-eyebrow tf-eyebrow--signal">{ui.eyebrow}</span>
+      <h2 class="tf-h-display">
+        {ui.title}<br /><em>{ui.titleEm}</em>
+      </h2>
+      <p class="tf-lede">{ui.lede}</p>
+    </header>
+
+    <div class="tf-ship__grid">
+      <div class="tf-ship__spec">
+        <span class="tf-eyebrow">{ui.specHead}</span>
+        <dl>
+          {spec.map((s) => (
+            <div class="tf-ship__row">
+              <dt>{s.k}</dt>
+              <dd>{s.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <ol class="tf-ship__timeline">
+        <span class="tf-eyebrow">{ui.timelineHead}</span>
+        {journey.map((j, i) => (
+          <li class={`tf-ship__step${i === journey.length - 1 ? ' is-last' : ''}`}>
+            <span class="tf-ship__date">{j.d}</span>
+            <span class="tf-ship__dot" aria-hidden="true"></span>
+            <span class="tf-ship__city">{j.city}</span>
+            <span class="tf-ship__what">{j.step}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <p class="tf-ship__closing">{ui.closing}</p>
+  </div>
+</section>
+
+<style>
+  .tf-ship__head {
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .tf-ship__head em {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    color: var(--signal);
+    font-weight: 400;
+  }
+
+  .tf-ship__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .tf-ship__grid {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 56px;
+    }
+  }
+
+  .tf-ship__spec {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #d8d5cc;
+    background: white;
+    padding: 28px;
+  }
+  .tf-ship__spec dl { margin: 0; display: flex; flex-direction: column; }
+  .tf-ship__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid #e5e1d6;
+    align-items: baseline;
+  }
+  .tf-ship__row:first-of-type { border-top: 0; padding-top: 0; }
+  .tf-ship__row dt {
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #666;
+  }
+  .tf-ship__row dd {
+    margin: 0;
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .tf-ship__timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .tf-ship__timeline > .tf-eyebrow {
+    margin-bottom: 12px;
+    color: var(--mono-3);
+  }
+  .tf-ship__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 100px 24px 1fr;
+    gap: 0 16px;
+    grid-template-areas:
+      'date dot city'
+      'date dot what';
+    padding: 14px 0 18px;
+    border-top: 1px solid #e5e1d6;
+  }
+  .tf-ship__step::before {
+    content: '';
+    position: absolute;
+    left: 111px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #d8d5cc;
+  }
+  .tf-ship__step.is-last::before { bottom: 50%; }
+  .tf-ship__date {
+    grid-area: date;
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #777;
+    align-self: start;
+  }
+  .tf-ship__dot {
+    grid-area: dot;
+    width: 10px; height: 10px;
+    background: var(--signal);
+    border-radius: 50%;
+    margin-top: 4px;
+    box-shadow: 0 0 0 4px white, 0 0 0 5px var(--signal);
+    z-index: 1;
+  }
+  .tf-ship__city {
+    grid-area: city;
+    font-family: var(--tf-display);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .tf-ship__what {
+    grid-area: what;
+    font-family: var(--tf-mono);
+    font-size: 12px;
+    color: #555;
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  .tf-ship__closing {
+    margin-top: 56px;
+    font-family: var(--tf-italic);
+    font-style: italic;
+    font-size: 16px;
+    color: #555;
+    border-top: 1px solid #d8d5cc;
+    padding-top: 20px;
+  }
+
+  @media (max-width: 720px) {
+    .tf-ship__step { grid-template-columns: 80px 18px 1fr; }
+    .tf-ship__step::before { left: 89px; }
+  }
+</style>

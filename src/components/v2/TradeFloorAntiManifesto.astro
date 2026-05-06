@@ -1,0 +1,242 @@
+---
+/**
+ * TradeFloorAntiManifesto — "What we don’t supply".
+ * Contrarian section. Defines brand by negation.
+ * Single column wide editorial pull-quote + 3 negative pillars.
+ */
+import type { Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'N° 06 / Manifesto',
+    pre: 'Bir küratör; satın aldığı kadar',
+    em: 'reddettikleriyle',
+    post: 'tanımlanır.',
+    body: 'Kismet bir tedarikçi değil. Bu yüzden bazı hatları açıkça çalışmıyoruz — ne satın alma listesinin geniş olması ne de marja sıkışması bizi karar değiştirmeye iter. Bunu net yazıyoruz, çünkü biri bizden bunları istediğinde "yok" demek yerine "bunlar bizim yapımız değil" diyebilelim.',
+    pillarsHead: 'Üç hat,',
+    pillarsEm: 'açıkça reddedilmiş.',
+    rejects: [
+      {
+        no: '01',
+        head: 'Palm yağı.',
+        why: 'Endonezya ve Malezya orman tahribatı, COP zincir kirliliği. RSPO “sürdürülebilir” etiketi pratikte yetersiz; alternatifimiz yok, bu yüzden hat kapalı.',
+      },
+      {
+        no: '02',
+        head: 'Çin baharatı toplu commodity.',
+        why: 'ETO maruziyeti, sahte coğrafi etiketleme, sentetik renklendirici riski. Türkiye, Hindistan, Sri Lanka, Madagaskar varken Çin commodity baharat hattını portföye almak güveni dilute eder.',
+      },
+      {
+        no: '03',
+        head: 'Non-GMO etiketsiz soya.',
+        why: 'AB ve Türkiye non-GMO talebi yükseldikçe karışık (mixed) soya partileri geri döner. Sadece sertifikalı non-GMO Mendoza ve Brezilya organik hattıyla çalışıyoruz; commodity GMO soya hattımız yok.',
+      },
+    ],
+    closing: 'Yapmadıklarımız, yaptıklarımızdan daha fazla şey söyler. Bir tedarik küratöründen beklenen budur.',
+  },
+  en: {
+    eyebrow: 'N° 06 / Manifesto',
+    pre: 'A curator is defined',
+    em: 'as much by what they reject',
+    post: 'as by what they buy.',
+    body: 'Kismet is not a supplier. So we openly do not run certain lines — neither broader catalogue nor margin pressure pushes us to change that decision. We write this plainly so that when someone asks for these, we can say "this is not our line" instead of just "no".',
+    pillarsHead: 'Three lines,',
+    pillarsEm: 'rejected on the record.',
+    rejects: [
+      {
+        no: '01',
+        head: 'Palm oil.',
+        why: 'Indonesia and Malaysia deforestation, COP chain contamination. The RSPO "sustainable" label is in practice insufficient; we have no clean alternative, so the line is closed.',
+      },
+      {
+        no: '02',
+        head: 'Bulk Chinese commodity spice.',
+        why: 'ETO exposure, fraudulent geographic labeling, synthetic colour risk. With Türkiye, India, Sri Lanka, Madagascar in the portfolio, adding Chinese commodity spice would dilute trust.',
+      },
+      {
+        no: '03',
+        head: 'Unlabelled non-GMO soy.',
+        why: 'As EU and Türkiye non-GMO demand rises, mixed soy lots come back. We only run certified non-GMO Mendoza and Brazil organic lines; we do not carry commodity GMO soy.',
+      },
+    ],
+    closing: 'What we don’t do says more than what we do. That is what a sourcing curator is expected to make explicit.',
+  },
+  ar: {
+    eyebrow: 'العدد ٠٦ / البيان',
+    pre: 'يُعرَّف المنسّق',
+    em: 'بما يرفضه',
+    post: 'بقدر ما يُعرَّف بما يشتريه.',
+    body: 'كسمت ليست مورّداً. لذلك لا نشغّل خطوطاً معينة بشكل صريح — لا توسيع الكتالوج ولا ضغط الهامش يدفعنا لتغيير هذا القرار. نكتب ذلك بوضوح لنقول "هذا ليس خطنا" بدلاً من "لا".',
+    pillarsHead: 'ثلاثة خطوط',
+    pillarsEm: 'مرفوضة بشكل صريح.',
+    rejects: [
+      {
+        no: '٠١',
+        head: 'زيت النخيل.',
+        why: 'إزالة الغابات في إندونيسيا وماليزيا، تلوث سلاسل COP. شهادة RSPO «المستدامة» غير كافية عملياً، ولا بديل نظيف لدينا، لذا الخط مغلق.',
+      },
+      {
+        no: '٠٢',
+        head: 'توابل تجارية صينية بالحجم.',
+        why: 'تعرّض لـETO، تزوير علامات جغرافية، مخاطر صبغات صناعية. وجود تركيا والهند وسريلانكا ومدغشقر في المحفظة يجعل إضافة التوابل التجارية الصينية إضعافاً للثقة.',
+      },
+      {
+        no: '٠٣',
+        head: 'صويا بدون شهادة non-GMO.',
+        why: 'مع ارتفاع طلب non-GMO في أوروبا وتركيا، تعود الدفعات المختلطة. نشغّل فقط خطوط non-GMO المعتمدة من مندوزا والبرازيل العضوية؛ ولا نحمل صويا GMO تجارية.',
+      },
+    ],
+    closing: 'ما لا نفعله يقول أكثر مما نفعل. هذا ما يُتوقع من منسّق التوريد أن يُعلنه بوضوح.',
+  },
+}[locale];
+---
+
+<section class="tf-section tf-anti" id="manifesto">
+  <div class="tf-wrap">
+    <header class="tf-anti__head">
+      <span class="tf-eyebrow tf-eyebrow--signal">{ui.eyebrow}</span>
+      <h2 class="tf-anti__quote">
+        {ui.pre} <em>{ui.em}</em> {ui.post}
+      </h2>
+      <p class="tf-anti__body">{ui.body}</p>
+    </header>
+
+    <div class="tf-anti__pillars-head">
+      <h3 class="tf-h2">
+        {ui.pillarsHead}<br /><em class="tf-anti__neg">{ui.pillarsEm}</em>
+      </h3>
+    </div>
+
+    <ol class="tf-anti__list">
+      {ui.rejects.map((r) => (
+        <li class="tf-anti__item">
+          <span class="tf-anti__num">{r.no}</span>
+          <div class="tf-anti__copy">
+            <h4 class="tf-anti__head-no">
+              <span class="tf-anti__strike" aria-hidden="true">✕</span> {r.head}
+            </h4>
+            <p>{r.why}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <p class="tf-anti__closing">{ui.closing}</p>
+  </div>
+</section>
+
+<style>
+  .tf-anti {
+    background: var(--carbon);
+    overflow: hidden;
+  }
+  .tf-anti__head {
+    max-width: 1080px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-bottom: 80px;
+  }
+  .tf-anti__quote {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(36px, 4.5vw, 72px);
+    line-height: 1.1;
+    color: var(--bone);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .tf-anti__quote em {
+    font-style: italic;
+    color: var(--signal);
+    border-bottom: 2px solid var(--signal);
+    padding-bottom: 4px;
+  }
+  .tf-anti__body {
+    font-family: var(--tf-sans);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--mono);
+    max-width: 64ch;
+    margin: 0;
+  }
+
+  .tf-anti__pillars-head {
+    margin-bottom: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--hair);
+  }
+  .tf-anti__neg {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    color: var(--error);
+    font-weight: 400;
+  }
+
+  .tf-anti__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .tf-anti__item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 32px;
+    padding: 32px 0;
+    border-top: 1px solid var(--hair);
+    align-items: start;
+  }
+  .tf-anti__item:last-child { border-bottom: 1px solid var(--hair); }
+  .tf-anti__num {
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--mono-3);
+    align-self: start;
+    padding-top: 4px;
+  }
+  .tf-anti__copy { display: flex; flex-direction: column; gap: 14px; max-width: 60ch; }
+  .tf-anti__head-no {
+    font-family: var(--tf-display);
+    font-weight: 500;
+    font-size: clamp(22px, 2.4vw, 32px);
+    color: var(--bone);
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+  .tf-anti__strike {
+    color: var(--error);
+    margin-right: 8px;
+    font-family: var(--tf-mono);
+    font-weight: 600;
+  }
+  .tf-anti__copy p {
+    font-family: var(--tf-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--mono);
+    margin: 0;
+  }
+
+  .tf-anti__closing {
+    margin-top: 48px;
+    font-family: var(--tf-italic);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--mono);
+    max-width: 56ch;
+    border-left: 2px solid var(--signal);
+    padding-left: 20px;
+  }
+
+  @media (max-width: 720px) {
+    .tf-anti__item { grid-template-columns: 1fr; gap: 12px; }
+  }
+</style>

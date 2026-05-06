@@ -1,0 +1,429 @@
+---
+/**
+ * TradeFloorOrigins — Mission control map.
+ * Carbon dotted-grid world canvas + origin pins (+ shape) + side panel
+ * with last-shipment + harvest status + price sparkline.
+ *
+ * Pin data shared with marka, kategori filter chips lazy-render.
+ */
+import type { Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+type Cat = 'coffee' | 'cocoa' | 'nuts' | 'spices' | 'ingredients';
+
+interface Pin {
+  id: string;
+  name: string;
+  country: string;
+  region: string;
+  lat: number;
+  lon: number;
+  cat: Cat;
+  season: string;
+  spec: string;
+  port: string;
+  lastShipment: string;
+  pxKey: string;
+}
+
+const PINS: Pin[] = [
+  { id: 'p01', name: 'Yirgacheffe', country: 'Ethiopia',     region: 'SNNP',          lat: 6.16, lon: 38.20, cat: 'coffee',      season: 'Sep–Dec',  spec: 'G1 · Cup 86–92 · washed', port: 'Djibouti', lastShipment: '18 days ago', pxKey: 'arabica' },
+  { id: 'p02', name: 'Huila',       country: 'Colombia',     region: 'Andean',        lat: 2.93, lon: -75.30, cat: 'coffee',      season: 'Mar–Jun',  spec: 'Excelso · Cup 84–88',     port: 'Buenaventura', lastShipment: '6 days ago',  pxKey: 'arabica' },
+  { id: 'p03', name: 'Lam Dong',    country: 'Vietnam',      region: 'Central HL',    lat: 11.94, lon: 108.43, cat: 'coffee',      season: 'Oct–Feb',  spec: 'Robusta G1 · Screen 18+', port: 'Cat Lai', lastShipment: '3 days ago',  pxKey: 'robusta' },
+  { id: 'p04', name: 'Antigua',     country: 'Guatemala',    region: 'Volcanic',      lat: 14.55, lon: -90.73, cat: 'coffee',      season: 'Dec–Mar',  spec: 'SHB · volcanic Arabica',  port: 'Puerto Quetzal', lastShipment: '24 days ago', pxKey: 'arabica' },
+  { id: 'p05', name: 'Ashanti',     country: 'Ghana',        region: 'Central',       lat: 6.69, lon: -1.62,  cat: 'cocoa',       season: 'Oct–Mar',  spec: 'Forastero · Grade I · 90 ct', port: 'Tema', lastShipment: '11 days ago', pxKey: 'cocoa' },
+  { id: 'p06', name: 'Daloa',       country: 'Côte d’Ivoire', region: 'West',         lat: 6.88, lon: -6.45,  cat: 'cocoa',       season: 'Oct–Mar',  spec: 'Forastero · volume',      port: 'Abidjan', lastShipment: '14 days ago', pxKey: 'cocoa' },
+  { id: 'p07', name: 'Antep',       country: 'Türkiye',      region: 'Gaziantep',     lat: 37.07, lon: 37.38, cat: 'nuts',        season: 'Sep–Oct',  spec: 'Pistacia vera · 22+ mm · PDO', port: 'Mersin', lastShipment: '2 days ago',  pxKey: 'pistachio' },
+  { id: 'p08', name: 'Giresun',     country: 'Türkiye',      region: 'Black Sea',     lat: 40.92, lon: 38.39, cat: 'nuts',        season: 'Aug–Sep',  spec: 'Tombul PDO · 13–15 mm',   port: 'Trabzon → Mersin', lastShipment: '5 days ago',  pxKey: 'hazelnut' },
+  { id: 'p09', name: 'Malatya',     country: 'Türkiye',      region: 'East Anatolia', lat: 38.35, lon: 38.32, cat: 'nuts',        season: 'Jul–Aug',  spec: 'Hacıhaliloğlu No1',       port: 'İskenderun', lastShipment: '8 days ago',  pxKey: 'apricot' },
+  { id: 'p10', name: 'Aydın',       country: 'Türkiye',      region: 'Aegean',        lat: 37.85, lon: 27.84, cat: 'nuts',        season: 'Sep–Oct',  spec: 'Sarılop fig · Lerida',    port: 'İzmir', lastShipment: '12 days ago', pxKey: 'fig' },
+  { id: 'p11', name: 'Phan Rang',   country: 'Vietnam',      region: 'Ninh Thuan',    lat: 11.57, lon: 108.99, cat: 'nuts',        season: 'Feb–May',  spec: 'W320 cashew · 320 pcs/lb', port: 'Cat Lai', lastShipment: '4 days ago',  pxKey: 'cashew' },
+  { id: 'p12', name: 'Kerala',      country: 'India',        region: 'Malabar',       lat: 10.85, lon: 76.27, cat: 'spices',      season: 'Nov–Feb',  spec: 'Tellicherry TGEB · piperine 6%', port: 'Cochin', lastShipment: '9 days ago',  pxKey: 'pepper' },
+  { id: 'p13', name: 'Sumatra',     country: 'Indonesia',    region: 'Aceh',          lat: 4.69, lon: 96.75,  cat: 'spices',      season: 'May–Jul',  spec: 'Cassia cinnamon · low coumarin', port: 'Belawan', lastShipment: '21 days ago', pxKey: 'cinnamon' },
+  { id: 'p14', name: 'Urfa',        country: 'Türkiye',      region: 'SE Anatolia',   lat: 37.16, lon: 38.79, cat: 'spices',      season: 'Aug–Sep',  spec: 'Isot pepper PDO · ASTA 80–110', port: 'Mersin', lastShipment: '7 days ago',  pxKey: 'isot' },
+  { id: 'p15', name: 'Maraş',       country: 'Türkiye',      region: 'Mediterranean', lat: 37.59, lon: 36.93, cat: 'spices',      season: 'Aug–Sep',  spec: 'Chilli flake · ASTA 70–110', port: 'Mersin', lastShipment: '10 days ago', pxKey: 'flake' },
+  { id: 'p16', name: 'Konya',       country: 'Türkiye',      region: 'Inner Anatolia',lat: 37.87, lon: 32.49, cat: 'ingredients', season: 'Jul–Aug',  spec: 'Wheat 12–14% protein',    port: 'Mersin', lastShipment: '1 day ago',   pxKey: 'wheat' },
+  { id: 'p17', name: 'Mendoza',     country: 'Argentina',    region: 'Cuyo',          lat: -32.89, lon: -68.83, cat: 'ingredients', season: 'Feb–Apr', spec: 'Soy 46% meal · NON-GMO',  port: 'Buenos Aires', lastShipment: '17 days ago', pxKey: 'soy' },
+];
+
+const filterLabels = {
+  tr: { all: 'Tümü', coffee: 'Kahve', cocoa: 'Kakao', nuts: 'Kuruyemiş', spices: 'Baharat', ingredients: 'Endüstriyel' },
+  en: { all: 'All',  coffee: 'Coffee', cocoa: 'Cocoa', nuts: 'Nuts',     spices: 'Spices',  ingredients: 'Industrial' },
+  ar: { all: 'الكل', coffee: 'قهوة',  cocoa: 'كاكاو', nuts: 'مكسرات', spices: 'توابل',     ingredients: 'صناعي' },
+}[locale];
+
+const ui = {
+  tr: {
+    eyebrow: 'N° 03 / Mission control',
+    title: 'Her menşe',
+    titleEm: 'haritada bir koordinat.',
+    lede: 'Pin’e tıkla — son sevkiyat, hasat penceresi, fiyat hareketi. Tedarikçi listesi değil; canlı bir ağ.',
+    legend: 'projeksiyon: equirectangular · pin = aktif menşe',
+    pickAPin: 'Bir pin seç →',
+    last: 'Son sevkiyat',
+    season: 'Hasat',
+    spec: 'Spec',
+    port: 'Liman',
+  },
+  en: {
+    eyebrow: 'N° 03 / Mission control',
+    title: 'Every origin',
+    titleEm: 'is a live coordinate.',
+    lede: 'Tap a pin — last shipment, harvest window, price action. Not a vendor list; a live network.',
+    legend: 'projection: equirectangular · pin = active origin',
+    pickAPin: 'Select a pin →',
+    last: 'Last shipment',
+    season: 'Harvest',
+    spec: 'Spec',
+    port: 'Port',
+  },
+  ar: {
+    eyebrow: 'العدد ٠٣ / غرفة العمليات',
+    title: 'كل منشأ',
+    titleEm: 'إحداثي حيّ.',
+    lede: 'انقر على دبوس — آخر شحنة، نافذة حصاد، تحرك سعر. ليست قائمة موردين؛ بل شبكة حية.',
+    legend: 'إسقاط: متساوي المستطيل · دبوس = منشأ نشط',
+    pickAPin: 'اختر دبوساً →',
+    last: 'آخر شحنة',
+    season: 'حصاد',
+    spec: 'مواصفة',
+    port: 'ميناء',
+  },
+}[locale];
+---
+
+<section class="tf-section tf-origins" id="origins">
+  <div class="tf-wrap">
+    <header class="tf-origins__head">
+      <div>
+        <span class="tf-eyebrow tf-eyebrow--signal">{ui.eyebrow}</span>
+        <h2 class="tf-h-display">
+          {ui.title}<br /><em>{ui.titleEm}</em>
+        </h2>
+      </div>
+      <p class="tf-lede tf-origins__lede">{ui.lede}</p>
+    </header>
+
+    <div class="tf-origins__filters" id="tfOriginFilters" role="tablist">
+      <button class="tf-chip is-on" data-filter="all">{filterLabels.all}</button>
+      <button class="tf-chip" data-filter="coffee">{filterLabels.coffee}</button>
+      <button class="tf-chip" data-filter="cocoa">{filterLabels.cocoa}</button>
+      <button class="tf-chip" data-filter="nuts">{filterLabels.nuts}</button>
+      <button class="tf-chip" data-filter="spices">{filterLabels.spices}</button>
+      <button class="tf-chip" data-filter="ingredients">{filterLabels.ingredients}</button>
+    </div>
+
+    <div class="tf-origins__main">
+      <div class="tf-origins__map" id="tfMap">
+        <div class="tf-origins__grid" aria-hidden="true"></div>
+        <svg class="tf-origins__svg" viewBox="0 0 2000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          {/* Simplified land masses — abstract continental hints, not literal map */}
+          <g class="tf-origins__continents">
+            <path d="M180 220 L420 200 L520 260 L560 360 L520 440 L460 480 L380 520 L300 480 L240 420 L200 340 Z" />
+            <path d="M460 480 L540 510 L580 560 L540 600 L500 580 L470 540 Z" />
+            <path d="M540 580 L640 600 L700 680 L720 780 L660 880 L600 900 L540 820 L520 720 L500 640 Z" />
+            <path d="M620 140 L760 130 L800 200 L740 240 L660 220 Z" />
+            <path d="M900 240 L1080 220 L1140 280 L1100 340 L1020 360 L940 340 L900 300 Z" />
+            <path d="M960 380 L1120 360 L1180 440 L1200 540 L1180 640 L1120 740 L1040 760 L980 700 L940 600 L920 480 Z" />
+            <path d="M1140 340 L1240 360 L1280 420 L1240 480 L1180 460 L1140 420 Z" />
+            <path d="M1100 180 L1500 160 L1700 200 L1720 280 L1620 320 L1500 300 L1340 320 L1180 300 Z" />
+            <path d="M1500 320 L1700 320 L1740 400 L1720 460 L1640 480 L1560 460 L1500 420 Z" />
+            <path d="M1380 420 L1480 420 L1500 500 L1460 560 L1420 540 L1380 480 Z" />
+            <path d="M1560 480 L1660 480 L1700 540 L1680 600 L1620 580 L1580 540 Z" />
+            <path d="M1640 620 L1780 620 L1820 660 L1780 700 L1700 690 L1640 660 Z" />
+            <path d="M1700 740 L1880 720 L1920 780 L1880 840 L1780 850 L1720 820 Z" />
+          </g>
+          <line x1="0" y1="500" x2="2000" y2="500" stroke="rgba(255,92,0,0.15)" stroke-dasharray="4 8" stroke-width="0.6" />
+        </svg>
+        <div class="tf-origins__pins" id="tfPins"></div>
+        <div class="tf-origins__legend"><span class="tf-eyebrow">{ui.legend}</span></div>
+      </div>
+
+      <aside class="tf-origins__panel" id="tfPanel" data-empty>
+        <div class="tf-origins__empty">
+          <span class="tf-eyebrow">{ui.pickAPin}</span>
+          <p class="tf-lede">17 active origins · 5 categories</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tf-origins__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  @media (min-width: 1024px) {
+    .tf-origins__head {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+  }
+  .tf-origins__head em {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    color: var(--signal);
+    font-weight: 400;
+  }
+  .tf-origins__lede { padding-bottom: 8px; }
+
+  .tf-origins__filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .tf-chip {
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--hair-bright);
+    color: var(--mono);
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 200ms ease, color 200ms ease, background 200ms ease;
+  }
+  .tf-chip:hover { border-color: var(--signal); color: var(--signal); }
+  .tf-chip.is-on {
+    background: var(--signal);
+    border-color: var(--signal);
+    color: var(--carbon);
+  }
+
+  .tf-origins__main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1024px) {
+    .tf-origins__main {
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+    }
+  }
+
+  .tf-origins__map {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    background: var(--carbon-2);
+    border: 1px solid var(--hair);
+    overflow: hidden;
+  }
+  .tf-origins__grid {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 18px 18px;
+    background-position: 0 0;
+    pointer-events: none;
+  }
+  .tf-origins__svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+  }
+  .tf-origins__continents path {
+    fill: rgba(255, 255, 255, 0.025);
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 0.6;
+  }
+
+  .tf-origins__pins { position: absolute; inset: 0; }
+
+  .tf-pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 32px; height: 32px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .tf-pin__cross::before,
+  .tf-pin__cross::after {
+    content: '';
+    position: absolute;
+    background: var(--signal);
+    transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+  .tf-pin__cross::before {
+    left: 50%; top: 50%;
+    width: 12px; height: 1.5px;
+    transform: translate(-50%, -50%);
+  }
+  .tf-pin__cross::after {
+    left: 50%; top: 50%;
+    width: 1.5px; height: 12px;
+    transform: translate(-50%, -50%);
+  }
+  .tf-pin__ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 22px;
+    border: 1px solid var(--signal);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  .tf-pin:hover .tf-pin__cross::before,
+  .tf-pin:hover .tf-pin__cross::after,
+  .tf-pin.is-active .tf-pin__cross::before,
+  .tf-pin.is-active .tf-pin__cross::after {
+    box-shadow: 0 0 12px rgba(255, 92, 0, 0.6);
+  }
+  .tf-pin:hover .tf-pin__ring,
+  .tf-pin.is-active .tf-pin__ring {
+    opacity: 1;
+    animation: tf-pin-pulse 1.4s ease-out infinite;
+  }
+  @keyframes tf-pin-pulse {
+    0%   { transform: translate(-50%, -50%) scale(0.8); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+  }
+  .tf-pin__label {
+    position: absolute;
+    left: 22px; top: -4px;
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bone);
+    background: rgba(10, 10, 10, 0.85);
+    padding: 4px 8px;
+    border: 1px solid var(--hair);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+  }
+  .tf-pin:hover .tf-pin__label,
+  .tf-pin.is-active .tf-pin__label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .tf-origins__legend {
+    position: absolute;
+    bottom: 12px; left: 12px;
+    color: var(--mono-3);
+  }
+
+  .tf-origins__panel {
+    border: 1px solid var(--hair);
+    background: var(--carbon-2);
+    padding: 24px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .tf-origins__panel[data-empty='true'] .tf-origins__empty { display: flex; }
+  .tf-origins__panel:not([data-empty='true']) .tf-origins__empty { display: none; }
+  .tf-origins__empty { flex: 1; flex-direction: column; gap: 12px; align-items: flex-start; justify-content: center; }
+  .tf-origins__panel-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid var(--hair);
+    padding: 12px 0 8px;
+  }
+  .tf-origins__panel-row:first-of-type { border-top: 0; padding-top: 0; }
+  .tf-origins__panel-row > span:first-child {
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mono-3);
+  }
+  .tf-origins__panel-row > span:last-child {
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    color: var(--bone);
+    text-align: right;
+  }
+  .tf-origins__panel h3 {
+    font-family: var(--tf-display);
+    font-size: 28px;
+    color: var(--bone);
+    margin: 0;
+    line-height: 1.05;
+  }
+  .tf-origins__panel h3 small {
+    display: block;
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-top: 6px;
+  }
+</style>
+
+<script is:inline define:vars={{ PINS, UI: ui }}>
+  const layer = document.getElementById('tfPins');
+  const panel = document.getElementById('tfPanel');
+  const filters = document.getElementById('tfOriginFilters');
+  if (layer && panel) {
+    function project(lat, lon) {
+      return { x: ((lon + 180) / 360) * 100, y: ((90 - lat) / 180) * 100 };
+    }
+    PINS.forEach((p, i) => {
+      const { x, y } = project(p.lat, p.lon);
+      const btn = document.createElement('button');
+      btn.className = 'tf-pin';
+      btn.type = 'button';
+      btn.dataset.id = p.id;
+      btn.dataset.cat = p.cat;
+      btn.style.left = x + '%';
+      btn.style.top = y + '%';
+      btn.innerHTML = '<span class="tf-pin__ring"></span><span class="tf-pin__cross"></span><span class="tf-pin__label">' + p.name + ' / ' + p.country + '</span>';
+      btn.addEventListener('mouseenter', () => activate(p.id));
+      btn.addEventListener('focus', () => activate(p.id));
+      btn.addEventListener('click', () => activate(p.id));
+      layer.appendChild(btn);
+    });
+
+    function activate(id) {
+      const p = PINS.find(x => x.id === id);
+      if (!p) return;
+      document.querySelectorAll('.tf-pin').forEach(el => el.classList.toggle('is-active', el.dataset.id === id));
+      panel.removeAttribute('data-empty');
+      panel.innerHTML = `
+        <div>
+          <h3>${p.name}<small>${p.country} · ${p.region}</small></h3>
+        </div>
+        <div class="tf-origins__panel-row"><span>${UI.spec}</span><span>${p.spec}</span></div>
+        <div class="tf-origins__panel-row"><span>${UI.season}</span><span>${p.season}</span></div>
+        <div class="tf-origins__panel-row"><span>${UI.port}</span><span>${p.port}</span></div>
+        <div class="tf-origins__panel-row"><span>${UI.last}</span><span>${p.lastShipment}</span></div>
+      `;
+    }
+
+    if (filters) {
+      filters.addEventListener('click', (e) => {
+        const btn = e.target.closest('.tf-chip');
+        if (!btn) return;
+        document.querySelectorAll('.tf-chip').forEach(c => c.classList.remove('is-on'));
+        btn.classList.add('is-on');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.tf-pin').forEach((p) => {
+          p.style.display = (f === 'all' || p.dataset.cat === f) ? '' : 'none';
+        });
+      });
+    }
+
+    /* Auto-pick first pin so the panel never starts empty on desktop. */
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      activate(PINS[0].id);
+    }
+  }
+</script>

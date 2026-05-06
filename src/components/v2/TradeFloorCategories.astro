@@ -1,0 +1,249 @@
+---
+/**
+ * TradeFloorCategories — 5-row tabular category list.
+ * Bloomberg-vari row layout: numara · kategori · ürün · menşe · referans · CTA.
+ * Hover: row signal-orange'a cycle.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+interface Row {
+  num: string;
+  category: { tr: string; en: string; ar: string };
+  spec: { tr: string; en: string; ar: string };
+  origins: string;
+  benchmark: string;
+  href: string;
+}
+
+const rows: Row[] = [
+  {
+    num: '01',
+    category: { tr: 'Kahve', en: 'Coffee', ar: 'القهوة' },
+    spec: {
+      tr: 'Specialty Arabica · Robusta · cup score 80–92',
+      en: 'Specialty Arabica · Robusta · cup score 80–92',
+      ar: 'أرابيكا مختصة · روبوستا · كأس ٨٠–٩٢',
+    },
+    origins: 'Ethiopia · Colombia · Vietnam · Guatemala',
+    benchmark: 'ICE NY-C · LIFFE',
+    href: '/products/coffee-cocoa/',
+  },
+  {
+    num: '02',
+    category: { tr: 'Kakao', en: 'Cocoa', ar: 'الكاكاو' },
+    spec: {
+      tr: 'Forastero · Trinitario · fat 52–56% · Grade I/II',
+      en: 'Forastero · Trinitario · fat 52–56% · Grade I/II',
+      ar: 'فوراستيرو · ترينيتاريو · دهن ٥٢–٥٦٪ · Grade I/II',
+    },
+    origins: 'Ghana · Côte d’Ivoire · Ecuador',
+    benchmark: 'ICE NY-K · LIFFE-C',
+    href: '/products/coffee-cocoa/',
+  },
+  {
+    num: '03',
+    category: { tr: 'Kuruyemiş', en: 'Nuts', ar: 'المكسرات' },
+    spec: {
+      tr: 'Antep PDO · Tombul PDO · W320 · Hacıhaliloğlu No1',
+      en: 'Antep PDO · Tombul PDO · W320 · Hacıhaliloğlu No1',
+      ar: 'PDO عنتاب · PDO تومبول · W320',
+    },
+    origins: 'Türkiye · Vietnam · India',
+    benchmark: 'spot · NUTS Index',
+    href: '/products/nuts/',
+  },
+  {
+    num: '04',
+    category: { tr: 'Baharat', en: 'Spices', ar: 'التوابل' },
+    spec: {
+      tr: 'Tellicherry pepper · Ceylon cinnamon · isot PDO',
+      en: 'Tellicherry pepper · Ceylon cinnamon · isot PDO',
+      ar: 'فلفل تيليتشيري · قرفة سيلانية · إيسوت PDO',
+    },
+    origins: 'India · Sri Lanka · Türkiye · Indonesia',
+    benchmark: 'IPSTA · MCC',
+    href: '/products/spices/',
+  },
+  {
+    num: '05',
+    category: { tr: 'Endüstriyel İçerikler', en: 'Industrial Ingredients', ar: 'مكونات صناعية' },
+    spec: {
+      tr: 'Wheat 12–14% protein · soy meal 46% · sunflower RBD',
+      en: 'Wheat 12–14% protein · soy meal 46% · sunflower RBD',
+      ar: 'قمح ١٢–١٤٪ · صويا ٤٦٪ · زيت دوار شمس مكرر',
+    },
+    origins: 'Türkiye · Ukraine · Argentina · Brazil',
+    benchmark: 'MATIF · CME · BMD',
+    href: '/products/ingredients/',
+  },
+];
+
+const eyebrow = { tr: 'N° 02 / Kategoriler', en: 'N° 02 / Categories', ar: 'العدد ٠٢ / الفئات' }[locale];
+const headline = {
+  tr: ['Beş hat,', 'tek standart.'],
+  en: ['Five lines,', 'one standard.'],
+  ar: ['خمسة خطوط,', 'معيار واحد.'],
+}[locale];
+const cta = { tr: 'spec sheet', en: 'spec sheet', ar: 'ورقة فنية' }[locale];
+
+const heads = {
+  num: '#',
+  cat: { tr: 'Hat', en: 'Line', ar: 'الخط' }[locale],
+  spec: { tr: 'Spesifikasyon', en: 'Spec', ar: 'مواصفة' }[locale],
+  origins: { tr: 'Menşe', en: 'Origins', ar: 'المنشأ' }[locale],
+  bench: { tr: 'Referans', en: 'Benchmark', ar: 'مرجع' }[locale],
+};
+---
+
+<section class="tf-section tf-cats" id="categories">
+  <div class="tf-wrap">
+    <header class="tf-cats__head">
+      <span class="tf-eyebrow tf-eyebrow--signal">{eyebrow}</span>
+      <h2 class="tf-h-display tf-cats__title">
+        {headline[0]}<br />
+        <em>{headline[1]}</em>
+      </h2>
+    </header>
+
+    <div class="tf-cats__table" role="table">
+      <div class="tf-cats__row tf-cats__row--head" role="row">
+        <span class="tf-cats__cell tf-cats__num" role="columnheader">{heads.num}</span>
+        <span class="tf-cats__cell tf-cats__cat" role="columnheader">{heads.cat}</span>
+        <span class="tf-cats__cell tf-cats__spec" role="columnheader">{heads.spec}</span>
+        <span class="tf-cats__cell tf-cats__origins" role="columnheader">{heads.origins}</span>
+        <span class="tf-cats__cell tf-cats__bench" role="columnheader">{heads.bench}</span>
+        <span class="tf-cats__cell tf-cats__cta" role="columnheader" aria-label="action"></span>
+      </div>
+
+      {rows.map((row) => (
+        <a class="tf-cats__row" href={localePath(row.href, locale)} role="row">
+          <span class="tf-cats__cell tf-cats__num" role="cell">{row.num}</span>
+          <span class="tf-cats__cell tf-cats__cat" role="cell">{row.category[locale]}</span>
+          <span class="tf-cats__cell tf-cats__spec" role="cell">{row.spec[locale]}</span>
+          <span class="tf-cats__cell tf-cats__origins" role="cell">{row.origins}</span>
+          <span class="tf-cats__cell tf-cats__bench" role="cell">{row.benchmark}</span>
+          <span class="tf-cats__cell tf-cats__cta" role="cell">
+            <span>{cta}</span>
+            <span class="tf-cats__arrow" aria-hidden="true">→</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tf-cats__head {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 56px;
+    max-width: 880px;
+  }
+  .tf-cats__title em {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    color: var(--signal);
+    font-weight: 400;
+  }
+
+  .tf-cats__table {
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+  }
+  .tf-cats__row {
+    display: grid;
+    grid-template-columns: 48px 1.1fr 2.4fr 1.6fr 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--hair);
+    color: var(--mono);
+    text-decoration: none;
+    transition: background 200ms ease, color 200ms ease, padding 200ms ease;
+  }
+  .tf-cats__row:last-child { border-bottom: 0; }
+  .tf-cats__row--head {
+    color: var(--mono-3);
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px 0;
+  }
+  .tf-cats__row:not(.tf-cats__row--head):hover {
+    background: linear-gradient(90deg, rgba(255,92,0,0.05), transparent 60%);
+    color: var(--bone);
+    padding-inline: 12px;
+  }
+  .tf-cats__row:not(.tf-cats__row--head):hover .tf-cats__num,
+  .tf-cats__row:not(.tf-cats__row--head):hover .tf-cats__cat,
+  .tf-cats__row:not(.tf-cats__row--head):hover .tf-cats__cta { color: var(--signal); }
+
+  .tf-cats__cell { font-size: 14px; }
+  .tf-cats__num {
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--mono-3);
+  }
+  .tf-cats__cat {
+    font-family: var(--tf-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--bone);
+    letter-spacing: -0.01em;
+  }
+  .tf-cats__spec, .tf-cats__origins {
+    font-family: var(--tf-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--mono);
+  }
+  .tf-cats__bench {
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mono-2);
+  }
+  .tf-cats__cta {
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mono-2);
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .tf-cats__arrow { transition: transform 200ms ease; }
+  .tf-cats__row:hover .tf-cats__arrow { transform: translateX(4px); }
+
+  /* Mobile: collapse table to stacked card-rows */
+  @media (max-width: 880px) {
+    .tf-cats__row--head { display: none; }
+    .tf-cats__row {
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      padding: 20px 16px;
+      grid-template-areas:
+        'num cta'
+        'cat cat'
+        'spec spec'
+        'origins origins'
+        'bench bench';
+    }
+    .tf-cats__num { grid-area: num; }
+    .tf-cats__cat { grid-area: cat; font-size: 26px; }
+    .tf-cats__spec { grid-area: spec; }
+    .tf-cats__origins { grid-area: origins; }
+    .tf-cats__bench { grid-area: bench; }
+    .tf-cats__cta { grid-area: cta; }
+  }
+</style>

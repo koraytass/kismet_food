@@ -1,0 +1,327 @@
+---
+/**
+ * TradeFloorMenu — Fullscreen carbon dark menu overlay.
+ * Triggered by hamburger in TradeFloorNav (id #tfMenuOpen).
+ * Layout: 8 huge category links left + benchmark/news rail right + footer mini.
+ */
+import type { Locale } from '@/i18n';
+import { localePath, locales } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const links = {
+  tr: [
+    { num: '01', label: 'Ana sayfa',     sub: 'live operations',  href: '/' },
+    { num: '02', label: 'Kategoriler',   sub: '5 hat · spec',     href: '/products/' },
+    { num: '03', label: 'Menşe',         sub: '17 koordinat',     href: '/origins/' },
+    { num: '04', label: 'Tedarik',       sub: '4 adımlı süreç',   href: '/supply-chain/' },
+    { num: '05', label: 'Sürdürülebilirlik', sub: 'EUDR · ESG',   href: '/sustainability/' },
+    { num: '06', label: 'İçgörü',        sub: 'piyasa raporları', href: '/insights/' },
+    { num: '07', label: 'Hakkımızda',    sub: 'küratör masası',   href: '/about/' },
+    { num: '08', label: 'Masa',          sub: 'doğrudan iletişim', href: '/contact/' },
+  ],
+  en: [
+    { num: '01', label: 'Home',          sub: 'live operations',   href: '/' },
+    { num: '02', label: 'Categories',    sub: '5 lines · spec',    href: '/products/' },
+    { num: '03', label: 'Origins',       sub: '17 coordinates',    href: '/origins/' },
+    { num: '04', label: 'Supply',        sub: '4-step process',    href: '/supply-chain/' },
+    { num: '05', label: 'Sustainability', sub: 'EUDR · ESG',       href: '/sustainability/' },
+    { num: '06', label: 'Insights',      sub: 'market reports',    href: '/insights/' },
+    { num: '07', label: 'About',         sub: 'curator desk',      href: '/about/' },
+    { num: '08', label: 'Desk',          sub: 'direct contact',    href: '/contact/' },
+  ],
+  ar: [
+    { num: '٠١', label: 'الرئيسية',     sub: 'العمليات الحية',   href: '/' },
+    { num: '٠٢', label: 'الفئات',        sub: '٥ خطوط · مواصفة', href: '/products/' },
+    { num: '٠٣', label: 'المنشأ',        sub: '١٧ إحداثي',       href: '/origins/' },
+    { num: '٠٤', label: 'التوريد',       sub: '٤ خطوات',         href: '/supply-chain/' },
+    { num: '٠٥', label: 'الاستدامة',     sub: 'EUDR · ESG',     href: '/sustainability/' },
+    { num: '٠٦', label: 'تحليلات',       sub: 'تقارير السوق',    href: '/insights/' },
+    { num: '٠٧', label: 'من نحن',        sub: 'مكتب المنسّق',    href: '/about/' },
+    { num: '٠٨', label: 'المكتب',        sub: 'تواصل مباشر',     href: '/contact/' },
+  ],
+}[locale];
+
+const ui = {
+  tr: { close: 'Kapat', railHead: 'Canlı', cmd: 'cmd · ESC' },
+  en: { close: 'Close', railHead: 'Live',  cmd: 'cmd · ESC' },
+  ar: { close: 'إغلاق', railHead: 'حيّ',   cmd: 'ESC' },
+}[locale];
+
+const rail = [
+  { l: 'arabica · NY-C',  v: '312.45 USc/lb', d: '+1.8%', up: true },
+  { l: 'robusta · LON',   v: '4 275 USD/t',   d: '-0.6%', up: false },
+  { l: 'cocoa · NY-K',    v: '7 820 USD/t',   d: '+2.4%', up: true },
+  { l: 'wheat · MATIF',   v: '218.50 EUR/t',  d: '+0.4%', up: true },
+  { l: 'pistachio · spot', v: '11 200 USD/t', d: 'flat',  up: true },
+];
+---
+
+<div class="tf-menu" id="tfMenuOverlay" aria-hidden="true">
+  <div class="tf-menu__head">
+    <span class="tf-menu__brand">
+      <span class="tf-menu__mark"></span>
+      KISMET <small>/ commodity desk</small>
+    </span>
+    <button class="tf-menu__close" id="tfMenuClose" type="button" aria-label={ui.close}>
+      <span>{ui.close}</span>
+      <span class="tf-menu__x" aria-hidden="true">×</span>
+    </button>
+  </div>
+
+  <div class="tf-menu__body">
+    <ul class="tf-menu__list">
+      {links.map((l) => (
+        <li>
+          <a href={localePath(l.href, locale)}>
+            <span class="tf-menu__num">{l.num}</span>
+            <span class="tf-menu__label">{l.label}</span>
+            <span class="tf-menu__sub">{l.sub}</span>
+            <span class="tf-menu__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <aside class="tf-menu__rail">
+      <span class="tf-eyebrow tf-eyebrow--signal">{ui.railHead}</span>
+      <ul>
+        {rail.map((r) => (
+          <li>
+            <span class="tf-menu__rail-l">{r.l}</span>
+            <span class="tf-menu__rail-v">{r.v}</span>
+            <span class={`tf-menu__rail-d ${r.up ? 'is-up' : 'is-down'}`}>{r.d}</span>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </div>
+
+  <div class="tf-menu__foot">
+    <span>Trade · Trust · Kismet</span>
+    <span class="tf-menu__cmd">{ui.cmd}</span>
+    <span>Istanbul · 2026</span>
+  </div>
+</div>
+
+<style>
+  .tf-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(10, 10, 10, 0.96);
+    backdrop-filter: blur(12px);
+    color: var(--bone);
+    display: flex;
+    flex-direction: column;
+    padding: 24px var(--tf-gutter);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 320ms cubic-bezier(0.22, 0.72, 0.22, 1);
+  }
+  .tf-menu.is-open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .tf-menu.is-open .tf-menu__list li,
+  .tf-menu.is-open .tf-menu__rail li {
+    animation: tf-menu-rise 700ms cubic-bezier(0.22, 0.72, 0.22, 1) backwards;
+  }
+  .tf-menu.is-open .tf-menu__list li:nth-child(1) { animation-delay: 80ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(2) { animation-delay: 130ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(3) { animation-delay: 180ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(4) { animation-delay: 230ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(5) { animation-delay: 280ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(6) { animation-delay: 330ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(7) { animation-delay: 380ms; }
+  .tf-menu.is-open .tf-menu__list li:nth-child(8) { animation-delay: 430ms; }
+  @keyframes tf-menu-rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .tf-menu__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 16px;
+  }
+  .tf-menu__brand {
+    font-family: var(--tf-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--bone);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .tf-menu__brand small { color: var(--mono-2); font-size: 11px; letter-spacing: 0.14em; }
+  .tf-menu__mark {
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: var(--signal);
+    box-shadow: 0 0 12px rgba(255, 92, 0, 0.6);
+    transform: translateY(1px);
+    margin-right: 4px;
+  }
+  .tf-menu__close {
+    background: transparent;
+    border: 1px solid var(--hair-bright);
+    color: var(--bone);
+    cursor: pointer;
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 200ms ease, color 200ms ease;
+  }
+  .tf-menu__close:hover { border-color: var(--signal); color: var(--signal); }
+  .tf-menu__x { font-size: 18px; line-height: 1; }
+
+  .tf-menu__body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
+    padding-top: 32px;
+  }
+  @media (min-width: 1024px) {
+    .tf-menu__body {
+      grid-template-columns: 2fr 1fr;
+      gap: 64px;
+    }
+  }
+
+  .tf-menu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tf-menu__list li { border-top: 1px solid var(--hair); }
+  .tf-menu__list li:last-child { border-bottom: 1px solid var(--hair); }
+  .tf-menu__list a {
+    display: grid;
+    grid-template-columns: 60px 1fr auto auto;
+    gap: 24px;
+    align-items: baseline;
+    padding: 22px 0;
+    color: var(--mono);
+    text-decoration: none;
+    transition: color 200ms ease, padding 200ms ease, background 200ms ease;
+  }
+  .tf-menu__list a:hover {
+    color: var(--bone);
+    padding-inline: 12px;
+    background: linear-gradient(90deg, rgba(255,92,0,0.04), transparent 70%);
+  }
+  .tf-menu__num {
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--mono-3);
+  }
+  .tf-menu__label {
+    font-family: var(--tf-display);
+    font-size: clamp(28px, 4vw, 56px);
+    font-weight: 500;
+    color: var(--bone);
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  .tf-menu__list a:hover .tf-menu__label { color: var(--signal); }
+  .tf-menu__sub {
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mono-3);
+    text-align: right;
+  }
+  .tf-menu__arrow {
+    font-family: var(--tf-mono);
+    color: var(--mono-3);
+    transition: transform 200ms ease, color 200ms ease;
+  }
+  .tf-menu__list a:hover .tf-menu__arrow {
+    color: var(--signal);
+    transform: translateX(6px);
+  }
+
+  /* Right rail */
+  .tf-menu__rail {
+    background: var(--carbon-2);
+    border: 1px solid var(--hair);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .tf-menu__rail ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .tf-menu__rail li {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-top: 1px dashed var(--hair);
+    font-family: var(--tf-mono);
+  }
+  .tf-menu__rail li:first-child { border-top: 0; }
+  .tf-menu__rail-l {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mono-2);
+  }
+  .tf-menu__rail-v {
+    font-size: 13px;
+    color: var(--bone);
+  }
+  .tf-menu__rail-d {
+    font-size: 12px;
+  }
+  .tf-menu__rail-d.is-up { color: var(--verified); }
+  .tf-menu__rail-d.is-down { color: var(--error); }
+
+  .tf-menu__foot {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--hair);
+    padding-top: 16px;
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mono-3);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const menu = document.getElementById('tfMenuOverlay');
+    const openBtn = document.getElementById('tfMenuOpen');
+    const closeBtn = document.getElementById('tfMenuClose');
+    if (!menu || !openBtn || !closeBtn) return;
+    const open = () => {
+      menu.classList.add('is-open');
+      menu.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+    const close = () => {
+      menu.classList.remove('is-open');
+      menu.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  })();
+</script>

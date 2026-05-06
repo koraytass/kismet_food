@@ -1,0 +1,152 @@
+---
+/**
+ * TradeFloorFooter — Single hairline line. No marketing footer.
+ * Brand strapline · 3 city marks · email · legal mini-links.
+ */
+import type { Locale } from '@/i18n';
+import { localePath } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: { strap: 'commodity desk', priv: 'gizlilik', terms: 'şartlar', cookies: 'çerez', kvkk: 'kvkk' },
+  en: { strap: 'commodity desk', priv: 'privacy',  terms: 'terms',   cookies: 'cookies', kvkk: 'kvkk' },
+  ar: { strap: 'مكتب السلع',     priv: 'الخصوصية', terms: 'الشروط',  cookies: 'الكوكيز', kvkk: 'KVKK' },
+}[locale];
+---
+
+<footer class="tf-foot">
+  <div class="tf-wrap tf-foot__inner">
+    <div class="tf-foot__brand">
+      <span class="tf-foot__mark"></span>
+      <span class="tf-foot__name">KISMET</span>
+      <span class="tf-foot__strap">— {ui.strap}</span>
+    </div>
+
+    <div class="tf-foot__cities">
+      <span>Istanbul</span>
+      <span class="tf-foot__sep">·</span>
+      <span>London</span>
+      <span class="tf-foot__sep">·</span>
+      <span>Singapore</span>
+    </div>
+
+    <a href="mailto:trade@kismetfoods.com" class="tf-foot__email">trade@kismetfoods.com</a>
+
+    <ul class="tf-foot__legal">
+      <li><a href={localePath('/privacy/', locale)}>{ui.priv}</a></li>
+      <li><a href={localePath('/terms/', locale)}>{ui.terms}</a></li>
+      <li><a href={localePath('/cookies/', locale)}>{ui.cookies}</a></li>
+      <li><span class="tf-foot__pdo">EU PDO · ISO 22000 · BRC AA · {ui.kvkk}</span></li>
+    </ul>
+  </div>
+
+  <div class="tf-foot__copy">
+    <span>© 2026 Kısmet Foods Gıda Tedarik Yönetimi A.Ş.</span>
+    <span>v2.0 · trade floor</span>
+  </div>
+</footer>
+
+<style>
+  .tf-foot {
+    background: var(--carbon);
+    border-top: 1px solid var(--hair);
+    padding: 28px 0 24px;
+  }
+  .tf-foot__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 32px;
+    align-items: center;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--hair);
+    margin-bottom: 14px;
+  }
+  .tf-foot__brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--tf-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--bone);
+  }
+  .tf-foot__mark {
+    width: 10px; height: 10px;
+    background: var(--signal);
+    box-shadow: 0 0 12px rgba(255, 92, 0, 0.6);
+    transform: translateY(1px);
+    margin-right: 4px;
+  }
+  .tf-foot__name { font-weight: 600; }
+  .tf-foot__strap { color: var(--mono-2); }
+
+  .tf-foot__cities {
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mono-2);
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .tf-foot__sep { color: var(--hair-bright); }
+
+  .tf-foot__email {
+    font-family: var(--tf-mono);
+    font-size: 13px;
+    color: var(--bone);
+    text-decoration: none;
+    border-bottom: 1px solid var(--hair-bright);
+    padding-bottom: 4px;
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .tf-foot__email:hover { color: var(--signal); border-color: var(--signal); }
+
+  .tf-foot__legal {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    gap: 14px;
+    align-items: center;
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .tf-foot__legal a {
+    color: var(--mono-3);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .tf-foot__legal a:hover { color: var(--signal); }
+  .tf-foot__pdo { color: var(--mono-3); }
+
+  .tf-foot__copy {
+    max-width: var(--tf-col);
+    margin: 0 auto;
+    padding-inline: var(--tf-gutter);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--tf-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mono-3);
+  }
+
+  @media (max-width: 1024px) {
+    .tf-foot__inner {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .tf-foot__copy {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+</style>

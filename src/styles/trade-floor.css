@@ -1,0 +1,324 @@
+/* ============================================
+   KISMET — TRADE FLOOR
+   Carbon dark, signal orange, mono-grid B2B desk.
+   Design tokens + base + utility classes.
+   ============================================ */
+
+:root {
+  /* Core palette */
+  --carbon: #0a0a0a;
+  --carbon-2: #0f0f0f;
+  --ash: #1a1a1a;
+  --ash-2: #222222;
+  --hair: #2a2a2a;       /* hairline border */
+  --hair-bright: #3a3a3a;
+  --bone: #f5f3ee;
+  --bone-2: #ebe8e0;
+  --ink: #0a0a0a;
+
+  /* Single accent */
+  --signal: #ff5c00;
+  --signal-soft: #ff7a30;
+  --signal-deep: #d94c00;
+
+  /* Status */
+  --verified: #00d97e;
+  --warn: #ffb000;
+  --error: #ff3b30;
+
+  /* Mono / muted */
+  --mono: #c8c8c8;
+  --mono-2: #8a8a8a;
+  --mono-3: #555555;
+
+  /* Typography */
+  --tf-sans: 'Inter Tight', 'Söhne', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  --tf-mono: 'JetBrains Mono', 'Söhne Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --tf-display: 'Inter Tight', 'Söhne', system-ui, sans-serif;
+  --tf-italic: 'Cormorant Garamond', 'Tiempos', Georgia, serif;
+
+  /* Layout */
+  --tf-gutter: clamp(1rem, 3.5vw, 3rem);
+  --tf-col: 1440px;
+}
+
+/* ============================================
+   Base — Trade Floor body class only
+   ============================================ */
+.tf {
+  font-family: var(--tf-sans);
+  background: var(--carbon);
+  color: var(--mono);
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+.tf *::selection {
+  background: var(--signal);
+  color: var(--carbon);
+}
+
+/* ============================================
+   Type primitives
+   ============================================ */
+.tf-mono {
+  font-family: var(--tf-mono);
+  font-feature-settings: 'tnum', 'zero';
+  letter-spacing: 0;
+}
+
+.tf-eyebrow {
+  font-family: var(--tf-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mono-2);
+}
+.tf-eyebrow--signal { color: var(--signal); }
+.tf-eyebrow--verified { color: var(--verified); }
+
+.tf-num {
+  font-family: var(--tf-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.tf-h-display {
+  font-family: var(--tf-display);
+  font-size: clamp(48px, 5.5vw, 92px);
+  font-weight: 500;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  color: var(--bone);
+}
+.tf-h-display em {
+  font-family: var(--tf-italic);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--signal);
+}
+
+.tf-h2 {
+  font-family: var(--tf-display);
+  font-size: clamp(32px, 3.6vw, 56px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--bone);
+}
+
+.tf-h3 {
+  font-family: var(--tf-display);
+  font-size: clamp(20px, 1.6vw, 26px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+}
+
+.tf-lede {
+  font-family: var(--tf-sans);
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.55;
+  color: var(--mono-2);
+  max-width: 60ch;
+}
+
+/* ============================================
+   Layout primitives
+   ============================================ */
+.tf-wrap {
+  max-width: var(--tf-col);
+  margin: 0 auto;
+  padding-inline: var(--tf-gutter);
+}
+
+.tf-section {
+  position: relative;
+  padding-block: clamp(80px, 10vw, 160px);
+  border-top: 1px solid var(--hair);
+}
+.tf-section--light {
+  background: var(--bone);
+  color: var(--ink);
+  border-color: var(--bone-2);
+}
+.tf-section--light .tf-h-display,
+.tf-section--light .tf-h2,
+.tf-section--light .tf-h3 { color: var(--ink); }
+.tf-section--light .tf-lede { color: var(--mono-3); }
+
+/* ============================================
+   Hairline grid (between blocks)
+   ============================================ */
+.tf-hairline { border-top: 1px solid var(--hair); }
+.tf-hairline-l { border-left: 1px solid var(--hair); }
+.tf-hairline-r { border-right: 1px solid var(--hair); }
+.tf-hairline-b { border-bottom: 1px solid var(--hair); }
+
+/* ============================================
+   Buttons
+   ============================================ */
+.tf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  font-family: var(--tf-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.tf-btn--primary {
+  background: var(--signal);
+  color: var(--carbon);
+}
+.tf-btn--primary:hover {
+  background: var(--signal-soft);
+}
+.tf-btn--ghost {
+  background: transparent;
+  color: var(--bone);
+  border-color: var(--hair-bright);
+}
+.tf-btn--ghost:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+.tf-btn--ink {
+  background: var(--ink);
+  color: var(--bone);
+}
+.tf-btn--ink:hover {
+  background: var(--signal);
+  color: var(--carbon);
+}
+
+.tf-tlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--tf-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hair-bright);
+  padding-bottom: 4px;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+.tf-tlink:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+.tf-tlink__arrow { transition: transform 200ms ease; }
+.tf-tlink:hover .tf-tlink__arrow { transform: translateX(4px); }
+
+/* ============================================
+   Card
+   ============================================ */
+.tf-card {
+  background: var(--ash);
+  border: 1px solid var(--hair);
+  padding: 24px;
+  transition: border-color 200ms ease;
+}
+.tf-card:hover { border-color: var(--signal); }
+
+/* ============================================
+   Live ticker
+   ============================================ */
+.tf-ticker {
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  background: var(--carbon-2);
+  overflow: hidden;
+  padding-block: 14px;
+}
+.tf-ticker__track {
+  display: flex;
+  gap: 56px;
+  white-space: nowrap;
+  animation: tf-marquee 60s linear infinite;
+  font-family: var(--tf-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--mono);
+}
+.tf-ticker__track > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.tf-ticker__dot {
+  width: 6px; height: 6px;
+  background: var(--signal);
+  border-radius: 50%;
+  display: inline-block;
+}
+.tf-ticker__delta--up { color: var(--verified); }
+.tf-ticker__delta--down { color: var(--error); }
+@keyframes tf-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ============================================
+   Form
+   ============================================ */
+.tf-form { display: grid; gap: 20px; }
+.tf-form__field { display: flex; flex-direction: column; gap: 8px; }
+.tf-form__field label {
+  font-family: var(--tf-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mono-2);
+}
+.tf-form__field input,
+.tf-form__field select,
+.tf-form__field textarea {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--hair-bright);
+  padding: 10px 0;
+  font-family: var(--tf-sans);
+  font-size: 16px;
+  color: var(--bone);
+  transition: border-color 200ms ease;
+}
+.tf-form__field input:focus,
+.tf-form__field select:focus,
+.tf-form__field textarea:focus {
+  outline: none;
+  border-color: var(--signal);
+}
+
+/* ============================================
+   Reveal — restrained
+   ============================================ */
+.tf-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+.tf-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tf-reveal { opacity: 1; transform: none; transition: none; }
+  .tf-ticker__track { animation: none; }
+}

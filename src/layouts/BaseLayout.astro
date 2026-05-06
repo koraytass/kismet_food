@@ -1,27 +1,24 @@
 ---
 /**
- * BaseLayout - Root layout for all pages.
+ * BaseLayout — Trade Floor root.
  *
- * Handles:
- * - HTML lang/dir attributes (RTL for Arabic)
- * - Self-hosted font loading (no third-party requests)
- * - Global CSS import
- * - SEO head injection via slot
- * - Consistent page structure
+ * v2 — Carbon dark, signal orange, mono grid.
+ * Tek shell; her sayfa otomatik olarak yeni tasarımı alır.
  *
- * Usage:
- * <BaseLayout locale="tr">
- *   <Fragment slot="head">
- *     <SEOHead ... />
- *   </Fragment>
- *   <main>Page content</main>
- * </BaseLayout>
+ * Pipeline:
+ *   1. HTML lang/dir + RTL Arapça
+ *   2. Self-hosted fonts (Inter Tight + JetBrains Mono + Cormorant + Source serif/sans + Noto Arabic)
+ *   3. Global Tailwind CSS + trade-floor.css design tokens
+ *   4. Body sınıfı `tf` → tüm Trade Floor primitivleri çalışır
+ *   5. Default slot içerik; opsiyonel `head` slot'u SEOHead için
  */
 import { localeConfig, type Locale } from '@/i18n';
-import { colors } from '@/lib/brand';
 import '@/styles/global.css';
+import '@/styles/trade-floor.css';
 
 // Self-hosted fonts via fontsource — no third-party requests (KVKK/GDPR safe)
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/jetbrains-mono';
 import '@fontsource-variable/source-serif-4';
 import '@fontsource-variable/source-sans-3';
 import '@fontsource-variable/noto-sans-arabic';
@@ -42,7 +39,9 @@ const { dir, hreflang } = localeConfig[locale];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    {/* Favicon — alternates teal ↔ orange via JS every 3 s */}
+    {/* Favicon — Cormorant Garamond fallback for legacy magazine moments. */}
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,300;1,400&display=swap" rel="stylesheet" />
+
     <link id="favicon" rel="icon" type="image/svg+xml" href="/favicon-teal.svg" />
     <script is:inline>
       (function () {
@@ -57,14 +56,14 @@ const { dir, hreflang } = localeConfig[locale];
       })();
     </script>
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content={themeColor ?? colors.teal} />
+    <meta name="theme-color" content={themeColor ?? '#0a0a0a'} />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     {/* SEO head slot - inject SEOHead component here */}
     <slot name="head" />
   </head>
-  <body class:list={['flex min-h-dvh flex-col', bodyClass]}>
+  <body class:list={['tf flex min-h-dvh flex-col', bodyClass]} style="background:var(--carbon);color:var(--mono);">
     <slot />
   </body>
 </html>

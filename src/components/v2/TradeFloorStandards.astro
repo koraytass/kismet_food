@@ -1,0 +1,162 @@
+---
+/**
+ * TradeFloorStandards — Cert + spec data grid (dark).
+ * Logo wall has been replaced by a dense data table — auditor language.
+ */
+import type { Locale } from '@/i18n';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+
+const ui = {
+  tr: {
+    eyebrow: 'N° 05 / Belgeler',
+    title: 'Standartlar,',
+    titleEm: 'rozet değil — denetim.',
+    lede: 'Bir konteynerin yanına eklenen evrak setinin gerçek listesi. İddiasız sertifikasyon yok; her satır denetlenebilir.',
+    catH: 'Kategori',
+    standardH: 'Standart',
+    scopeH: 'Kapsam',
+    audH: 'Denetim',
+  },
+  en: {
+    eyebrow: 'N° 05 / Standards',
+    title: 'Standards,',
+    titleEm: 'not badges — audit.',
+    lede: 'The real document set that travels with a container. No vanity badges; every row is auditable.',
+    catH: 'Category',
+    standardH: 'Standard',
+    scopeH: 'Scope',
+    audH: 'Audit',
+  },
+  ar: {
+    eyebrow: 'العدد ٠٥ / المعايير',
+    title: 'معايير،',
+    titleEm: 'لا أوسمة — تدقيق.',
+    lede: 'قائمة الوثائق الحقيقية المرفقة بالحاوية. لا شارات مظهرية؛ كل سطر قابل للتدقيق.',
+    catH: 'الفئة',
+    standardH: 'المعيار',
+    scopeH: 'النطاق',
+    audH: 'التدقيق',
+  },
+}[locale];
+
+const rows = [
+  { cat: 'Quality',     std: 'ISO 22000',                   scope: 'Food safety mgmt system',          aud: 'Annual · 3rd party'  },
+  { cat: 'Quality',     std: 'BRC Global Standard · AA',    scope: 'Manufacturing + storage',          aud: 'Annual · BRC body'   },
+  { cat: 'Quality',     std: 'HACCP',                       scope: 'Process control · all categories', aud: 'Continuous'          },
+  { cat: 'Origin',      std: 'EU PDO · Antep pistachio',    scope: 'Geographic indication',            aud: 'EU register · 2021'  },
+  { cat: 'Origin',      std: 'EU PDO · Giresun hazelnut',   scope: 'Geographic indication',            aud: 'EU register'         },
+  { cat: 'Origin',      std: 'TR PDO · Urfa isot pepper',   scope: 'Geographic indication',            aud: 'TR register · 2008'  },
+  { cat: 'Sourcing',    std: 'Fair Trade · FLO-CERT',       scope: 'Coffee, cocoa cooperatives',       aud: 'FLO body'            },
+  { cat: 'Sourcing',    std: 'Rainforest Alliance / UTZ',   scope: 'Coffee, cocoa, spices',            aud: 'RFA body'            },
+  { cat: 'Sourcing',    std: 'EU EUDR (2024)',              scope: 'Deforestation-free · geo-trace',   aud: 'CMS / farmer ID'     },
+  { cat: 'Diet',        std: 'Halal · GIMDES / Halal CC',   scope: 'Meat-free supply chain',           aud: 'Halal cert body'     },
+  { cat: 'Diet',        std: 'Kosher · OK / OU',            scope: 'Pareve grade',                     aud: 'Rabbinical body'     },
+  { cat: 'Organic',     std: 'USDA Organic · NOP',          scope: 'Coffee, cocoa, spices',            aud: 'USDA accredited'     },
+  { cat: 'Organic',     std: 'EU 834/2007',                 scope: 'EU organic equivalence',           aud: 'EU control body'     },
+  { cat: 'US import',   std: 'FDA · FSMA Foreign Supplier', scope: 'US-bound shipments',               aud: 'FDA registry'        },
+  { cat: 'Logistics',   std: 'AEO-C · TR Customs',          scope: 'Authorised economic operator',     aud: 'TR customs · 2025'   },
+  { cat: 'Lab',         std: 'ISO/IEC 17025',               scope: 'Eurofins · SGS · BV partners',     aud: 'Per batch'           },
+];
+---
+
+<section class="tf-section tf-std" id="standards">
+  <div class="tf-wrap">
+    <header class="tf-std__head">
+      <div>
+        <span class="tf-eyebrow tf-eyebrow--signal">{ui.eyebrow}</span>
+        <h2 class="tf-h-display">
+          {ui.title}<br /><em>{ui.titleEm}</em>
+        </h2>
+      </div>
+      <p class="tf-lede tf-std__lede">{ui.lede}</p>
+    </header>
+
+    <div class="tf-std__table">
+      <div class="tf-std__row tf-std__row--head">
+        <span>{ui.catH}</span>
+        <span>{ui.standardH}</span>
+        <span>{ui.scopeH}</span>
+        <span>{ui.audH}</span>
+      </div>
+      {rows.map((r) => (
+        <div class="tf-std__row">
+          <span class="tf-std__cat">{r.cat}</span>
+          <span class="tf-std__std">{r.std}</span>
+          <span class="tf-std__scope">{r.scope}</span>
+          <span class="tf-std__aud">{r.aud}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tf-std__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  @media (min-width: 1024px) {
+    .tf-std__head {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 80px;
+      align-items: end;
+    }
+  }
+  .tf-std__head em {
+    font-family: var(--tf-italic);
+    font-style: italic;
+    color: var(--signal);
+    font-weight: 400;
+  }
+  .tf-std__lede { padding-bottom: 8px; }
+
+  .tf-std__table {
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+  }
+  .tf-std__row {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1.6fr 1fr;
+    gap: 24px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hair);
+    align-items: baseline;
+    font-family: var(--tf-mono);
+    font-size: 12px;
+    color: var(--mono);
+    transition: background 200ms ease;
+  }
+  .tf-std__row:last-child { border-bottom: 0; }
+  .tf-std__row:hover {
+    background: linear-gradient(90deg, rgba(255,92,0,0.04), transparent 70%);
+  }
+  .tf-std__row--head {
+    color: var(--mono-3);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 12px 0;
+  }
+  .tf-std__cat {
+    color: var(--signal);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .tf-std__std { color: var(--bone); font-size: 13px; }
+  .tf-std__scope { color: var(--mono); font-size: 12px; }
+  .tf-std__aud { color: var(--mono-3); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  @media (max-width: 880px) {
+    .tf-std__row--head { display: none; }
+    .tf-std__row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 16px 0;
+    }
+  }
+</style>

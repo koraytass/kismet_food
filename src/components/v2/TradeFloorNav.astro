@@ -1,0 +1,200 @@
+---
+/**
+ * TradeFloorNav — Slim monospaced top nav over carbon background.
+ * Fixed at top, hairline border, single accent on hover.
+ */
+import type { Locale } from '@/i18n';
+import { localePath, locales, localeConfig } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath?: string;
+}
+
+const { locale, currentPath = '/' } = Astro.props;
+
+const links = [
+  { label: 'Origins',   href: localePath('/origins/', locale) },
+  { label: 'Products',  href: localePath('/products/', locale) },
+  { label: 'Supply',    href: localePath('/supply-chain/', locale) },
+  { label: 'Insights',  href: localePath('/insights/', locale) },
+  { label: 'Desk',      href: localePath('/contact/', locale) },
+];
+
+const segments = currentPath.split('/').filter(Boolean);
+const baseSeg = (locales as readonly string[]).includes(segments[0]) ? '/' + segments.slice(1).join('/') : currentPath;
+const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
+---
+
+<nav class="tf-nav">
+  <a href={localePath('/', locale)} class="tf-nav__brand" aria-label="Kismet">
+    <span class="tf-nav__mark"></span>
+    <span class="tf-nav__name">KISMET</span>
+    <span class="tf-nav__sub">/ commodity desk</span>
+  </a>
+
+  <div class="tf-nav__center">
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+  </div>
+
+  <div class="tf-nav__right">
+    <span class="tf-nav__status">
+      <span class="tf-nav__pulse"></span>
+      <span>desk · live</span>
+    </span>
+    <div class="tf-nav__lang">
+      {locales.map((lc, i) => (
+        <>
+          {i > 0 && <span class="tf-nav__lang-sep">/</span>}
+          <a
+            href={localePath(basePath, lc)}
+            hreflang={localeConfig[lc].hreflang}
+            class:list={['tf-nav__lang-item', lc === locale && 'is-active']}
+          >{lc.toUpperCase()}</a>
+        </>
+      ))}
+    </div>
+    <a href={localePath('/contact/request-quote/', locale)} class="tf-btn tf-btn--primary tf-nav__cta">
+      Open desk →
+    </a>
+    <button id="tfMenuOpen" type="button" class="tf-nav__menu-btn" aria-label="Menu">
+      <span class="tf-nav__menu-bars" aria-hidden="true">
+        <span></span><span></span>
+      </span>
+      <span class="tf-nav__menu-label">Menu</span>
+    </button>
+  </div>
+</nav>
+
+<style>
+  .tf-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px var(--tf-gutter);
+    background: rgba(10, 10, 10, 0.78);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--hair);
+  }
+  .tf-nav__brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--bone);
+    text-decoration: none;
+    font-family: var(--tf-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+  }
+  .tf-nav__mark {
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: var(--signal);
+    box-shadow: 0 0 12px rgba(255, 92, 0, 0.6);
+    transform: translateY(1px);
+    margin-right: 4px;
+  }
+  .tf-nav__name { font-weight: 600; }
+  .tf-nav__sub { color: var(--mono-2); font-size: 11px; letter-spacing: 0.14em; }
+
+  .tf-nav__center {
+    display: none;
+    gap: 32px;
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .tf-nav__center a {
+    color: var(--mono);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .tf-nav__center a:hover { color: var(--signal); }
+
+  .tf-nav__right {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .tf-nav__status {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    color: var(--mono-2);
+  }
+  .tf-nav__pulse {
+    width: 6px; height: 6px;
+    background: var(--verified);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(0, 217, 126, 0.7);
+    animation: tf-pulse 2s infinite;
+  }
+  @keyframes tf-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0, 217, 126, 0.6); }
+    70%  { box-shadow: 0 0 0 8px rgba(0, 217, 126, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 217, 126, 0); }
+  }
+
+  .tf-nav__lang { display: inline-flex; gap: 6px; align-items: center; }
+  .tf-nav__lang-item {
+    color: var(--mono-3);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .tf-nav__lang-item.is-active, .tf-nav__lang-item:hover { color: var(--bone); }
+  .tf-nav__lang-sep { color: var(--hair-bright); }
+
+  .tf-nav__cta {
+    display: none !important;
+    padding: 10px 14px !important;
+    font-size: 10px !important;
+  }
+  .tf-nav__menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: 0;
+    color: var(--bone);
+    font-family: var(--tf-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0;
+    transition: color 200ms ease;
+  }
+  .tf-nav__menu-btn:hover { color: var(--signal); }
+  .tf-nav__menu-bars {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 18px;
+  }
+  .tf-nav__menu-bars span {
+    display: block;
+    height: 1.5px;
+    background: currentColor;
+    width: 100%;
+    transition: width 200ms ease;
+  }
+  .tf-nav__menu-bars span:last-child { width: 60%; align-self: flex-end; }
+  .tf-nav__menu-btn:hover .tf-nav__menu-bars span:last-child { width: 100%; }
+  .tf-nav__menu-label { display: none; }
+
+  @media (min-width: 920px) {
+    .tf-nav__center { display: inline-flex; }
+    .tf-nav__status { display: inline-flex; }
+    .tf-nav__cta { display: inline-flex !important; }
+    .tf-nav__menu-label { display: inline; }
+  }
+</style>
