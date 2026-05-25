@@ -21,10 +21,31 @@ const { width: W, height: H } = WORLD_VIEWBOX;
 const countryPaths = getWorldPaths();
 
 const commodities: Commodity[] = ['coffee', 'cocoa', 'nuts'];
-const markers = ORIGIN_STORIES.map((o) => ({
-  ...o,
-  ...projectEqui(o.lat, o.lng),
-}));
+
+/* Per-marker label placement so close clusters don't collide.
+   anchor: 'l' = label sits LEFT of marker, 'r' = RIGHT (default).
+   dy: vertical nudge in viewBox units. */
+const LABEL_HINTS: Record<string, { anchor?: 'l' | 'r'; dy?: number }> = {
+  'yirgacheffe': { anchor: 'r', dy: 3 },
+  'huila':       { anchor: 'l', dy: 3 },
+  'dak-lak':     { anchor: 'l', dy: -2 },
+  'ashanti':     { anchor: 'r', dy: 9 },
+  'daloa':       { anchor: 'l', dy: 9 },
+  'antep':       { anchor: 'r', dy: 9 },
+  'giresun':     { anchor: 'l', dy: -3 },
+  'malatya':     { anchor: 'l', dy: 9 },
+  'phan-rang':   { anchor: 'r', dy: 9 },
+};
+
+const markers = ORIGIN_STORIES.map((o) => {
+  const hint = LABEL_HINTS[o.id] ?? {};
+  return {
+    ...o,
+    ...projectEqui(o.lat, o.lng),
+    anchor: hint.anchor ?? 'r',
+    labelDy: hint.dy ?? 3,
+  };
+});
 
 const HUB = { city: 'İstanbul', lat: 41.0082, lng: 28.9784 };
 const hubPt = projectEqui(HUB.lat, HUB.lng);
@@ -95,27 +116,35 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
 
         {/* Hub marker */}
         <g class="at-hub" transform={`translate(${hubPt.x} ${hubPt.y})`}>
-          <circle class="at-hub__pulse" r="6" />
-          <circle class="at-hub__core" r="3.2" />
-          <text class="at-hub__label" x="6" y="-5">İSTANBUL</text>
+          <circle class="at-hub__pulse" r="8" />
+          <circle class="at-hub__core" r="4.5" />
+          <text class="at-hub__label at-hub__label--shadow" x="8" y="-7">İSTANBUL · HUB</text>
+          <text class="at-hub__label" x="8" y="-7">İSTANBUL · HUB</text>
         </g>
 
         {/* Origin markers */}
         <g class="at-markers">
-          {markers.map((m) => (
-            <g
-              class="at-marker"
-              data-at-id={m.id}
-              transform={`translate(${m.x} ${m.y})`}
-              style={`--at-c:${COMMODITY_COLOR[m.commodity].hex};`}
-              tabindex="0"
-              role="button"
-              aria-label={`${m.city}, ${m.country} — ${m.product}`}
-            >
-              <circle class="at-marker__halo" r="9" />
-              <circle class="at-marker__core" r="3.4" />
-            </g>
-          ))}
+          {markers.map((m) => {
+            const lx = m.anchor === 'l' ? -8 : 8;
+            const anchor = m.anchor === 'l' ? 'end' : 'start';
+            return (
+              <g
+                class="at-marker"
+                data-at-id={m.id}
+                transform={`translate(${m.x} ${m.y})`}
+                style={`--at-c:${COMMODITY_COLOR[m.commodity].hex};`}
+                tabindex="0"
+                role="button"
+                aria-label={`${m.city}, ${m.country} — ${m.product}`}
+              >
+                <circle class="at-marker__halo" r="12" />
+                <circle class="at-marker__ring" r="7" />
+                <circle class="at-marker__core" r="4.5" />
+                <text class="at-marker__label at-marker__label--shadow" x={lx} y={m.labelDy} text-anchor={anchor}>{m.city}</text>
+                <text class="at-marker__label" x={lx} y={m.labelDy} text-anchor={anchor}>{m.city}</text>
+              </g>
+            );
+          })}
         </g>
       </svg>
 
@@ -128,13 +157,13 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
         <h3>Bir noktayı seç</h3>
         <p>Haritadaki her marker bir doğrudan-tedarik noktasıdır. Üzerine gel ya da tıkla — bölgesel hikâye ve teknik özellikler sağda açılır.</p>
         <ul class="at-panel__quick">
-          {markers.slice(0, 5).map((m) => (
+          {markers.map((m) => (
             <li>
               <button type="button" class="at-panel__qbtn" data-at-jump={m.id}>
                 <span class="at-panel__qflag" aria-hidden="true">{m.flag}</span>
-                <span>{m.city}, {m.country}</span>
-                <span class="at-panel__qcat" style={`color:${COMMODITY_COLOR[m.commodity].soft};`}>
-                  {COMMODITY_LABEL[m.commodity]}
+                <span>{m.city}</span>
+                <span class="at-panel__qcat" style={`color:${COMMODITY_COLOR[m.commodity].hex};`}>
+                  · {COMMODITY_LABEL[m.commodity]}
                 </span>
               </button>
             </li>
@@ -143,7 +172,11 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
       </div>
 
       {markers.map((m) => (
-        <article class="at-card" data-at-card={m.id}>
+        <article
+          class="at-card"
+          data-at-card={m.id}
+          style={`--at-c:${COMMODITY_COLOR[m.commodity].hex};`}
+        >
           <header class="at-card__top">
             <span class="at-card__flag" aria-hidden="true">{m.flag}</span>
             <div>
@@ -272,21 +305,18 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
 
   .at-stage {
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 24px;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
-  }
-  @media (min-width: 1024px) {
-    .at-stage { grid-template-columns: minmax(0, 1fr) 380px; align-items: start; }
   }
 
   .at-mapwrap {
     position: relative;
     background: linear-gradient(180deg, #faf6e9, #eee5cc);
     border: 1px solid rgba(16, 33, 55, 0.18);
-    padding: 14px;
+    padding: 18px;
     box-shadow:
       0 1px 0 rgba(255, 255, 255, 0.6) inset,
       0 18px 36px -22px rgba(10, 30, 60, 0.4);
@@ -331,29 +361,32 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
   }
 
   .at-hub__pulse {
-    fill: rgba(194, 65, 12, 0.18);
+    fill: rgba(194, 65, 12, 0.22);
     animation: at-pulse 2.4s ease-out infinite;
     transform-origin: center;
   }
   .at-hub__core {
     fill: #c2410c;
     stroke: #fff;
-    stroke-width: 1;
+    stroke-width: 1.3;
   }
   .at-hub__label {
     fill: #c2410c;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 6.5px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    paint-order: stroke;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+  }
+  .at-hub__label--shadow {
+    fill: none;
     stroke: rgba(250, 246, 233, 0.95);
-    stroke-width: 1.6;
+    stroke-width: 3.5;
     stroke-linejoin: round;
+    paint-order: stroke;
   }
   @keyframes at-pulse {
-    0%   { r: 4; opacity: 0.6; }
-    100% { r: 16; opacity: 0; }
+    0%   { r: 5; opacity: 0.6; }
+    100% { r: 20; opacity: 0; }
   }
 
   .at-markers { cursor: pointer; }
@@ -362,18 +395,47 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
     opacity: 0.18;
     transition: opacity 220ms ease, r 220ms ease;
   }
+  .at-marker__ring {
+    fill: none;
+    stroke: var(--at-c);
+    stroke-width: 1.2;
+    stroke-opacity: 0.7;
+    transition: r 220ms ease, stroke-opacity 220ms ease;
+  }
   .at-marker__core {
     fill: var(--at-c);
     stroke: #fff;
-    stroke-width: 1;
+    stroke-width: 1.3;
     transition: r 220ms ease;
+  }
+  .at-marker__label {
+    fill: #0a1830;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    transition: fill 220ms ease, font-size 220ms ease;
+  }
+  .at-marker__label--shadow {
+    fill: none;
+    stroke: rgba(250, 246, 233, 0.95);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    paint-order: stroke;
   }
   .at-marker:hover .at-marker__halo,
   .at-marker:focus .at-marker__halo,
-  .at-marker.is-active .at-marker__halo { opacity: 0.45; r: 14; }
+  .at-marker.is-active .at-marker__halo { opacity: 0.45; r: 18; }
+  .at-marker:hover .at-marker__ring,
+  .at-marker:focus .at-marker__ring,
+  .at-marker.is-active .at-marker__ring { r: 11; stroke-opacity: 1; }
   .at-marker:hover .at-marker__core,
   .at-marker:focus .at-marker__core,
-  .at-marker.is-active .at-marker__core { r: 4.4; }
+  .at-marker.is-active .at-marker__core { r: 5.5; }
+  .at-marker:hover .at-marker__label,
+  .at-marker:focus .at-marker__label,
+  .at-marker.is-active .at-marker__label { fill: var(--at-c); font-size: 10px; }
 
   .at-reset {
     position: absolute;
@@ -393,30 +455,34 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
   }
   .at-reset:hover { background: #fff; }
 
-  /* SIDE PANEL */
+  /* PANEL — below the map, expands on selection */
   .at-panel {
     position: relative;
     background: #fff;
     border: 1px solid rgba(16, 33, 55, 0.18);
-    padding: 22px;
+    padding: 24px clamp(20px, 3vw, 36px);
     box-shadow: 0 18px 36px -22px rgba(10, 30, 60, 0.3);
-    min-height: 460px;
   }
 
   .at-panel__empty {
-    display: flex; flex-direction: column;
-    gap: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px 24px;
   }
   .at-panel__counter {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: #46587a;
+    color: #c2410c;
+    padding: 4px 10px;
+    border: 1px solid rgba(194, 65, 12, 0.35);
+    border-radius: 2px;
   }
   .at-panel__empty h3 {
     font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 28px;
+    font-size: clamp(22px, 2.6vw, 30px);
     font-weight: 500;
     margin: 0;
     color: #0a1830;
@@ -427,35 +493,40 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
     font-size: 14px;
     line-height: 1.55;
     color: #46587a;
+    flex: 1 1 320px;
+    min-width: 220px;
   }
   .at-panel__quick {
     list-style: none;
-    margin: 8px 0 0;
-    padding: 12px 0 0;
+    margin: 0;
+    padding: 14px 0 0;
     border-top: 1px dashed rgba(16, 33, 55, 0.18);
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    flex-wrap: wrap;
+    gap: 6px 10px;
   }
   .at-panel__qbtn {
-    width: 100%;
     appearance: none;
-    background: transparent;
-    border: 0;
+    background: rgba(16, 33, 55, 0.04);
+    border: 1px solid transparent;
     text-align: left;
-    display: grid;
-    grid-template-columns: 22px 1fr auto;
-    gap: 10px;
+    display: inline-flex;
+    gap: 8px;
     align-items: center;
-    padding: 8px 4px;
+    padding: 8px 12px;
     cursor: pointer;
     font-family: inherit;
     color: #0a1830;
-    border-bottom: 1px dotted rgba(16, 33, 55, 0.1);
-    transition: background 160ms ease;
+    border-radius: 999px;
+    transition: background 160ms ease, border-color 160ms ease;
+    font-size: 13px;
   }
-  .at-panel__qbtn:hover { background: rgba(16, 33, 55, 0.04); }
-  .at-panel__qflag { font-size: 16px; }
+  .at-panel__qbtn:hover {
+    background: #fff;
+    border-color: rgba(16, 33, 55, 0.25);
+  }
+  .at-panel__qflag { font-size: 15px; }
   .at-panel__qcat {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 9px;
@@ -464,19 +535,26 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
   }
 
   .at-card { display: none; }
-  .at-card.is-active { display: block; animation: at-fade 240ms ease; }
+  .at-card.is-active { display: grid; animation: at-fade 240ms ease; }
   @keyframes at-fade {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+  .at-card {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 3vw, 36px);
+  }
+  @media (min-width: 768px) {
+    .at-card.is-active {
+      grid-template-columns: minmax(260px, 320px) 1fr 1fr;
+      align-items: start;
+    }
   }
 
   .at-card__top {
     display: flex;
     gap: 14px;
     align-items: flex-start;
-    padding-bottom: 16px;
-    border-bottom: 1px dashed rgba(16, 33, 55, 0.18);
-    margin-bottom: 16px;
   }
   .at-card__flag { font-size: 32px; line-height: 1; }
   .at-card__cat {
@@ -505,38 +583,44 @@ const hubPt = projectEqui(HUB.lat, HUB.lng);
   .at-card__photo {
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    margin: 0 0 16px;
     border: 1px solid rgba(16, 33, 55, 0.12);
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 768px) {
+    .at-card__photo { grid-column: auto; aspect-ratio: 1 / 1; }
   }
   .at-card__photo img {
     width: 100%; height: 100%; object-fit: cover;
     filter: saturate(1.05);
   }
   .at-card__story {
-    font-size: 14px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.65;
     color: #2a3a55;
-    margin: 0 0 14px;
+    margin: 0;
   }
   .at-card__facts {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px 14px;
+    gap: 12px 18px;
     margin: 0;
-    padding-top: 14px;
-    border-top: 1px solid rgba(16, 33, 55, 0.1);
+  }
+  .at-card__facts > div {
+    padding: 10px 12px;
+    background: rgba(16, 33, 55, 0.04);
+    border-left: 2px solid var(--at-c, #c2410c);
   }
   .at-card__facts dt {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
+    font-size: 9.5px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #46587a;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
   .at-card__facts dd {
     margin: 0;
-    font-size: 13px;
+    font-size: 14px;
     color: #0a1830;
     font-variant-numeric: tabular-nums;
   }
