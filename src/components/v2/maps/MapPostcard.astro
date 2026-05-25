@@ -1,0 +1,346 @@
+---
+/**
+ * MapPostcard — Aged-paper postcard wall.
+ * Each origin is a tilted polaroid pinned to a kraft pinboard.
+ * Hover straightens the card and reveals the story + facts panel.
+ *
+ * Self-contained: no shared CSS dependencies beyond the page font stack.
+ */
+import { ORIGIN_STORIES, COMMODITY_LABEL, type Commodity } from '@/lib/origin-stories';
+
+interface Props {
+  title?: string;
+  lead?: string;
+  filterLabel?: { all: string } & Record<Commodity, string>;
+}
+
+const {
+  title = 'Kart kart menşeler',
+  lead = 'Her polaroid bir ürün, bir hikâye, bir coğrafya. Üstüne gel — düzelir, açılır.',
+  filterLabel = { all: 'Hepsi', coffee: 'Kahve', cocoa: 'Kakao', nuts: 'Kuruyemiş' },
+} = Astro.props;
+
+const tilts = [-3.2, 2.4, -1.8, 4.1, -2.6, 3.0, -3.6, 1.9, -2.1, 2.8];
+const stamps = ['AIR', 'PAR AVION', 'TRACED', 'LOT 24', 'EUDR ✓', 'CUP 86+', 'GRADE 1'];
+---
+
+<section class="pm-section">
+  <header class="pm-header">
+    <span class="pm-eyebrow">№ 01 · Postcards from origin</span>
+    <h2 class="pm-title">{title}</h2>
+    <p class="pm-lead">{lead}</p>
+    <div class="pm-filters" role="tablist" aria-label="Commodity filter">
+      <button type="button" class="pm-chip is-active" data-pm-filter="all">{filterLabel.all}</button>
+      <button type="button" class="pm-chip" data-pm-filter="coffee">{filterLabel.coffee}</button>
+      <button type="button" class="pm-chip" data-pm-filter="cocoa">{filterLabel.cocoa}</button>
+      <button type="button" class="pm-chip" data-pm-filter="nuts">{filterLabel.nuts}</button>
+    </div>
+  </header>
+
+  <div class="pm-board" data-pm-board>
+    {ORIGIN_STORIES.map((o, i) => {
+      const tilt = tilts[i % tilts.length];
+      const stamp = stamps[i % stamps.length];
+      return (
+        <article
+          class="pm-card"
+          data-pm-commodity={o.commodity}
+          style={`--pm-tilt:${tilt}deg`}
+        >
+          <div class="pm-card__pin" aria-hidden="true"></div>
+          <div class="pm-card__photo">
+            <img src={o.photo} alt={`${o.city}, ${o.country}`} loading="lazy" decoding="async" />
+            <span class="pm-card__stamp" aria-hidden="true">{stamp}</span>
+          </div>
+          <div class="pm-card__caption">
+            <div class="pm-card__line">
+              <span class="pm-card__flag" aria-hidden="true">{o.flag}</span>
+              <span class="pm-card__city">{o.city}</span>
+              <span class="pm-card__country">· {o.country}</span>
+            </div>
+            <p class="pm-card__product">{o.product}</p>
+          </div>
+
+          <div class="pm-card__story" role="region" aria-label={`${o.city} hikayesi`}>
+            <span class="pm-card__cat">{COMMODITY_LABEL[o.commodity]}</span>
+            <p class="pm-card__text">{o.story}</p>
+            <dl class="pm-card__facts">
+              {o.facts.map((f) => (
+                <div class="pm-card__fact">
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('[data-pm-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-pm-commodity]');
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const target = chip.getAttribute('data-pm-filter');
+      chips.forEach((c) => c.classList.toggle('is-active', c === chip));
+      cards.forEach((card) => {
+        const c = card.getAttribute('data-pm-commodity');
+        const show = target === 'all' || c === target;
+        card.classList.toggle('is-hidden', !show);
+      });
+    });
+  });
+</script>
+
+<style>
+  .pm-section {
+    position: relative;
+    padding: clamp(64px, 8vw, 120px) clamp(16px, 4vw, 48px);
+    background:
+      radial-gradient(circle at 18% 22%, rgba(193, 154, 107, 0.18), transparent 55%),
+      radial-gradient(circle at 82% 76%, rgba(120, 81, 51, 0.14), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(120, 81, 51, 0.04) 0 2px, transparent 2px 6px),
+      #efe6d4;
+    color: #2d1f0f;
+    font-family: 'Inter Tight', 'Söhne', system-ui, sans-serif;
+  }
+  .pm-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(45, 31, 15, 0.06) 1px, transparent 0);
+    background-size: 24px 24px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .pm-header {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto clamp(32px, 5vw, 56px);
+    text-align: center;
+  }
+  .pm-eyebrow {
+    display: inline-block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #8b5e3c;
+    padding: 6px 12px;
+    border: 1px dashed rgba(139, 94, 60, 0.5);
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .pm-title {
+    font-family: 'Cormorant Garamond', 'Source Serif 4', Georgia, serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #2d1f0f;
+    margin: 0 0 12px;
+  }
+  .pm-title em { font-style: italic; color: #b25c1e; }
+  .pm-lead {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #6b4d2e;
+    max-width: 56ch;
+    margin: 0 auto 24px;
+  }
+  .pm-filters {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .pm-chip {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(139, 94, 60, 0.3);
+    color: #6b4d2e;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+  .pm-chip:hover { color: #2d1f0f; border-color: #8b5e3c; }
+  .pm-chip.is-active {
+    background: #2d1f0f;
+    color: #f5ead0;
+    border-color: #2d1f0f;
+  }
+
+  .pm-board {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: clamp(28px, 4vw, 44px);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 12px;
+  }
+
+  .pm-card {
+    position: relative;
+    background: #fbf6e9;
+    padding: 14px 14px 18px;
+    border-radius: 4px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 6px 14px rgba(45, 31, 15, 0.18),
+      0 22px 40px -16px rgba(45, 31, 15, 0.28);
+    transform: rotate(var(--pm-tilt, 0deg));
+    transition: transform 380ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 380ms ease, z-index 0s 380ms;
+    cursor: default;
+  }
+  .pm-card.is-hidden { display: none; }
+  .pm-card:hover,
+  .pm-card:focus-within {
+    transform: rotate(0deg) translateY(-4px) scale(1.02);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 10px 22px rgba(45, 31, 15, 0.22),
+      0 36px 60px -18px rgba(45, 31, 15, 0.36);
+    z-index: 5;
+    transition: transform 380ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 380ms ease, z-index 0s 0s;
+  }
+
+  .pm-card__pin {
+    position: absolute;
+    top: -8px; left: 50%;
+    width: 14px; height: 14px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff7a30, #b13a05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  .pm-card__photo {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 2px;
+    filter: sepia(0.18) saturate(1.05) contrast(1.02);
+  }
+  .pm-card__photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block;
+  }
+  .pm-card__stamp {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: #a52f1a;
+    border: 1.5px solid #a52f1a;
+    padding: 3px 6px;
+    border-radius: 2px;
+    transform: rotate(6deg);
+    background: rgba(251, 246, 233, 0.85);
+  }
+
+  .pm-card__caption {
+    padding: 12px 4px 0;
+  }
+  .pm-card__line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .pm-card__flag { font-size: 16px; }
+  .pm-card__city {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #2d1f0f;
+    letter-spacing: -0.01em;
+  }
+  .pm-card__country {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: #8b5e3c;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pm-card__product {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: #6b4d2e;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .pm-card__story {
+    position: absolute;
+    inset: 0;
+    background: #2d1f0f;
+    color: #f5ead0;
+    padding: 22px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pm-card:hover .pm-card__story,
+  .pm-card:focus-within .pm-card__story {
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 80ms;
+  }
+  .pm-card__cat {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #ff9a4c;
+  }
+  .pm-card__text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: #f5ead0;
+    margin: 0;
+  }
+  .pm-card__facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    margin: 6px 0 0;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(245, 234, 208, 0.25);
+  }
+  .pm-card__fact dt {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b88a5b;
+    margin-bottom: 2px;
+  }
+  .pm-card__fact dd {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 12.5px;
+    color: #f5ead0;
+    margin: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pm-card { transition: none; transform: rotate(0deg); }
+  }
+</style>

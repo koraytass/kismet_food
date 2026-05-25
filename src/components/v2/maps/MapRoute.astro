@@ -1,0 +1,425 @@
+---
+/**
+ * MapRoute — Horizontal shipping-lane infographic.
+ * Origins laid along a single ribbon ordered roughly East→West around the globe.
+ * Click a port marker → inline panel expands with story + supply stats.
+ * Mono-grid, ports-of-call energy. Self-contained.
+ */
+import { ORIGIN_STORIES, COMMODITY_LABEL, COMMODITY_COLOR } from '@/lib/origin-stories';
+
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const {
+  title = 'Tedarik koridoru',
+  lead = 'Doğudan batıya sıralı liman defteri. Bir noktayı seç, sevkiyat dosyası altta açılır.',
+} = Astro.props;
+
+const ordered = [...ORIGIN_STORIES].sort((a, b) => b.lng - a.lng);
+const HUB = { city: 'İstanbul', country: 'Türkiye', flag: '🇹🇷' };
+---
+
+<section class="rt-section">
+  <header class="rt-header">
+    <div>
+      <span class="rt-eyebrow">№ 03 · Origin-to-desk route</span>
+      <h2 class="rt-title">{title}</h2>
+    </div>
+    <p class="rt-lead">{lead}</p>
+  </header>
+
+  <div class="rt-shell" data-rt-shell>
+    <div class="rt-railwrap">
+      <ol class="rt-rail">
+        {ordered.map((o, idx) => (
+          <li class="rt-stop" data-rt-id={o.id} style={`--rt-c:${COMMODITY_COLOR[o.commodity].soft};`}>
+            <button type="button" class="rt-stop__btn" aria-expanded="false" aria-controls={`rt-dossier-${o.id}`}>
+              <span class="rt-stop__idx">{String(idx + 1).padStart(2, '0')}</span>
+              <span class="rt-stop__dot"></span>
+              <span class="rt-stop__meta">
+                <span class="rt-stop__flag" aria-hidden="true">{o.flag}</span>
+                <span class="rt-stop__city">{o.city}</span>
+                <span class="rt-stop__cat">{COMMODITY_LABEL[o.commodity]}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+        <li class="rt-stop rt-stop--hub">
+          <div class="rt-stop__btn rt-stop__btn--hub">
+            <span class="rt-stop__idx">▲</span>
+            <span class="rt-stop__dot rt-stop__dot--hub"></span>
+            <span class="rt-stop__meta">
+              <span class="rt-stop__flag" aria-hidden="true">{HUB.flag}</span>
+              <span class="rt-stop__city">{HUB.city}</span>
+              <span class="rt-stop__cat">Hub · Desk</span>
+            </span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="rt-dossiers">
+      {ordered.map((o) => (
+        <article
+          id={`rt-dossier-${o.id}`}
+          class="rt-dossier"
+          data-rt-dossier={o.id}
+          aria-hidden="true"
+        >
+          <div class="rt-dossier__head">
+            <div class="rt-dossier__title">
+              <span class="rt-dossier__flag" aria-hidden="true">{o.flag}</span>
+              <div>
+                <span class="rt-dossier__cat" style={`color:${COMMODITY_COLOR[o.commodity].soft};`}>
+                  {COMMODITY_LABEL[o.commodity]} · {o.product}
+                </span>
+                <h3 class="rt-dossier__city">{o.city}, <span>{o.country}</span></h3>
+              </div>
+            </div>
+            <div class="rt-dossier__route">
+              <span class="rt-dossier__from">{o.city}</span>
+              <span class="rt-dossier__arrow" aria-hidden="true">─────▶</span>
+              <span class="rt-dossier__to">{HUB.city}</span>
+            </div>
+          </div>
+
+          <div class="rt-dossier__body">
+            <div class="rt-dossier__photo">
+              <img src={o.photo} alt={`${o.city}, ${o.country}`} loading="lazy" decoding="async" />
+            </div>
+            <div class="rt-dossier__copy">
+              <p class="rt-dossier__story">{o.story}</p>
+              <table class="rt-dossier__facts">
+                <tbody>
+                  {o.facts.map((f) => (
+                    <tr>
+                      <th scope="row">{f.label}</th>
+                      <td>{f.value}</td>
+                    </tr>
+                  ))}
+                  <tr class="rt-dossier__facts-coord">
+                    <th scope="row">Koordinat</th>
+                    <td>{o.lat.toFixed(2)}° · {o.lng.toFixed(2)}°</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const shell = document.querySelector<HTMLElement>('[data-rt-shell]');
+  if (shell) {
+    const buttons = shell.querySelectorAll<HTMLButtonElement>('[data-rt-id] .rt-stop__btn');
+    const dossiers = shell.querySelectorAll<HTMLElement>('[data-rt-dossier]');
+    const stops = shell.querySelectorAll<HTMLElement>('[data-rt-id]');
+
+    function open(id: string | null) {
+      stops.forEach((s) => s.classList.toggle('is-active', s.getAttribute('data-rt-id') === id));
+      dossiers.forEach((d) => {
+        const match = d.getAttribute('data-rt-dossier') === id;
+        d.classList.toggle('is-open', match);
+        d.setAttribute('aria-hidden', match ? 'false' : 'true');
+      });
+      buttons.forEach((b) => {
+        const li = b.closest('[data-rt-id]');
+        const match = li?.getAttribute('data-rt-id') === id;
+        b.setAttribute('aria-expanded', match ? 'true' : 'false');
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const li = btn.closest('[data-rt-id]');
+        const id = li?.getAttribute('data-rt-id') ?? null;
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        open(isOpen ? null : id);
+      });
+    });
+
+    if (stops[0]) open(stops[0].getAttribute('data-rt-id'));
+  }
+</script>
+
+<style>
+  .rt-section {
+    position: relative;
+    padding: clamp(64px, 8vw, 120px) clamp(16px, 4vw, 48px);
+    background:
+      linear-gradient(180deg, #fafaf7 0%, #f1eee4 100%);
+    color: #0a0a0a;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+  }
+
+  .rt-header {
+    max-width: 1280px;
+    margin: 0 auto clamp(28px, 4vw, 44px);
+    display: grid;
+    gap: 16px;
+    align-items: end;
+  }
+  @media (min-width: 768px) {
+    .rt-header { grid-template-columns: 1fr 1fr; }
+  }
+  .rt-eyebrow {
+    display: inline-block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #ff5c00;
+    padding-bottom: 8px;
+    border-bottom: 1px solid currentColor;
+    margin-bottom: 14px;
+  }
+  .rt-title {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .rt-lead {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: #555;
+    margin: 0;
+    max-width: 56ch;
+    justify-self: end;
+    text-align: right;
+  }
+  @media (max-width: 767px) {
+    .rt-lead { justify-self: start; text-align: left; }
+  }
+
+  .rt-shell {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  /* RAIL */
+  .rt-railwrap {
+    position: relative;
+    overflow-x: auto;
+    padding: 24px 0 12px;
+    background:
+      linear-gradient(180deg, transparent 49%, rgba(10, 10, 10, 0.85) 49%, rgba(10, 10, 10, 0.85) 51%, transparent 51%) center / 100% 1px no-repeat,
+      repeating-linear-gradient(90deg, rgba(10, 10, 10, 0.2) 0 6px, transparent 6px 14px) center / 100% 1px no-repeat;
+    background-position: center 76px, center 76px;
+    border-top: 1px solid rgba(10, 10, 10, 0.12);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.12);
+    scrollbar-width: thin;
+  }
+  .rt-railwrap::-webkit-scrollbar { height: 6px; }
+  .rt-railwrap::-webkit-scrollbar-thumb { background: rgba(10, 10, 10, 0.2); border-radius: 4px; }
+
+  .rt-rail {
+    list-style: none;
+    margin: 0;
+    padding: 0 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(28px, 4vw, 56px);
+    min-width: max-content;
+  }
+
+  .rt-stop { position: relative; flex: 0 0 auto; }
+
+  .rt-stop__btn {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    min-width: 110px;
+  }
+  .rt-stop__btn--hub { cursor: default; }
+
+  .rt-stop__idx {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: #888;
+    height: 14px;
+  }
+  .rt-stop__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--rt-c, #0a0a0a);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
+    transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+  }
+  .rt-stop__dot--hub {
+    background: #0a0a0a;
+    border-color: #ff5c00;
+    box-shadow: 0 0 0 4px rgba(255, 92, 0, 0.18), 0 0 14px rgba(255, 92, 0, 0.4);
+  }
+  .rt-stop.is-active .rt-stop__dot {
+    background: var(--rt-c);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.9), 0 0 16px var(--rt-c);
+  }
+
+  .rt-stop__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    padding-top: 4px;
+  }
+  .rt-stop__flag { font-size: 18px; line-height: 1; }
+  .rt-stop__city {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #0a0a0a;
+    letter-spacing: -0.01em;
+  }
+  .rt-stop__cat {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #888;
+  }
+  .rt-stop.is-active .rt-stop__cat { color: #0a0a0a; }
+
+  /* DOSSIER */
+  .rt-dossiers {
+    position: relative;
+    margin-top: 32px;
+  }
+  .rt-dossier {
+    display: none;
+    border: 1px solid rgba(10, 10, 10, 0.12);
+    background: #fff;
+    padding: clamp(20px, 3vw, 36px);
+    border-radius: 2px;
+    animation: rt-fade 320ms ease;
+  }
+  .rt-dossier.is-open { display: block; }
+  @keyframes rt-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .rt-dossier__head {
+    display: grid;
+    gap: 16px;
+    align-items: end;
+    padding-bottom: 18px;
+    border-bottom: 1px dashed rgba(10, 10, 10, 0.15);
+    margin-bottom: 22px;
+  }
+  @media (min-width: 768px) {
+    .rt-dossier__head { grid-template-columns: 1fr auto; }
+  }
+  .rt-dossier__title {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .rt-dossier__flag { font-size: 32px; line-height: 1; }
+  .rt-dossier__cat {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .rt-dossier__city {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+  .rt-dossier__city span { color: #888; font-weight: 400; }
+  .rt-dossier__route {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+  }
+  .rt-dossier__arrow { color: #ff5c00; }
+  .rt-dossier__to { color: #0a0a0a; font-weight: 600; }
+
+  .rt-dossier__body {
+    display: grid;
+    gap: 24px;
+  }
+  @media (min-width: 768px) {
+    .rt-dossier__body { grid-template-columns: 280px 1fr; }
+  }
+  .rt-dossier__photo {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid rgba(10, 10, 10, 0.1);
+  }
+  .rt-dossier__photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(0.15) contrast(1.04);
+  }
+  .rt-dossier__story {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: #2a2a2a;
+    margin: 0 0 16px;
+  }
+  .rt-dossier__facts {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .rt-dossier__facts tr {
+    border-top: 1px solid rgba(10, 10, 10, 0.1);
+  }
+  .rt-dossier__facts tr:last-child {
+    border-bottom: 1px solid rgba(10, 10, 10, 0.1);
+  }
+  .rt-dossier__facts th {
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: 400;
+    padding: 10px 16px 10px 0;
+    width: 40%;
+  }
+  .rt-dossier__facts td {
+    font-size: 13px;
+    color: #0a0a0a;
+    padding: 10px 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .rt-dossier__facts-coord th, .rt-dossier__facts-coord td { color: #ff5c00; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rt-dossier { animation: none; }
+    .rt-stop__dot { transition: none; }
+  }
+</style>

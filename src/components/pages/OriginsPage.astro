@@ -13,6 +13,9 @@ import Breadcrumb from '../Breadcrumb.astro';
 import OriginsMap, { type OriginMarker } from '../OriginsMap.astro';
 import Button from '../Button.astro';
 import AmuletDivider from '../AmuletDivider.astro';
+import MapPostcard from '../v2/maps/MapPostcard.astro';
+import MapConstellation from '../v2/maps/MapConstellation.astro';
+import MapRoute from '../v2/maps/MapRoute.astro';
 
 interface Props {
   locale: Locale;
@@ -391,6 +394,11 @@ const mapLabels = {
       </div>
     </div>
   </section>
+
+  {/* — — — Origin Stories: 3 independent interactive maps — — — */}
+  <MapPostcard />
+  <MapConstellation />
+  <MapRoute />
 
   {/* CTA */}
   <section class="bg-surface-mid px-4 py-20 md:px-8">

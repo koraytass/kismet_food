@@ -1,0 +1,448 @@
+---
+/**
+ * MapConstellation — Dark celestial origin map.
+ * Equirectangular world (lat -55..70, lng -130..150) on a deep navy starfield.
+ * Origins are glowing "stars"; same-commodity points are linked by faint arcs.
+ * Hover blooms a glassmorphic story card pinned to the side.
+ */
+import { ORIGIN_STORIES, COMMODITY_LABEL, COMMODITY_COLOR, type Commodity, type OriginStory } from '@/lib/origin-stories';
+
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const {
+  title = 'Yıldız haritası',
+  lead = 'Aynı renkler aynı ürün ailesi. Bir noktaya yaklaş — hikâye sağda açılır.',
+} = Astro.props;
+
+const VB_W = 1400;
+const VB_H = 700;
+
+function project(lat: number, lng: number) {
+  const minLng = -130, maxLng = 150;
+  const minLat = -55,  maxLat = 70;
+  const x = ((lng - minLng) / (maxLng - minLng)) * VB_W;
+  const y = VB_H - ((lat - minLat) / (maxLat - minLat)) * VB_H;
+  return { x: +x.toFixed(2), y: +y.toFixed(2) };
+}
+
+type Pt = OriginStory & { x: number; y: number };
+const points: Pt[] = ORIGIN_STORIES.map((o) => ({ ...o, ...project(o.lat, o.lng) }));
+
+const commodities: Commodity[] = ['coffee', 'cocoa', 'nuts'];
+
+function quadPath(a: Pt, b: Pt) {
+  const mx = (a.x + b.x) / 2;
+  const my = Math.min(a.y, b.y) - Math.abs(a.x - b.x) * 0.18 - 30;
+  return `M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`;
+}
+
+const arcsByCommodity: Record<Commodity, string[]> = { coffee: [], cocoa: [], nuts: [] };
+for (const c of commodities) {
+  const pts = points.filter((p) => p.commodity === c);
+  for (let i = 0; i < pts.length - 1; i++) {
+    arcsByCommodity[c].push(quadPath(pts[i], pts[i + 1]));
+  }
+}
+
+const starfield = Array.from({ length: 80 }, () => ({
+  x: Math.random() * VB_W,
+  y: Math.random() * VB_H,
+  r: 0.4 + Math.random() * 1.1,
+  o: 0.2 + Math.random() * 0.6,
+}));
+---
+
+<section class="cn-section">
+  <header class="cn-header">
+    <span class="cn-eyebrow">№ 02 · Constellation chart</span>
+    <h2 class="cn-title">{title}</h2>
+    <p class="cn-lead">{lead}</p>
+    <div class="cn-legend">
+      {commodities.map((c) => (
+        <span class="cn-legend__item">
+          <span class="cn-legend__dot" style={`background:${COMMODITY_COLOR[c].soft}; box-shadow:0 0 10px ${COMMODITY_COLOR[c].soft};`}></span>
+          {COMMODITY_LABEL[c]}
+        </span>
+      ))}
+    </div>
+  </header>
+
+  <div class="cn-stage" data-cn-stage>
+    <svg
+      class="cn-svg"
+      viewBox={`0 0 ${VB_W} ${VB_H}`}
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Origin constellation map"
+    >
+      <defs>
+        <radialGradient id="cn-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ff9a4c" stop-opacity="0.9" />
+          <stop offset="60%" stop-color="#ff5c00" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#ff5c00" stop-opacity="0" />
+        </radialGradient>
+        <filter id="cn-bloom">
+          <feGaussianBlur stdDeviation="2.2" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Lat/Lng grid */}
+      <g class="cn-grid">
+        {[-30, 0, 23.5, 45].map((lat) => {
+          const y = project(lat, 0).y;
+          return <line x1="0" x2={VB_W} y1={y} y2={y} />;
+        })}
+        {[-90, -45, 0, 45, 90, 135].map((lng) => {
+          const x = project(0, lng).x;
+          return <line y1="0" y2={VB_H} x1={x} x2={x} />;
+        })}
+      </g>
+
+      {/* Star field */}
+      <g class="cn-stars">
+        {starfield.map((s) => (
+          <circle cx={s.x} cy={s.y} r={s.r} opacity={s.o} />
+        ))}
+      </g>
+
+      {/* Commodity arcs */}
+      {commodities.map((c) => (
+        <g class="cn-arcs" data-cn-cat={c} style={`--cn-arc:${COMMODITY_COLOR[c].soft};`}>
+          {arcsByCommodity[c].map((d) => (
+            <path d={d} fill="none" />
+          ))}
+        </g>
+      ))}
+
+      {/* Origin stars */}
+      <g class="cn-points">
+        {points.map((p) => (
+          <g
+            class="cn-point"
+            data-cn-id={p.id}
+            transform={`translate(${p.x} ${p.y})`}
+            style={`--cn-color:${COMMODITY_COLOR[p.commodity].soft};`}
+            tabindex="0"
+            role="button"
+            aria-label={`${p.city}, ${p.country} — ${p.product}`}
+          >
+            <circle class="cn-point__halo" r="22" />
+            <circle class="cn-point__core" r="5" />
+            <circle class="cn-point__ring" r="10" />
+            <text class="cn-point__label" x="14" y="4">{p.city}</text>
+          </g>
+        ))}
+      </g>
+    </svg>
+
+    <aside class="cn-panel" data-cn-panel aria-live="polite">
+      <div class="cn-panel__placeholder" data-cn-placeholder>
+        <span class="cn-panel__hint">Bir yıldızın üzerine gel</span>
+        <span class="cn-panel__hint-en">hover a star</span>
+      </div>
+      {points.map((p) => (
+        <article class="cn-card" data-cn-card={p.id}>
+          <div class="cn-card__head">
+            <span class="cn-card__flag" aria-hidden="true">{p.flag}</span>
+            <div>
+              <span class="cn-card__cat" style={`color:${COMMODITY_COLOR[p.commodity].soft};`}>
+                {COMMODITY_LABEL[p.commodity]} · {p.product}
+              </span>
+              <h3 class="cn-card__city">{p.city}, <span>{p.country}</span></h3>
+            </div>
+          </div>
+          <p class="cn-card__story">{p.story}</p>
+          <ul class="cn-card__facts">
+            {p.facts.map((f) => (
+              <li>
+                <span class="cn-card__fact-k">{f.label}</span>
+                <span class="cn-card__fact-v">{f.value}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="cn-card__coord">
+            <span>LAT {p.lat.toFixed(2)}°</span>
+            <span>LNG {p.lng.toFixed(2)}°</span>
+          </div>
+        </article>
+      ))}
+    </aside>
+  </div>
+</section>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-cn-stage]');
+  if (stage) {
+    const points = stage.querySelectorAll<SVGGElement>('[data-cn-id]');
+    const cards = stage.querySelectorAll<HTMLElement>('[data-cn-card]');
+    const placeholder = stage.querySelector<HTMLElement>('[data-cn-placeholder]');
+
+    function show(id: string | null) {
+      cards.forEach((c) => c.classList.toggle('is-active', c.getAttribute('data-cn-card') === id));
+      points.forEach((p) => p.classList.toggle('is-active', p.getAttribute('data-cn-id') === id));
+      if (placeholder) placeholder.style.display = id ? 'none' : '';
+    }
+
+    points.forEach((pt) => {
+      const id = pt.getAttribute('data-cn-id');
+      pt.addEventListener('mouseenter', () => show(id));
+      pt.addEventListener('focus', () => show(id));
+      pt.addEventListener('click', () => show(id));
+    });
+    stage.addEventListener('mouseleave', () => show(null));
+  }
+</script>
+
+<style>
+  .cn-section {
+    position: relative;
+    padding: clamp(64px, 8vw, 120px) clamp(16px, 4vw, 48px);
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(255, 92, 0, 0.06), transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(100, 140, 220, 0.10), transparent 65%),
+      linear-gradient(180deg, #060814 0%, #0a0f24 100%);
+    color: #e6ecff;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    overflow: hidden;
+  }
+  .cn-header {
+    max-width: 760px;
+    margin: 0 auto clamp(28px, 4vw, 48px);
+    text-align: center;
+  }
+  .cn-eyebrow {
+    display: inline-block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #ff9a4c;
+    padding: 4px 10px;
+    border: 1px solid rgba(255, 154, 76, 0.35);
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+  .cn-title {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: #f5ead0;
+    margin: 0 0 12px;
+  }
+  .cn-lead {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: #a3b0d4;
+    max-width: 56ch;
+    margin: 0 auto 18px;
+  }
+  .cn-legend {
+    display: inline-flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #a3b0d4;
+  }
+  .cn-legend__item { display: inline-flex; align-items: center; gap: 8px; }
+  .cn-legend__dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+
+  .cn-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (min-width: 1024px) {
+    .cn-stage {
+      grid-template-columns: minmax(0, 1fr) 360px;
+      align-items: stretch;
+    }
+  }
+
+  .cn-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid rgba(160, 180, 220, 0.12);
+    background: linear-gradient(180deg, rgba(8, 12, 28, 0.6), rgba(4, 6, 14, 0.8));
+  }
+
+  .cn-grid line {
+    stroke: rgba(160, 180, 220, 0.07);
+    stroke-width: 1;
+    stroke-dasharray: 2 6;
+  }
+  .cn-stars circle {
+    fill: #c2cce8;
+  }
+  .cn-arcs path {
+    stroke: var(--cn-arc);
+    stroke-width: 1;
+    stroke-opacity: 0.28;
+    stroke-dasharray: 3 4;
+  }
+
+  .cn-points { cursor: pointer; }
+  .cn-point__halo {
+    fill: url(#cn-glow);
+    opacity: 0;
+    transition: opacity 260ms ease, r 260ms ease;
+  }
+  .cn-point__core {
+    fill: var(--cn-color);
+    stroke: rgba(255, 255, 255, 0.95);
+    stroke-width: 1.2;
+    transition: r 220ms ease;
+  }
+  .cn-point__ring {
+    fill: none;
+    stroke: var(--cn-color);
+    stroke-width: 1;
+    stroke-opacity: 0.55;
+    transition: r 220ms ease, stroke-opacity 220ms ease;
+  }
+  .cn-point__label {
+    fill: rgba(245, 234, 208, 0.6);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transition: opacity 220ms ease, fill 220ms ease;
+    pointer-events: none;
+  }
+  .cn-point:hover .cn-point__halo,
+  .cn-point.is-active .cn-point__halo,
+  .cn-point:focus .cn-point__halo {
+    opacity: 1;
+  }
+  .cn-point:hover .cn-point__core,
+  .cn-point.is-active .cn-point__core { r: 6.5; }
+  .cn-point:hover .cn-point__ring,
+  .cn-point.is-active .cn-point__ring { r: 16; stroke-opacity: 0.9; }
+  .cn-point:hover .cn-point__label,
+  .cn-point.is-active .cn-point__label,
+  .cn-point:focus .cn-point__label { opacity: 1; fill: #f5ead0; }
+
+  .cn-panel {
+    position: relative;
+    background: linear-gradient(180deg, rgba(20, 28, 56, 0.85), rgba(10, 15, 32, 0.92));
+    border: 1px solid rgba(160, 180, 220, 0.16);
+    backdrop-filter: blur(14px);
+    padding: 22px;
+    min-height: 360px;
+    border-radius: 2px;
+  }
+  .cn-panel__placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #6b7aa3;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    text-align: center;
+  }
+  .cn-panel__hint { font-size: 13px; letter-spacing: 0.12em; }
+  .cn-panel__hint-en {
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; opacity: 0.5;
+  }
+
+  .cn-card {
+    display: none;
+  }
+  .cn-card.is-active { display: block; }
+  .cn-card__head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(160, 180, 220, 0.14);
+    margin-bottom: 14px;
+  }
+  .cn-card__flag { font-size: 26px; line-height: 1; }
+  .cn-card__cat {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .cn-card__city {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0;
+    color: #f5ead0;
+    letter-spacing: -0.02em;
+  }
+  .cn-card__city span { color: #a3b0d4; font-weight: 400; }
+  .cn-card__story {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #cdd6ef;
+    margin: 0 0 14px;
+  }
+  .cn-card__facts {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .cn-card__facts li {
+    padding: 8px 10px;
+    background: rgba(160, 180, 220, 0.06);
+    border: 1px solid rgba(160, 180, 220, 0.1);
+    border-radius: 2px;
+  }
+  .cn-card__fact-k {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6b7aa3;
+    margin-bottom: 2px;
+  }
+  .cn-card__fact-v {
+    font-size: 13px;
+    color: #f5ead0;
+  }
+  .cn-card__coord {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: #6b7aa3;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(160, 180, 220, 0.16);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cn-point__halo, .cn-point__core, .cn-point__ring, .cn-point__label {
+      transition: none;
+    }
+  }
+</style>
