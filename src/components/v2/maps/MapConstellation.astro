@@ -28,8 +28,26 @@ function project(lat: number, lng: number) {
   return { x: +x.toFixed(2), y: +y.toFixed(2) };
 }
 
-type Pt = OriginStory & { x: number; y: number };
-const points: Pt[] = ORIGIN_STORIES.map((o) => ({ ...o, ...project(o.lat, o.lng) }));
+/* Per-origin label placement to keep close-cluster cities from colliding.
+   anchor: 'l' = label sits to LEFT of star, 'r' = RIGHT (default).
+   dy: vertical nudge in viewBox units. */
+const LABEL_HINTS: Record<string, { anchor?: 'l' | 'r'; dy?: number }> = {
+  'yirgacheffe': { anchor: 'r', dy: 4 },
+  'huila':       { anchor: 'l', dy: 4 },
+  'dak-lak':     { anchor: 'l', dy: -2 },
+  'ashanti':     { anchor: 'r', dy: 14 },
+  'daloa':       { anchor: 'l', dy: 14 },
+  'antep':       { anchor: 'r', dy: 14 },
+  'giresun':     { anchor: 'l', dy: -6 },
+  'malatya':     { anchor: 'l', dy: 14 },
+  'phan-rang':   { anchor: 'r', dy: 14 },
+};
+
+type Pt = OriginStory & { x: number; y: number; anchor: 'l' | 'r'; dy: number };
+const points: Pt[] = ORIGIN_STORIES.map((o) => {
+  const hint = LABEL_HINTS[o.id] ?? {};
+  return { ...o, ...project(o.lat, o.lng), anchor: hint.anchor ?? 'r', dy: hint.dy ?? 4 };
+});
 
 const commodities: Commodity[] = ['coffee', 'cocoa', 'nuts'];
 
@@ -123,22 +141,28 @@ const starfield = Array.from({ length: 80 }, () => ({
 
       {/* Origin stars */}
       <g class="cn-points">
-        {points.map((p) => (
-          <g
-            class="cn-point"
-            data-cn-id={p.id}
-            transform={`translate(${p.x} ${p.y})`}
-            style={`--cn-color:${COMMODITY_COLOR[p.commodity].soft};`}
-            tabindex="0"
-            role="button"
-            aria-label={`${p.city}, ${p.country} — ${p.product}`}
-          >
-            <circle class="cn-point__halo" r="22" />
-            <circle class="cn-point__core" r="5" />
-            <circle class="cn-point__ring" r="10" />
-            <text class="cn-point__label" x="14" y="4">{p.city}</text>
-          </g>
-        ))}
+        {points.map((p) => {
+          const lx = p.anchor === 'l' ? -14 : 14;
+          const anchor = p.anchor === 'l' ? 'end' : 'start';
+          return (
+            <g
+              class="cn-point"
+              data-cn-id={p.id}
+              transform={`translate(${p.x} ${p.y})`}
+              style={`--cn-color:${COMMODITY_COLOR[p.commodity].soft};`}
+              tabindex="0"
+              role="button"
+              aria-label={`${p.city}, ${p.country} — ${p.product}`}
+            >
+              <circle class="cn-point__halo" r="26" />
+              <circle class="cn-point__ring" r="11" />
+              <circle class="cn-point__core" r="6" />
+              {/* dark halo behind label for readability */}
+              <text class="cn-point__label cn-point__label--shadow" x={lx} y={p.dy} text-anchor={anchor}>{p.city}</text>
+              <text class="cn-point__label" x={lx} y={p.dy} text-anchor={anchor}>{p.city}</text>
+            </g>
+          );
+        })}
       </g>
     </svg>
 
@@ -302,43 +326,54 @@ const starfield = Array.from({ length: 80 }, () => ({
   .cn-points { cursor: pointer; }
   .cn-point__halo {
     fill: url(#cn-glow);
-    opacity: 0;
+    opacity: 0.35;
     transition: opacity 260ms ease, r 260ms ease;
   }
   .cn-point__core {
     fill: var(--cn-color);
-    stroke: rgba(255, 255, 255, 0.95);
-    stroke-width: 1.2;
+    stroke: rgba(255, 255, 255, 1);
+    stroke-width: 1.5;
     transition: r 220ms ease;
   }
   .cn-point__ring {
     fill: none;
     stroke: var(--cn-color);
-    stroke-width: 1;
-    stroke-opacity: 0.55;
+    stroke-width: 1.2;
+    stroke-opacity: 0.75;
     transition: r 220ms ease, stroke-opacity 220ms ease;
   }
   .cn-point__label {
-    fill: rgba(245, 234, 208, 0.6);
+    fill: #f5ead0;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     letter-spacing: 0.04em;
-    opacity: 0;
-    transition: opacity 220ms ease, fill 220ms ease;
     pointer-events: none;
+    transition: fill 220ms ease, font-size 220ms ease;
+  }
+  .cn-point__label--shadow {
+    fill: none;
+    stroke: rgba(6, 8, 20, 0.92);
+    stroke-width: 4.5;
+    stroke-linejoin: round;
+    paint-order: stroke;
   }
   .cn-point:hover .cn-point__halo,
   .cn-point.is-active .cn-point__halo,
   .cn-point:focus .cn-point__halo {
     opacity: 1;
+    r: 32;
   }
   .cn-point:hover .cn-point__core,
-  .cn-point.is-active .cn-point__core { r: 6.5; }
+  .cn-point.is-active .cn-point__core { r: 7.5; }
   .cn-point:hover .cn-point__ring,
-  .cn-point.is-active .cn-point__ring { r: 16; stroke-opacity: 0.9; }
+  .cn-point.is-active .cn-point__ring { r: 18; stroke-opacity: 1; }
   .cn-point:hover .cn-point__label,
   .cn-point.is-active .cn-point__label,
-  .cn-point:focus .cn-point__label { opacity: 1; fill: #f5ead0; }
+  .cn-point:focus .cn-point__label {
+    fill: var(--cn-color);
+    font-size: 15px;
+  }
 
   .cn-panel {
     position: relative;

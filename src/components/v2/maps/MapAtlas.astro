@@ -1,0 +1,549 @@
+---
+/**
+ * MapAtlas — Real-world map with origin markers placed on actual countries.
+ * Equirectangular projection so SVG country paths and lat/lng markers align.
+ * Blueprint/admiralty-chart aesthetic: cream paper, navy outlines, signal accents.
+ */
+import { ORIGIN_STORIES, COMMODITY_LABEL, COMMODITY_COLOR, type Commodity } from '@/lib/origin-stories';
+import { getWorldPaths, projectEqui, WORLD_VIEWBOX } from '@/lib/world-paths';
+
+interface Props {
+  title?: string;
+  lead?: string;
+}
+
+const {
+  title = 'Atlas — kıtalar üzerinde menşe',
+  lead = 'Gerçek dünya haritası üzerinde tüm menşelerimiz. Bir markere tıkla — sağda dosya açılır.',
+} = Astro.props;
+
+const { width: W, height: H } = WORLD_VIEWBOX;
+const countryPaths = getWorldPaths();
+
+const commodities: Commodity[] = ['coffee', 'cocoa', 'nuts'];
+const markers = ORIGIN_STORIES.map((o) => ({
+  ...o,
+  ...projectEqui(o.lat, o.lng),
+}));
+
+const HUB = { city: 'İstanbul', lat: 41.0082, lng: 28.9784 };
+const hubPt = projectEqui(HUB.lat, HUB.lng);
+---
+
+<section class="at-section">
+  <header class="at-header">
+    <span class="at-eyebrow">№ 04 · Real-world atlas</span>
+    <h2 class="at-title">{title}</h2>
+    <p class="at-lead">{lead}</p>
+    <div class="at-legend">
+      {commodities.map((c) => (
+        <span class="at-legend__item">
+          <span class="at-legend__dot" style={`background:${COMMODITY_COLOR[c].hex};`}></span>
+          {COMMODITY_LABEL[c]}
+        </span>
+      ))}
+      <span class="at-legend__item at-legend__item--hub">
+        <span class="at-legend__hub" aria-hidden="true">◆</span>
+        İstanbul · Hub
+      </span>
+    </div>
+  </header>
+
+  <div class="at-stage" data-at-stage>
+    <div class="at-mapwrap">
+      <svg
+        class="at-map"
+        viewBox={`0 0 ${W} ${H}`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="World map with Kismet Foods origin markers"
+      >
+        {/* Graticule (lat/lng grid) — subtle */}
+        <g class="at-grid">
+          {[-60, -30, 0, 30, 60].map((lat) => {
+            const y = projectEqui(lat, 0).y;
+            return <line x1="0" x2={W} y1={y} y2={y} />;
+          })}
+          {[-120, -60, 0, 60, 120].map((lng) => {
+            const x = projectEqui(0, lng).x;
+            return <line y1="0" y2={H} x1={x} x2={x} />;
+          })}
+          {/* Equator emphasized */}
+          <line class="at-grid__equator" x1="0" x2={W} y1={H / 2} y2={H / 2} />
+        </g>
+
+        {/* Country outlines */}
+        <g class="at-countries">
+          {countryPaths.map((d) => (
+            <path d={d} />
+          ))}
+        </g>
+
+        {/* Trade lines: from each origin to İstanbul hub (subtle) */}
+        <g class="at-lines">
+          {markers.map((m) => {
+            const mx = (m.x + hubPt.x) / 2;
+            const my = Math.min(m.y, hubPt.y) - Math.abs(m.x - hubPt.x) * 0.12 - 8;
+            return (
+              <path
+                d={`M ${m.x} ${m.y} Q ${mx} ${my} ${hubPt.x} ${hubPt.y}`}
+                data-at-line={m.id}
+              />
+            );
+          })}
+        </g>
+
+        {/* Hub marker */}
+        <g class="at-hub" transform={`translate(${hubPt.x} ${hubPt.y})`}>
+          <circle class="at-hub__pulse" r="6" />
+          <circle class="at-hub__core" r="3.2" />
+          <text class="at-hub__label" x="6" y="-5">İSTANBUL</text>
+        </g>
+
+        {/* Origin markers */}
+        <g class="at-markers">
+          {markers.map((m) => (
+            <g
+              class="at-marker"
+              data-at-id={m.id}
+              transform={`translate(${m.x} ${m.y})`}
+              style={`--at-c:${COMMODITY_COLOR[m.commodity].hex};`}
+              tabindex="0"
+              role="button"
+              aria-label={`${m.city}, ${m.country} — ${m.product}`}
+            >
+              <circle class="at-marker__halo" r="9" />
+              <circle class="at-marker__core" r="3.4" />
+            </g>
+          ))}
+        </g>
+      </svg>
+
+      <button type="button" class="at-reset" data-at-reset hidden>← clear</button>
+    </div>
+
+    <aside class="at-panel" data-at-panel aria-live="polite">
+      <div class="at-panel__empty" data-at-empty>
+        <span class="at-panel__counter">{markers.length} origin · {commodities.length} commodity</span>
+        <h3>Bir noktayı seç</h3>
+        <p>Haritadaki her marker bir doğrudan-tedarik noktasıdır. Üzerine gel ya da tıkla — bölgesel hikâye ve teknik özellikler sağda açılır.</p>
+        <ul class="at-panel__quick">
+          {markers.slice(0, 5).map((m) => (
+            <li>
+              <button type="button" class="at-panel__qbtn" data-at-jump={m.id}>
+                <span class="at-panel__qflag" aria-hidden="true">{m.flag}</span>
+                <span>{m.city}, {m.country}</span>
+                <span class="at-panel__qcat" style={`color:${COMMODITY_COLOR[m.commodity].soft};`}>
+                  {COMMODITY_LABEL[m.commodity]}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {markers.map((m) => (
+        <article class="at-card" data-at-card={m.id}>
+          <header class="at-card__top">
+            <span class="at-card__flag" aria-hidden="true">{m.flag}</span>
+            <div>
+              <span class="at-card__cat" style={`color:${COMMODITY_COLOR[m.commodity].hex};`}>
+                {COMMODITY_LABEL[m.commodity]} · {m.product}
+              </span>
+              <h3 class="at-card__city">{m.city}, <span>{m.country}</span></h3>
+              <span class="at-card__coord">{m.lat.toFixed(2)}°N · {m.lng.toFixed(2)}°E</span>
+            </div>
+          </header>
+          <div class="at-card__photo">
+            <img src={m.photo} alt={`${m.city}, ${m.country}`} loading="lazy" decoding="async" />
+          </div>
+          <p class="at-card__story">{m.story}</p>
+          <dl class="at-card__facts">
+            {m.facts.map((f) => (
+              <div>
+                <dt>{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+      ))}
+    </aside>
+  </div>
+</section>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-at-stage]');
+  if (stage) {
+    const markers = stage.querySelectorAll<SVGGElement>('[data-at-id]');
+    const lines = stage.querySelectorAll<SVGPathElement>('[data-at-line]');
+    const cards = stage.querySelectorAll<HTMLElement>('[data-at-card]');
+    const empty = stage.querySelector<HTMLElement>('[data-at-empty]');
+    const jumps = stage.querySelectorAll<HTMLButtonElement>('[data-at-jump]');
+    const reset = stage.querySelector<HTMLButtonElement>('[data-at-reset]');
+
+    function show(id: string | null) {
+      markers.forEach((m) => m.classList.toggle('is-active', m.getAttribute('data-at-id') === id));
+      lines.forEach((l) => l.classList.toggle('is-active', l.getAttribute('data-at-line') === id));
+      cards.forEach((c) => c.classList.toggle('is-active', c.getAttribute('data-at-card') === id));
+      if (empty) empty.style.display = id ? 'none' : '';
+      if (reset) reset.hidden = !id;
+    }
+
+    markers.forEach((m) => {
+      const id = m.getAttribute('data-at-id');
+      m.addEventListener('mouseenter', () => show(id));
+      m.addEventListener('focus', () => show(id));
+      m.addEventListener('click', (e) => { e.stopPropagation(); show(id); });
+    });
+    jumps.forEach((j) => {
+      const id = j.getAttribute('data-at-jump');
+      j.addEventListener('click', () => show(id));
+    });
+    if (reset) reset.addEventListener('click', () => show(null));
+  }
+</script>
+
+<style>
+  .at-section {
+    position: relative;
+    padding: clamp(64px, 8vw, 120px) clamp(16px, 4vw, 48px);
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255, 92, 0, 0.05), transparent 50%),
+      radial-gradient(circle at 80% 85%, rgba(20, 60, 120, 0.06), transparent 55%),
+      repeating-linear-gradient(0deg, rgba(10, 30, 60, 0.04) 0 1px, transparent 1px 36px),
+      repeating-linear-gradient(90deg, rgba(10, 30, 60, 0.04) 0 1px, transparent 1px 36px),
+      #f5f1e6;
+    color: #102137;
+    font-family: 'Inter Tight', system-ui, sans-serif;
+  }
+
+  .at-header {
+    max-width: 760px;
+    margin: 0 auto clamp(32px, 5vw, 56px);
+    text-align: center;
+  }
+  .at-eyebrow {
+    display: inline-block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #2c4a7a;
+    border: 1px solid rgba(44, 74, 122, 0.35);
+    padding: 5px 12px;
+    margin-bottom: 18px;
+  }
+  .at-title {
+    font-family: 'Cormorant Garamond', 'Source Serif 4', Georgia, serif;
+    font-size: clamp(36px, 5vw, 62px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    margin: 0 0 12px;
+    color: #0a1830;
+  }
+  .at-title em { font-style: italic; color: #c2410c; }
+  .at-lead {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: #46587a;
+    max-width: 60ch;
+    margin: 0 auto 18px;
+  }
+  .at-legend {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #46587a;
+  }
+  .at-legend__item { display: inline-flex; align-items: center; gap: 8px; }
+  .at-legend__dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid #fff;
+    box-shadow: 0 0 0 1px rgba(16, 33, 55, 0.25);
+  }
+  .at-legend__hub { color: #c2410c; font-size: 14px; line-height: 1; }
+
+  .at-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (min-width: 1024px) {
+    .at-stage { grid-template-columns: minmax(0, 1fr) 380px; align-items: start; }
+  }
+
+  .at-mapwrap {
+    position: relative;
+    background: linear-gradient(180deg, #faf6e9, #eee5cc);
+    border: 1px solid rgba(16, 33, 55, 0.18);
+    padding: 14px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 18px 36px -22px rgba(10, 30, 60, 0.4);
+  }
+  .at-map {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .at-grid line {
+    stroke: rgba(16, 33, 55, 0.08);
+    stroke-width: 0.6;
+    stroke-dasharray: 1.2 3;
+  }
+  .at-grid__equator {
+    stroke: rgba(16, 33, 55, 0.18) !important;
+    stroke-width: 0.8 !important;
+    stroke-dasharray: 2 2 !important;
+  }
+
+  .at-countries path {
+    fill: rgba(16, 33, 55, 0.07);
+    stroke: rgba(16, 33, 55, 0.45);
+    stroke-width: 0.4;
+    stroke-linejoin: round;
+    transition: fill 220ms ease;
+  }
+
+  .at-lines path {
+    fill: none;
+    stroke: #c2410c;
+    stroke-width: 0.5;
+    stroke-opacity: 0.25;
+    stroke-dasharray: 1.5 2.5;
+    transition: stroke-opacity 220ms ease, stroke-width 220ms ease;
+  }
+  .at-lines path.is-active {
+    stroke-opacity: 1;
+    stroke-width: 1.2;
+    stroke-dasharray: none;
+  }
+
+  .at-hub__pulse {
+    fill: rgba(194, 65, 12, 0.18);
+    animation: at-pulse 2.4s ease-out infinite;
+    transform-origin: center;
+  }
+  .at-hub__core {
+    fill: #c2410c;
+    stroke: #fff;
+    stroke-width: 1;
+  }
+  .at-hub__label {
+    fill: #c2410c;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 6.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    paint-order: stroke;
+    stroke: rgba(250, 246, 233, 0.95);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+  }
+  @keyframes at-pulse {
+    0%   { r: 4; opacity: 0.6; }
+    100% { r: 16; opacity: 0; }
+  }
+
+  .at-markers { cursor: pointer; }
+  .at-marker__halo {
+    fill: var(--at-c);
+    opacity: 0.18;
+    transition: opacity 220ms ease, r 220ms ease;
+  }
+  .at-marker__core {
+    fill: var(--at-c);
+    stroke: #fff;
+    stroke-width: 1;
+    transition: r 220ms ease;
+  }
+  .at-marker:hover .at-marker__halo,
+  .at-marker:focus .at-marker__halo,
+  .at-marker.is-active .at-marker__halo { opacity: 0.45; r: 14; }
+  .at-marker:hover .at-marker__core,
+  .at-marker:focus .at-marker__core,
+  .at-marker.is-active .at-marker__core { r: 4.4; }
+
+  .at-reset {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(16, 33, 55, 0.25);
+    color: #0a1830;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 200ms ease;
+  }
+  .at-reset:hover { background: #fff; }
+
+  /* SIDE PANEL */
+  .at-panel {
+    position: relative;
+    background: #fff;
+    border: 1px solid rgba(16, 33, 55, 0.18);
+    padding: 22px;
+    box-shadow: 0 18px 36px -22px rgba(10, 30, 60, 0.3);
+    min-height: 460px;
+  }
+
+  .at-panel__empty {
+    display: flex; flex-direction: column;
+    gap: 14px;
+  }
+  .at-panel__counter {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #46587a;
+  }
+  .at-panel__empty h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0;
+    color: #0a1830;
+    letter-spacing: -0.01em;
+  }
+  .at-panel__empty p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #46587a;
+  }
+  .at-panel__quick {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px dashed rgba(16, 33, 55, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .at-panel__qbtn {
+    width: 100%;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 4px;
+    cursor: pointer;
+    font-family: inherit;
+    color: #0a1830;
+    border-bottom: 1px dotted rgba(16, 33, 55, 0.1);
+    transition: background 160ms ease;
+  }
+  .at-panel__qbtn:hover { background: rgba(16, 33, 55, 0.04); }
+  .at-panel__qflag { font-size: 16px; }
+  .at-panel__qcat {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .at-card { display: none; }
+  .at-card.is-active { display: block; animation: at-fade 240ms ease; }
+  @keyframes at-fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .at-card__top {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed rgba(16, 33, 55, 0.18);
+    margin-bottom: 16px;
+  }
+  .at-card__flag { font-size: 32px; line-height: 1; }
+  .at-card__cat {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .at-card__city {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 26px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    color: #0a1830;
+    letter-spacing: -0.01em;
+  }
+  .at-card__city span { color: #46587a; font-weight: 400; }
+  .at-card__coord {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: #46587a;
+  }
+  .at-card__photo {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    margin: 0 0 16px;
+    border: 1px solid rgba(16, 33, 55, 0.12);
+  }
+  .at-card__photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: saturate(1.05);
+  }
+  .at-card__story {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2a3a55;
+    margin: 0 0 14px;
+  }
+  .at-card__facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 14px;
+    margin: 0;
+    padding-top: 14px;
+    border-top: 1px solid rgba(16, 33, 55, 0.1);
+  }
+  .at-card__facts dt {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #46587a;
+    margin-bottom: 2px;
+  }
+  .at-card__facts dd {
+    margin: 0;
+    font-size: 13px;
+    color: #0a1830;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .at-hub__pulse { animation: none; }
+    .at-card { animation: none; }
+    .at-marker__halo, .at-marker__core, .at-lines path { transition: none; }
+  }
+</style>

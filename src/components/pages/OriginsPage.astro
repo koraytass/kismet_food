@@ -16,6 +16,7 @@ import AmuletDivider from '../AmuletDivider.astro';
 import MapPostcard from '../v2/maps/MapPostcard.astro';
 import MapConstellation from '../v2/maps/MapConstellation.astro';
 import MapRoute from '../v2/maps/MapRoute.astro';
+import MapAtlas from '../v2/maps/MapAtlas.astro';
 
 interface Props {
   locale: Locale;
@@ -395,10 +396,11 @@ const mapLabels = {
     </div>
   </section>
 
-  {/* — — — Origin Stories: 3 independent interactive maps — — — */}
+  {/* — — — Origin Stories: 4 independent interactive maps — — — */}
   <MapPostcard />
   <MapConstellation />
   <MapRoute />
+  <MapAtlas />
 
   {/* CTA */}
   <section class="bg-surface-mid px-4 py-20 md:px-8">
