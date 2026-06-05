@@ -67,6 +67,7 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
 </nav>
 
 <style>
+  /* Light nav — bone surface (matches lightened hero), ink text */
   .tf-nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -76,15 +77,15 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
     justify-content: space-between;
     gap: 24px;
     padding: 14px var(--tf-gutter);
-    background: rgba(10, 10, 10, 0.78);
-    backdrop-filter: saturate(140%) blur(10px);
-    border-bottom: 1px solid var(--hair);
+    background: rgba(245, 243, 238, 0.85);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.08);
   }
   .tf-nav__brand {
     display: inline-flex;
     align-items: baseline;
     gap: 8px;
-    color: var(--bone);
+    color: var(--ink);
     text-decoration: none;
     font-family: var(--tf-mono);
     font-size: 12px;
@@ -98,8 +99,8 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
     transform: translateY(1px);
     margin-right: 4px;
   }
-  .tf-nav__name { font-weight: 600; }
-  .tf-nav__sub { color: var(--mono-2); font-size: 11px; letter-spacing: 0.14em; }
+  .tf-nav__name { font-weight: 600; color: var(--ink); }
+  .tf-nav__sub { color: var(--mono-3); font-size: 11px; letter-spacing: 0.14em; }
 
   .tf-nav__center {
     display: none;
@@ -110,7 +111,7 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
     text-transform: uppercase;
   }
   .tf-nav__center a {
-    color: var(--mono);
+    color: var(--mono-3);
     text-decoration: none;
     transition: color 200ms ease;
   }
@@ -129,7 +130,7 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
     display: none;
     align-items: center;
     gap: 8px;
-    color: var(--mono-2);
+    color: var(--mono-3);
   }
   .tf-nav__pulse {
     width: 6px; height: 6px;
@@ -150,8 +151,8 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
     text-decoration: none;
     transition: color 200ms ease;
   }
-  .tf-nav__lang-item.is-active, .tf-nav__lang-item:hover { color: var(--bone); }
-  .tf-nav__lang-sep { color: var(--hair-bright); }
+  .tf-nav__lang-item.is-active, .tf-nav__lang-item:hover { color: var(--ink); }
+  .tf-nav__lang-sep { color: rgba(10, 10, 10, 0.18); }
 
   .tf-nav__cta {
     display: none !important;
@@ -164,7 +165,7 @@ const basePath = baseSeg.endsWith('/') ? baseSeg : baseSeg + '/';
     gap: 10px;
     background: transparent;
     border: 0;
-    color: var(--bone);
+    color: var(--ink);
     font-family: var(--tf-mono);
     font-size: 11px;
     letter-spacing: 0.18em;

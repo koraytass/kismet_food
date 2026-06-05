@@ -147,13 +147,17 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
 </section>
 
 <style>
+  /* ─── Light hero — bone surface, ink text, signal accent ───
+     Tipografi sistemi (Inter Tight + Cormorant italik + JetBrains Mono)
+     korundu; sadece zemin krem'e çevrildi, kontrastlar yeniden kuruldu. */
   .tf-hero {
     padding-top: clamp(120px, 14vw, 200px);
     padding-bottom: clamp(40px, 6vw, 80px);
+    color: var(--ink);
     background:
-      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(255, 92, 0, 0.06), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255, 92, 0, 0.04), transparent 60%),
-      var(--carbon);
+      radial-gradient(ellipse 70% 60% at 80% 20%, rgba(255, 92, 0, 0.08), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 18% 85%, rgba(255, 92, 0, 0.05), transparent 60%),
+      linear-gradient(180deg, var(--bone) 0%, #f0ece2 100%);
   }
 
   .tf-hero__inner { display: flex; flex-direction: column; gap: 56px; }
@@ -162,10 +166,12 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--hair);
+    border-top: 1px solid rgba(10, 10, 10, 0.12);
     padding-top: 16px;
   }
-  .tf-hero__coord { color: var(--mono-3); }
+  .tf-hero__head .tf-eyebrow { color: var(--mono-3); }
+  .tf-hero__head .tf-eyebrow--signal { color: var(--signal); }
+  .tf-hero__coord { color: var(--mono-3) !important; }
 
   .tf-hero__grid {
     display: grid;
@@ -180,7 +186,7 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     }
   }
 
-  .tf-hero__title { display: flex; flex-direction: column; gap: 0; }
+  .tf-hero__title { display: flex; flex-direction: column; gap: 0; color: var(--ink); }
   .tf-hero__line { display: block; }
   .tf-hero__line:nth-child(2) {
     font-family: var(--tf-italic);
@@ -199,10 +205,15 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     font-family: var(--tf-italic);
     font-style: italic;
     font-size: clamp(18px, 1.4vw, 22px);
-    color: var(--mono);
+    color: var(--mono-3);
     max-width: 36ch;
     line-height: 1.45;
   }
+  .tf-hero__ctas .tf-tlink {
+    color: var(--ink);
+    border-bottom-color: rgba(10, 10, 10, 0.25);
+  }
+  .tf-hero__ctas .tf-tlink:hover { color: var(--signal); border-bottom-color: var(--signal); }
 
   .tf-hero__ctas {
     margin-top: 32px;
@@ -212,20 +223,22 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     align-items: center;
   }
 
-  /* Panel */
+  /* Panel — light surface, ink contents, signal accents */
   .tf-hero__panel {
-    border: 1px solid var(--hair);
-    background: var(--carbon-2);
+    border: 1px solid rgba(10, 10, 10, 0.12);
+    background: #ffffff;
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 22px;
+    box-shadow: 0 24px 60px -32px rgba(10, 10, 10, 0.18);
   }
+  .tf-hero__panel .tf-eyebrow { color: var(--mono-3); }
   .tf-hero__panel-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--hair);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.1);
     padding-bottom: 14px;
   }
   .tf-hero__live {
@@ -249,20 +262,21 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
-    background: var(--hair);
-    border: 1px solid var(--hair);
+    background: rgba(10, 10, 10, 0.1);
+    border: 1px solid rgba(10, 10, 10, 0.12);
   }
   .tf-hero__stat {
-    background: var(--ash);
+    background: #fbfaf6;
     padding: 18px 16px;
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
+  .tf-hero__stat .tf-eyebrow { color: var(--mono-3); }
   .tf-hero__stat-num {
     font-size: clamp(28px, 3vw, 44px);
-    font-weight: 500;
-    color: var(--bone);
+    font-weight: 600;
+    color: var(--ink);
     line-height: 1;
   }
   .tf-hero__stat-frac {
@@ -283,7 +297,7 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     flex-direction: column;
     gap: 10px;
     padding-top: 14px;
-    border-top: 1px solid var(--hair);
+    border-top: 1px solid rgba(10, 10, 10, 0.1);
   }
   .tf-hero__bench ul {
     list-style: none;
@@ -300,7 +314,8 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     align-items: baseline;
     font-size: 13px;
     padding: 6px 0;
-    border-bottom: 1px dashed var(--hair);
+    border-bottom: 1px dashed rgba(10, 10, 10, 0.1);
+    color: var(--ink);
   }
   .tf-hero__bench li:last-child { border-bottom: 0; }
   .tf-hero__bench-name {
@@ -308,7 +323,7 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--mono-2);
+    color: var(--mono-3);
   }
   .tf-hero__bench small {
     font-family: var(--tf-mono);
@@ -316,20 +331,24 @@ const fmtDelta = (n: number) => (n >= 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
     color: var(--mono-3);
     margin-left: 2px;
   }
+  .tf-hero__bench .tf-eyebrow { color: var(--mono-3); }
+  .tf-hero__bench .tf-ticker__delta--up { color: var(--verified); }
+  .tf-hero__bench .tf-ticker__delta--down { color: #d4351c; }
 
   .tf-hero__foot {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--hair);
+    border-top: 1px solid rgba(10, 10, 10, 0.12);
     padding-top: 16px;
   }
+  .tf-hero__foot .tf-eyebrow { color: var(--mono-3); }
   .tf-hero__scroll-line {
     flex: 1;
     margin: 0 24px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--hair-bright) 20%, var(--signal) 50%, var(--hair-bright) 80%, transparent);
-    opacity: 0.5;
+    background: linear-gradient(90deg, transparent, rgba(10, 10, 10, 0.15) 20%, var(--signal) 50%, rgba(10, 10, 10, 0.15) 80%, transparent);
+    opacity: 0.7;
   }
 </style>
 
